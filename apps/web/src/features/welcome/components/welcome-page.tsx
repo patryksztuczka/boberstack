@@ -5,8 +5,6 @@ import { m } from "../../../paraglide/messages.js";
 import { Wordmark } from "../../../shared/brand/wordmark.tsx";
 import { Beaver } from "./beaver.tsx";
 
-const QUICKSTART = ["pnpm install", "pnpm dev", "pnpm verify"] as const;
-
 const ACTION = "h-11 rounded-[10px] px-[22px] text-[15px] font-semibold";
 
 const SectionHeading = ({ title, meta }: { readonly title: string; readonly meta: string }) => (
@@ -66,21 +64,6 @@ export const WelcomePage = () => {
             </li>
           ))}
         </ol>
-      </section>
-
-      <section className="flex flex-col gap-5">
-        <SectionHeading title={m.welcome_quickstart_title()} meta={m.welcome_quickstart_meta()} />
-        <pre className="overflow-x-auto rounded-[14px] bg-foreground px-[26px] py-6 font-mono text-[15px] leading-[30px] font-medium text-background">
-          {QUICKSTART.map((command) => (
-            <span key={command} className="block">
-              <span className="text-brand select-none">$ </span>
-              {command}
-            </span>
-          ))}
-        </pre>
-        <p className="max-w-[560px] text-[15px] leading-[23px] text-muted-foreground">
-          {m.welcome_quickstart_body()}
-        </p>
       </section>
 
       <footer className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

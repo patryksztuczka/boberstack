@@ -16,14 +16,6 @@ export const BeaverArt = ({ ref }: { readonly ref?: Ref<SVGSVGElement> }) => {
       <g className="beaver-tail-pivot">
         <g className="beaver-tail">
           <path
-            d="M635 575C704 560 737 570 754 611C772 655 726 729 681 767L636 753Z"
-            fill="#5B3A26"
-            stroke="#141414"
-            strokeWidth="11"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
             d="M643 827C703 842 805 808 857 759C900 719 920 665 896 611C875 564 835 550 799 567C755 585 744 624 727 665C708 710 682 734 641 747Z"
             fill="#5B3A26"
             stroke="#141414"
