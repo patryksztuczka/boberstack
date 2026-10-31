@@ -55,19 +55,21 @@ Git hooks come from Vite+: `pre-commit` runs `vp staged`, `commit-msg` checks th
 
 ## Where things go
 
-| You are adding                        | It goes in                                                                                                                                 |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| a record, id or error the client sees | `packages/domain/src/<context>/`                                                                                                           |
-| an endpoint or an RPC                 | the contract in `packages/domain/src/<context>/*.http-api.ts` / `*.rpc.ts`, the handler in `apps/api/src/http/` / `rpc/`                   |
-| business logic                        | `apps/api/src/modules/<context>/x.service.ts`                                                                                              |
-| a query or a table                    | a store port in the module, SQL in `apps/api/src/platform/database/x.repository.ts`, a new file in `apps/api/migrations/`                  |
-| a call to another system              | a port in the module, an adapter in `apps/api/src/platform/<capability>/`                                                                  |
-| an email                              | a template in `apps/api/src/modules/mail/templates/`, sent through the `Mailer` port (root ADR 0008)                                       |
-| an env var or secret                  | a line in `.env.schema` (`@sensitive` for a secret), read with `Config` in a `layerConfig` in `platform/`; the local value in `.env.local` |
-| a screen                              | `apps/web/src/features/<name>/`; what other features may use is exported from its `index.ts`                                               |
-| a UI primitive                        | `packages/ui`                                                                                                                              |
-| a bounded context                     | `CONTEXT-MAP.md`, `docs/internals/<context>/GLOSSARY.md`, then code (the `domain-modeling` skill)                                          |
-| a decision worth remembering          | an ADR (the `domain-modeling` skill)                                                                                                       |
+| You are adding                         | It goes in                                                                                                                                 |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| a record, id or error the client sees  | `packages/domain/src/<context>/`                                                                                                           |
+| an endpoint or an RPC                  | the contract in `packages/domain/src/<context>/*.http-api.ts` / `*.rpc.ts`, the handler in `apps/api/src/http/` / `rpc/`                   |
+| business logic                         | `apps/api/src/modules/<context>/x.service.ts`                                                                                              |
+| a query or a table                     | a store port in the module, SQL in `apps/api/src/platform/database/x.repository.ts`, a new file in `apps/api/migrations/`                  |
+| a call to another system               | a port in the module, an adapter in `apps/api/src/platform/<capability>/`                                                                  |
+| an email                               | a template in `apps/api/src/modules/mail/templates/`, sent through the `Mailer` port (root ADR 0008)                                       |
+| an env var or secret                   | a line in `.env.schema` (`@sensitive` for a secret), read with `Config` in a `layerConfig` in `platform/`; the local value in `.env.local` |
+| a screen                               | `apps/web/src/features/<name>/`; what other features may use is exported from its `index.ts`                                               |
+| a UI primitive                         | `packages/ui`                                                                                                                              |
+| a bounded context                      | `CONTEXT-MAP.md`, `docs/internals/<context>/GLOSSARY.md`, then code (the `domain-modeling` skill)                                          |
+| a decision worth remembering           | an ADR (the `domain-modeling` skill)                                                                                                       |
+| how a user does something              | a section in `docs/user/<feature>.md`, in the product's voice ([docs/README.md](docs/README.md#writing-user-docs))                         |
+| a setup, deploy or debugging procedure | `docs/operations/`                                                                                                                         |
 
 ## Autonomy
 

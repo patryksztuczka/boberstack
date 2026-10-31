@@ -2,9 +2,19 @@
 
 Find what you need by who you are.
 
-## I want to run or deploy the starter
+## I use the product
 
-The [README](../README.md): quickstart, deploy with Alchemy, and what to keep or cut.
+- [Signing in](user/sign-in.md)
+- [Todos](user/todos.md)
+
+## I run, deploy or adopt the starter
+
+The [README](../README.md) has the quickstart. The runbooks:
+
+- [Local development](operations/development.md): the dev stack, ports, mail, environment variables, social sign-in
+- [Deploy](operations/deploy.md): Alchemy, Cloudflare, Neon and the mail transport
+- [CI](operations/ci.md): the stages and what each one checks
+- [Make it yours](operations/make-it-yours.md): rename the project, then keep or cut each part
 
 ## I work on this repository
 
@@ -35,8 +45,19 @@ Every piece of knowledge has one home, and every other mention links to it. If t
 | Why a decision was made and what it cost            | an ADR in `internals/<context>/adr/`, or `internals/system/adr/` |
 | How Effect code is written                          | the [`effect-v4` skill](../.agents/skills/effect-v4/SKILL.md)    |
 | Commands, where code goes, what needs sign-off      | [`AGENTS.md`](../AGENTS.md)                                      |
-| How to run, deploy, keep or cut the starter         | [`README.md`](../README.md)                                      |
+| How a user does something with the product          | its feature page, `user/<feature>.md`                            |
+| How to run, deploy, keep or cut the starter         | `operations/`; the [README](../README.md) keeps the quickstart   |
 | What a package is and how to build, run and test it | that package's README, when it needs more than `AGENTS.md` says  |
 | A workaround for a defect in software we do not own | a `VENDOR:` comment at the workaround                            |
 | What the code does, and what a test proves          | the code: its names, types and tests                             |
 | Why a change was made                               | the commit message and the pull request                          |
+
+## Writing user docs
+
+A page in `user/` helps someone use the product, not build it.
+
+- Give each feature a short page: what it does, how to start, and whatever is not obvious, such as a limit, an expiry or an action that cannot be undone.
+- Name the button or the settings path the reader needs. Do not describe icons, layouts, animations or every state of the screen.
+- Use the product's voice and the context's glossary words. Leave out code, endpoints, libraries and contributor commands.
+- When the way to use a feature changes, rewrite its section in the same change. A small UI tweak needs no entry, and a new control does not need its own page.
+- Instructions for running or deploying the system go in `operations/`, not here.

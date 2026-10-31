@@ -10,7 +10,7 @@ A shape defined twice drifts. With one contract, a renamed field or a new error 
 
 - `packages/domain` imports only `effect`. It never imports an app, a vendor SDK or a server module, because the browser bundles it.
 - An operation exposed on both transports is declared twice, once per group, over the same schemas, and implemented by one service method. Keep handlers thin so the two cannot diverge.
-- A transport you do not need can be cut without touching the domain (README, keep or cut).
+- A transport you do not need can be cut without touching the domain ([Keep or cut](../../../operations/make-it-yours.md#keep-or-cut)).
 
 ## Considered options
 

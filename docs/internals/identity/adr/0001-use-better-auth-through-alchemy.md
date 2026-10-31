@@ -10,7 +10,7 @@ Identity's contract in `packages/domain` exposes only what other contexts need: 
 
 - better-auth's tables are defined by SQL in `apps/api/migrations/`, like ours, and `@alchemy.run/better-auth`'s own deploy-time migration is turned off (root ADR 0006). Upgrading better-auth means diffing its schema and writing a migration.
 - Adding a sign-in method (OAuth, passkeys) is a better-auth plugin plus its migration, and an owner sign-off because it widens who can sign in.
-- Removing auth from the starter removes `platform/authentication`, the middleware from every contract, and the better-auth migrations (README, keep or cut).
+- Removing auth from the starter removes `platform/authentication`, the middleware from every contract, and the better-auth migrations ([Keep or cut](../../../operations/make-it-yours.md#keep-or-cut)).
 
 ## Considered options
 
