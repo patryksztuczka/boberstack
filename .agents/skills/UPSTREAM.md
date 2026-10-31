@@ -8,6 +8,7 @@ These skills started from pstack and were rewritten for this repository: Effect 
 - `benchmark-checklist`
 - `bro`, `correct`, `unslop`
 - every `principle-*` skill
+- every `playbook-*` skill, from the playbooks inside pstack's `poteto-mode`
 
 ---
 
