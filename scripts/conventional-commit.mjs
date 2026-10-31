@@ -63,7 +63,7 @@ function messageProblem(message) {
 
   return (
     `"${subject}" is not a Conventional Commit subject. A rebase merge, or a squash merge of a ` +
-    "single commit, puts this subject on main, and the changelog groups changes by its type. " +
+    "single commit, puts this subject on the default branch, and the changelog groups changes by its type. " +
     FORMAT_HINT
   );
 }
@@ -75,7 +75,7 @@ function titleProblem(title) {
 
   return (
     `"${subject}" is not a Conventional Commit title. A squash merge uses the pull request title ` +
-    "as the commit subject on main, and the changelog groups changes by its type. " +
+    "as the commit subject on the default branch, and the changelog groups changes by its type. " +
     FORMAT_HINT
   );
 }

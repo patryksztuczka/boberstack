@@ -13,7 +13,7 @@ const CHECKABLE = /\.(?:ts|tsx|mts|cts|js|jsx|mjs|cjs|json|jsonc|md|css|ya?ml|ht
 
 const OUTPUT_LIMIT = 6000;
 
-const BASE_CANDIDATES = ["origin/main", "main"];
+const BASE_CANDIDATES = ["origin/HEAD", "origin/master", "master"];
 
 function planChecks(changedFiles, projects) {
   const code = changedFiles.filter((file) => !isDocsOnly(file));

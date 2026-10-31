@@ -39,7 +39,7 @@ const container =
   );
 ```
 
-Integration files end in `.integration.test.ts` and need Docker. CI runs them as its last stage on every pull request and push to `main`.
+Integration files end in `.integration.test.ts` and need Docker. CI runs them as its last stage on every pull request and push to `master`.
 
 ### tl.isolation: one database per test file
 

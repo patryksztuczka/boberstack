@@ -26,7 +26,8 @@
     "check:knip": "knip --no-progress",
     "sources:fetch": "node scripts/fetch-sources.mjs",
     "dev:status": "node scripts/dev.mjs status",
-    "cli": "node scripts/dev.mjs cli"
+    "cli": "node scripts/dev.mjs cli",
+    "github:apply": "node scripts/github-apply.mjs"
   },
   "devDependencies": {
     "@effect/tsgo": "catalog:",

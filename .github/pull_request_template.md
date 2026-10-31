@@ -1,7 +1,7 @@
 <!--
 Use a Conventional Commit title in plain language, such as
 "fix(api): refuse a todo title longer than the column allows". A squash merge puts the title on
-main, and the PR title check accepts only the types in scripts/conventional-commit.mjs.
+master, and the PR title check accepts only the types in scripts/conventional-commit.mjs.
 Write every section from the final diff, not from the branch's commit history. Solve one
 underlying problem; split independent fixes into their own pull requests.
 -->

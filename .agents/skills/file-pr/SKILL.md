@@ -13,7 +13,7 @@ Branch and commit rules are in the `babysit-git` skill.
 
 ## Title
 
-The title is a Conventional Commit subject: `<type>(<optional-scope>): <what changes and why>`, for example `fix(api): refuse a todo title longer than the column allows`. The type is one of `CONVENTIONAL_TYPES` in [`scripts/conventional-commit.mjs`](../../../scripts/conventional-commit.mjs), and the scope is lower-case words joined by hyphens. A squash merge puts the title on `main`, and the PR title workflow checks it against the same list.
+The title is a Conventional Commit subject: `<type>(<optional-scope>): <what changes and why>`, for example `fix(api): refuse a todo title longer than the column allows`. The type is one of `CONVENTIONAL_TYPES` in [`scripts/conventional-commit.mjs`](../../../scripts/conventional-commit.mjs), and the scope is lower-case words joined by hyphens. A squash merge puts the title on `master`, and the PR title workflow checks it against the same list.
 
 Write the title from the final diff, the way a commit subject tells a human what changes and why.
 
