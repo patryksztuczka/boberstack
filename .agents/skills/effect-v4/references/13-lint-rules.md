@@ -70,6 +70,7 @@ On `apps/api`, `apps/cli`, `apps/infra` and `packages/domain`.
 | Rule                         | Flags                                                                                                                | Guide |
 | ---------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----- |
 | `branded-ids`                | an `*Id` field typed `Schema.String` or `Schema.Number`                                                              | 06    |
+| `config-in-env-schema`       | a `Config` name that is not a literal or not in `.env.schema`; `Config.Redacted` and `@sensitive` that disagree      | 07    |
 | `effect-fn-name`             | `Effect.fn` without a literal `<Service>.<method>` name (autofix)                                                    | 08    |
 | `layer-config-only-in-roots` | `.layerConfig` outside the composition roots                                                                         | 07    |
 | `layer-naming`               | a layer not named `layer` or `layer<Suffix>` (`FooLive`, `Default`)                                                  | 04    |

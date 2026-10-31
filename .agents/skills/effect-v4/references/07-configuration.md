@@ -41,6 +41,17 @@ const pool = Number(process.env.DATABASE_POOL ?? 10);
 const TestConfig = ConfigProvider.layer(ConfigProvider.fromUnknown({ BETTER_AUTH_SECRET: "…" }));
 ```
 
+### config.schema: every variable is declared in `.env.schema`
+
+[`.env.schema`](../../../../.env.schema) lists every variable `Config` reads, with its type, whether it is `@sensitive` and whether production requires it. It holds no values: defaults stay in code (`Config.withDefault`), local values go in `.env.local` (gitignored). [varlock](https://varlock.dev) loads and validates them: `pnpm env:check` checks the current environment, and the `apps/infra` scripts run `alchemy` under `varlock run`, so `pnpm dev` and `pnpm run deploy` stop on a missing or malformed value before anything starts. Alchemy's own `.env` loading is off (`--env-file /dev/null`), so varlock is the only loader.
+
+`@boberstack/effect/config-in-env-schema` keeps the code and the schema in step: a `Config` name must be a string literal declared in the schema, and `Config.Redacted` must match `@sensitive`. Adding a variable is two lines: the schema entry and the `Config` read.
+
+```env
+# @sensitive
+GITHUB_CLIENT_SECRET=
+```
+
 ### config.secrets: secrets are `Config.Redacted`
 
 A redacted value prints as `<redacted>` in logs, spans and error reports. Unwrap it with `Redacted.value` only at the client that needs the raw string. `@boberstack/effect/redacted-secrets` flags a secret-looking key read with `Config.String`.
@@ -52,14 +63,14 @@ betterAuth({ secret: Redacted.value(secret) });
 
 ### config.where: where the values come from
 
-| Runtime    | Source                                                                                                                                                   |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| api Worker | Alchemy's Worker bridge installs a `ConfigProvider` over the Worker's `env`, so `Config.*` reads bindings and secrets set in `apps/infra/alchemy.run.ts` |
-| `apps/cli` | the default `ConfigProvider` reads `process.env`; `pnpm dev` and docker compose set the local database URL                                               |
-| `apps/web` | build-time `import.meta.env` values, read once in `runtime.ts` or `vite.config.ts`, never in a feature                                                   |
-| tests      | `layer(options)` with plain values; no `Config` at all ([12](12-test-layers-and-infrastructure.md))                                                      |
+| Runtime    | Source                                                                                                                                                                       |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| api Worker | Alchemy's Worker bridge installs a `ConfigProvider` over the Worker's `env`; `alchemy dev` and `alchemy deploy` bind the values `varlock run` put in the process environment |
+| `apps/cli` | the default `ConfigProvider` reads `process.env`; `pnpm dev` and docker compose set the local database URL                                                                   |
+| `apps/web` | build-time `import.meta.env` values, read once in `runtime.ts` or `vite.config.ts`, never in a feature                                                                       |
+| tests      | `layer(options)` with plain values; no `Config` at all ([12](12-test-layers-and-infrastructure.md))                                                                          |
 
-A secret goes into the stack through Alchemy, never into a committed file.
+A secret goes into the stack through `.env.local`, `.env.production.local` or the deploy's environment, never into a committed file.
 
 ## v4 names
 

@@ -30,6 +30,7 @@ const antiSlopRules = {
 
 const effectRules = {
   "@boberstack/effect/branded-ids": "error",
+  "@boberstack/effect/config-in-env-schema": "error",
   "@boberstack/effect/effect-fn-name": "error",
   "@boberstack/effect/layer-config-only-in-roots": [
     "error",

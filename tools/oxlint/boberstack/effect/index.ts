@@ -1,6 +1,7 @@
 import { eslintCompatPlugin } from "vite-plus/lint/plugins";
 
 import { brandedIdsRule } from "./rules/branded-ids.ts";
+import { configInEnvSchemaRule } from "./rules/config-in-env-schema.ts";
 import { effectFnNameRule } from "./rules/effect-fn-name.ts";
 import { layerConfigOnlyInRootsRule } from "./rules/layer-config-only-in-roots.ts";
 import { layerNamingRule } from "./rules/layer-naming.ts";
@@ -28,6 +29,7 @@ const effectPlugin = eslintCompatPlugin({
   meta: { name: "effect" },
   rules: {
     "branded-ids": brandedIdsRule,
+    "config-in-env-schema": configInEnvSchemaRule,
     "effect-fn-name": effectFnNameRule,
     "layer-config-only-in-roots": layerConfigOnlyInRootsRule,
     "layer-naming": layerNamingRule,

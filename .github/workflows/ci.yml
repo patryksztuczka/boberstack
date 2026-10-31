@@ -55,6 +55,9 @@ jobs:
       - name: Format and lint (vp check)
         run: pnpm check
 
+      - name: Environment schema loads and validates (varlock)
+        run: pnpm env:check
+
       - name: Exact dependency versions and pinned actions
         run: pnpm check:deps
 
