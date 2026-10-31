@@ -36,7 +36,7 @@
   ],
   "welcome_beaver_label": "Poke the beaver",
   "welcome_title": "Mistakes stop at the dam",
-  "welcome_lead": "A starter for TypeScript products on Effect v4: an API and a React app on one Cloudflare Worker, Postgres on Neon, and the lint rules, hooks and checks that keep the code in shape as it grows.",
+  "welcome_lead": "A starter that helps coding agents write good code and keep your project in shape.",
   "welcome_open_example": "Open the todo example",
   "welcome_create_account": "Create an account",
   "welcome_inside_title": "What is inside",

@@ -6,8 +6,7 @@
 
 <p align="center">
   <strong>Mistakes stop at the dam. </strong><br>
-  A TypeScript starter on Effect v4: an api and a React app on one Cloudflare Worker, Postgres on Neon,<br>
-  and the lint rules, hooks and checks that keep the code in shape as it grows.
+  A starter that helps coding agents write good code and keep your project in shape.
 </p>
 
 <p align="center">
