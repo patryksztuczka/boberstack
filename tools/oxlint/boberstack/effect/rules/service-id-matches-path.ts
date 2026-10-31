@@ -49,9 +49,9 @@ export const serviceIdMatchesPathRule = defineRule({
     fixable: "code",
     docs: { description: "Require Context.Service ids to mirror the file path." },
     messages: {
-      id: 'Service id should be "{{expected}}" (derived from the file path) (see .agents/skills/effect-v4/references/05-project-structure.md).',
+      id: 'Service id should be "{{expected}}" (derived from the file path) (see .agents/skills/effect-best-practices/references/05-project-structure.md).',
       className:
-        "Service class `{{name}}` should live in `{{name}}.ts`, not `{{file}}` (see .agents/skills/effect-v4/references/05-project-structure.md).",
+        "Service class `{{name}}` should live in `{{name}}.ts`, not `{{file}}` (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
     },
     schema: [
       {

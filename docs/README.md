@@ -27,7 +27,7 @@ Then the [Context Map](../CONTEXT-MAP.md): it names the bounded contexts, how th
 - [System-wide ADRs](internals/system/adr): the monorepo, Effect, Cloudflare and Neon, SQL and tests, comments, migrations, the shared contract, mail
 - [ADR template](internals/adr-template.md)
 
-How Effect code is written is in the [`effect-v4` skill](../.agents/skills/effect-v4/SKILL.md). Code carries no comments except `VENDOR:` notes about defects in software we do not own ([root ADR 0005](internals/system/adr/0005-keep-only-comments-about-other-peoples-defects.md)).
+How Effect code is written is in the [`effect-best-practices` skill](../.agents/skills/effect-best-practices/SKILL.md). Code carries no comments except `VENDOR:` notes about defects in software we do not own ([root ADR 0005](internals/system/adr/0005-keep-only-comments-about-other-peoples-defects.md)).
 
 ## I am an agent
 
@@ -37,20 +37,20 @@ How Effect code is written is in the [`effect-v4` skill](../.agents/skills/effec
 
 Every piece of knowledge has one home, and every other mention links to it. If the home already says it, link; if it says it differently, fix the home.
 
-| Kind of knowledge                                   | Home                                                             |
-| --------------------------------------------------- | ---------------------------------------------------------------- |
-| What a term means inside a bounded context          | `internals/<context>/GLOSSARY.md`                                |
-| Which contexts exist and how they relate            | [`CONTEXT-MAP.md`](../CONTEXT-MAP.md)                            |
-| A module's decisions and traps the code cannot show | its module file, `internals/<context>/<module>.md`               |
-| Why a decision was made and what it cost            | an ADR in `internals/<context>/adr/`, or `internals/system/adr/` |
-| How Effect code is written                          | the [`effect-v4` skill](../.agents/skills/effect-v4/SKILL.md)    |
-| Commands, where code goes, what needs sign-off      | [`AGENTS.md`](../AGENTS.md)                                      |
-| How a user does something with the product          | its feature page, `user/<feature>.md`                            |
-| How to run, deploy, keep or cut the starter         | `operations/`; the [README](../README.md) keeps the quickstart   |
-| What a package is and how to build, run and test it | that package's README, when it needs more than `AGENTS.md` says  |
-| A workaround for a defect in software we do not own | a `VENDOR:` comment at the workaround                            |
-| What the code does, and what a test proves          | the code: its names, types and tests                             |
-| Why a change was made                               | the commit message and the pull request                          |
+| Kind of knowledge                                   | Home                                                                                  |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| What a term means inside a bounded context          | `internals/<context>/GLOSSARY.md`                                                     |
+| Which contexts exist and how they relate            | [`CONTEXT-MAP.md`](../CONTEXT-MAP.md)                                                 |
+| A module's decisions and traps the code cannot show | its module file, `internals/<context>/<module>.md`                                    |
+| Why a decision was made and what it cost            | an ADR in `internals/<context>/adr/`, or `internals/system/adr/`                      |
+| How Effect code is written                          | the [`effect-best-practices` skill](../.agents/skills/effect-best-practices/SKILL.md) |
+| Commands, where code goes, what needs sign-off      | [`AGENTS.md`](../AGENTS.md)                                                           |
+| How a user does something with the product          | its feature page, `user/<feature>.md`                                                 |
+| How to run, deploy, keep or cut the starter         | `operations/`; the [README](../README.md) keeps the quickstart                        |
+| What a package is and how to build, run and test it | that package's README, when it needs more than `AGENTS.md` says                       |
+| A workaround for a defect in software we do not own | a `VENDOR:` comment at the workaround                                                 |
+| What the code does, and what a test proves          | the code: its names, types and tests                                                  |
+| Why a change was made                               | the commit message and the pull request                                               |
 
 ## Writing user docs
 

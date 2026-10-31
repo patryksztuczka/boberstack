@@ -10,7 +10,7 @@ export const noStoreFakesRule = defineRule({
     },
     messages: {
       storeFake:
-        "A store has one implementation, its repository. Run its contract against Postgres in the repository's `*.integration.test.ts` (layer from apps/*/src/testing/pg-test.ts); use Layer.mock for a single failing operation (see .agents/skills/effect-v4/references/05-project-structure.md).",
+        "A store has one implementation, its repository. Run its contract against Postgres in the repository's `*.integration.test.ts` (layer from apps/*/src/testing/pg-test.ts); use Layer.mock for a single failing operation (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
     },
     schema: [],
   },

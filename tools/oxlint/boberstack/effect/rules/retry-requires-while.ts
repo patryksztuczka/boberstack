@@ -11,7 +11,7 @@ export const retryRequiresWhileRule = defineRule({
     docs: { description: "Require Effect.retry to state which failures are retried." },
     messages: {
       missingWhile:
-        'Effect.retry retries every failure. Pass `{ schedule, times, while }` naming the transient errors, e.g. `while: Predicate.isTagged("…Error")` (see .agents/skills/effect-v4/references/03-retry-and-scheduling.md).',
+        'Effect.retry retries every failure. Pass `{ schedule, times, while }` naming the transient errors, e.g. `while: Predicate.isTagged("…Error")` (see .agents/skills/effect-best-practices/references/03-retry-and-scheduling.md).',
     },
     schema: [],
   },

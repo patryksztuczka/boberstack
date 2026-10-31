@@ -9,7 +9,7 @@ export const noThrowInEffectRule = defineRule({
     docs: { description: "Disallow `throw` inside Effect generators." },
     messages: {
       throwInEffect:
-        "Do not throw inside Effect code: it becomes an untyped defect callers cannot catchTag. Use `return yield* new SomethingError(…)` for failures, or `Effect.die` / `Effect.orDie` for broken invariants (see .agents/skills/effect-v4/references/02-typed-errors.md).",
+        "Do not throw inside Effect code: it becomes an untyped defect callers cannot catchTag. Use `return yield* new SomethingError(…)` for failures, or `Effect.die` / `Effect.orDie` for broken invariants (see .agents/skills/effect-best-practices/references/02-typed-errors.md).",
     },
     schema: [],
   },

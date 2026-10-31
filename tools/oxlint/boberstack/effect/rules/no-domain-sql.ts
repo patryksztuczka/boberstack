@@ -31,13 +31,13 @@ export const noDomainSqlRule = defineRule({
     },
     messages: {
       package:
-        "`{{source}}` talks to the database. A domain module asks a store port (`XStore` in `x.store.ts`) for what it needs, and a repository in apps/api/src/platform/database/ holds the SQL (see .agents/skills/effect-v4/references/05-project-structure.md).",
+        "`{{source}}` talks to the database. A domain module asks a store port (`XStore` in `x.store.ts`) for what it needs, and a repository in apps/api/src/platform/database/ holds the SQL (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
       database:
-        "`{{source}}` is the database side of the app: the connection, a repository or the Postgres test layer. A domain module asks a store port (`XStore` in `x.store.ts`) for what it needs, and its contract runs on Postgres in apps/api/src/platform/database/x.repository.integration.test.ts (see .agents/skills/effect-v4/references/05-project-structure.md).",
+        "`{{source}}` is the database side of the app: the connection, a repository or the Postgres test layer. A domain module asks a store port (`XStore` in `x.store.ts`) for what it needs, and its contract runs on Postgres in apps/api/src/platform/database/x.repository.integration.test.ts (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
       dynamic:
         "This specifier is built at runtime, so the fence cannot tell where it leads: a substitution may climb out of any folder its static head names. Import a static path, or name the file in no-domain-sql's exceptions with its reason (see tools/oxlint/boberstack/effect/README.md).",
       repository:
-        "A repository holds SQL and lives only in apps/api/src/platform/database/. Name the module's port `XStore` in `x.store.ts` and put its logic in `x.service.ts` (see .agents/skills/effect-v4/references/05-project-structure.md).",
+        "A repository holds SQL and lives only in apps/api/src/platform/database/. Name the module's port `XStore` in `x.store.ts` and put its logic in `x.service.ts` (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
     },
     schema: [
       {

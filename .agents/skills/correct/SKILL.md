@@ -22,7 +22,7 @@ Go down this list and stop at the first that can express the rule:
 5. **A skill.** Steps that need judgement, such as how to drive the app or how to review.
 6. **A sentence in AGENTS.md or a reference.** Only when nothing above can express it. Keep it to one line.
 
-Changing the lint config, `tsconfig.base.json`, hooks or CI needs owner sign-off (AGENTS.md). Propose the change with the evidence from step 3 and wait.
+Adding a rule or raising a diagnostic is yours to do. A change that loosens the lint config or `tsconfig.base.json` needs owner sign-off at review, and loosening hooks or CI needs asking first (AGENTS.md, Autonomy).
 
 ## 3. Prove the enforcer catches the real mistake
 

@@ -11,7 +11,7 @@ export const tryRequiresCatchRule = defineRule({
     docs: { description: "Require the `{ try, catch }` form of Effect.try and Effect.tryPromise." },
     messages: {
       missingCatch:
-        "Use `Effect.{{method}}({ try, catch })` and map the thrown value to a tagged error in `catch` (see .agents/skills/effect-v4/references/02-typed-errors.md).",
+        "Use `Effect.{{method}}({ try, catch })` and map the thrown value to a tagged error in `catch` (see .agents/skills/effect-best-practices/references/02-typed-errors.md).",
     },
     schema: [],
   },

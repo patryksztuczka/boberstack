@@ -38,7 +38,7 @@ Look for the originating spec, in this order:
 
 Anything in the repo that documents how code should be written, such as `CODING_STANDARDS.md` or `CONTRIBUTING.md`.
 
-In this repository `CODING_STANDARDS.md` lists them: the `effect-v4` skill (`.agents/skills/effect-v4/`) for code, root ADR 0005 for comments, and `docs/README.md` (where a sentence belongs) and the `domain-modeling` skill for documentation. The rules oxlint already enforces are listed in `.agents/skills/effect-v4/references/13-lint-rules.md`; skip them. One documentation rule is easy to miss in a diff: an ADR added or amended under `docs/internals/<context>/adr/` updates, in the same diff, the module file and glossary entry it affects. An ADR that changes a module's decisions while that module's file still describes the old ones is a hard violation.
+In this repository `CODING_STANDARDS.md` lists them: the `effect-best-practices` skill (`.agents/skills/effect-best-practices/`) for code, the `principle-*` skills for engineering judgement (cite one by name; a principle finding is a judgement call unless it restates a documented rule), root ADR 0005 for comments, and `docs/README.md` (where a sentence belongs) and the `domain-modeling` skill for documentation. The rules oxlint already enforces are listed in `.agents/skills/effect-best-practices/references/13-lint-rules.md`; skip them. One documentation rule is easy to miss in a diff: an ADR added or amended under `docs/internals/<context>/adr/` updates, in the same diff, the module file and glossary entry it affects. An ADR that changes a module's decisions while that module's file still describes the old ones is a hard violation.
 
 On top of whatever the repo documents, the Standards axis always carries the **smell baseline** below: a fixed set of Fowler code smells (_Refactoring_, ch.3) that applies even when a repo documents nothing. Two rules bind it:
 
@@ -62,7 +62,7 @@ Each smell reads _what it is_ → _how to fix_; match it against the diff:
 
 ### 4. List the guarded paths the diff touches
 
-Run `git diff --name-only <fixed-point>...HEAD` and pick out every file under a path that needs owner sign-off (AGENTS.md, "Needs owner sign-off"): `vite.config.ts` lint and fmt blocks, `tools/oxlint/`, `tsconfig.base.json`, `.vite-hooks/`, `.github/`, `.claude/settings.json`, `.claude/hooks/`, `suppressions.baseline.json`, `knip.json`, `pnpm-workspace.yaml`, any `package.json` dependency change, and `apps/api/migrations/` files that already existed at the fixed point. For each, say in one line whether the change loosens a check (a rule turned off, a path ignored, a threshold raised, a hook step removed). This list goes first in the report, above every axis, so a loosened guard cannot hide under a long review.
+Run `git diff --name-only <fixed-point>...HEAD` and pick out every file under a path that needs owner sign-off (AGENTS.md, "Needs owner sign-off" and "Ask first"): `vite.config.ts` lint and fmt blocks, `tools/oxlint/`, `tsconfig.base.json`, `.vite-hooks/`, `.github/`, `.claude/settings.json`, `.claude/hooks/`, `suppressions.baseline.json`, `knip.json`, `pnpm-workspace.yaml`, any `package.json` dependency change, and `apps/api/migrations/` files that already existed at the fixed point. For each, say in one line whether the change loosens a check (a rule turned off, a path ignored, a threshold raised, a hook step removed). This list goes first in the report, above every axis, so a loosened guard cannot hide under a long review.
 
 ### 5. Spawn the sub-agents in parallel
 

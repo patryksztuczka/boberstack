@@ -68,17 +68,17 @@ export const moduleBoundariesRule = defineRule({
     docs: { description: "Enforce module and bounded-context import boundaries." },
     messages: {
       module:
-        "Import the `{{module}}` module through its index, not a file inside it (see .agents/skills/effect-v4/references/05-project-structure.md).",
+        "Import the `{{module}}` module through its index, not a file inside it (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
       context:
-        "Import the `{{context}}` bounded context through its index, not a file inside it (see .agents/skills/effect-v4/references/05-project-structure.md).",
+        "Import the `{{context}}` bounded context through its index, not a file inside it (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
       testing:
-        "Only test code imports the `{{module}}` module's testing index (see .agents/skills/effect-v4/references/05-project-structure.md).",
+        "Only test code imports the `{{module}}` module's testing index (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
       indexOnly:
-        "Import the `{{context}}` context through a context or module index, not `{{file}}` (see .agents/skills/effect-v4/references/05-project-structure.md).",
+        "Import the `{{context}}` context through a context or module index, not `{{file}}` (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
       rootFile:
-        "A module never imports `{{file}}`, a file of the composition root. Move what the module needs into it, or declare a port the root provides (see .agents/skills/effect-v4/references/05-project-structure.md).",
+        "A module never imports `{{file}}`, a file of the composition root. Move what the module needs into it, or declare a port the root provides (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
       rootFileDynamic:
-        "This specifier is built at runtime, so the fence cannot tell whether it leads to a file of the composition root. Import a static path (see .agents/skills/effect-v4/references/05-project-structure.md).",
+        "This specifier is built at runtime, so the fence cannot tell whether it leads to a file of the composition root. Import a static path (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
     },
     schema: [
       {

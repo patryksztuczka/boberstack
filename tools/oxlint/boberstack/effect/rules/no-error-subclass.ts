@@ -21,7 +21,7 @@ export const noErrorSubclassRule = defineRule({
     docs: { description: "Disallow subclassing built-in Error classes." },
     messages: {
       errorSubclass:
-        "Do not extend `{{base}}`: callers cannot catch the result by tag. Declare a `Schema.TaggedError` in the module's `*.errors.ts` file; in a test, use a tagged error or assert on the failure itself (see .agents/skills/effect-v4/references/02-typed-errors.md).",
+        "Do not extend `{{base}}`: callers cannot catch the result by tag. Declare a `Schema.TaggedError` in the module's `*.errors.ts` file; in a test, use a tagged error or assert on the failure itself (see .agents/skills/effect-best-practices/references/02-typed-errors.md).",
     },
     schema: [],
   },

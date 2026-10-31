@@ -11,7 +11,7 @@ export const noTryInTestsRule = defineRule({
     docs: { description: "Disallow `try` statements in test files." },
     messages: {
       tryInTest:
-        "Do not use `try` in a test: a `catch` accepts whatever was thrown. Assert a failure with `Effect.flip` or `Effect.exit`, or on the returned `Result`; release resources through a scoped layer or `Effect.acquireRelease` (see .agents/skills/effect-v4/references/11-testing.md).",
+        "Do not use `try` in a test: a `catch` accepts whatever was thrown. Assert a failure with `Effect.flip` or `Effect.exit`, or on the returned `Result`; release resources through a scoped layer or `Effect.acquireRelease` (see .agents/skills/effect-best-practices/references/11-testing.md).",
     },
     schema: [
       {

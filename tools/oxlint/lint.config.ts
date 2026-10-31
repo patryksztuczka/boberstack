@@ -1,6 +1,6 @@
 import type { OxlintConfig } from "vite-plus/lint";
 
-const skill = ".agents/skills/effect-v4/references";
+const skill = ".agents/skills/effect-best-practices/references";
 
 const antiSlopRules = {
   "anti-slop/no-array-filter-map": "error",

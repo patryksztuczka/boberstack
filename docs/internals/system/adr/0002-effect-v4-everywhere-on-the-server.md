@@ -4,7 +4,7 @@
 
 All server-side code, the api Worker, the CLI and the infrastructure program, is written in Effect v4, and the browser enters Effect through one `ManagedRuntime`. A codebase that mixes Effect with plain async code gets the costs of both: two error models, two ways to inject a dependency, and boundaries where typed failures turn back into thrown exceptions. Effect gives us typed errors in the signature, services and layers instead of module singletons, `Schema` at every boundary, and `HttpApi`, RPC, CLI and SQL from one library at one version.
 
-The rules for writing it are in the `effect-v4` skill, and most of them are lint rules.
+The rules for writing it are in the `effect-best-practices` skill, and most of them are lint rules.
 
 ## Consequences
 
