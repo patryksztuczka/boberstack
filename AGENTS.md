@@ -19,6 +19,8 @@ When a project starts from this template, rewrite this section on day one. `pnpm
 - No prose comments in code. A workaround for someone else's bug keeps a `VENDOR:` comment (root ADR 0005).
 - Add a lint rule before cleaning up a pattern by hand, so it cannot come back. When you are corrected for the same thing twice, use the `correct` skill.
 - A new version replaces the old one in the same change: no `V2`, no re-export kept for compatibility (the `principle-no-shims` skill).
+- Work by task type with the `playbook-*` skills: bug fix, feature, refactoring, investigation, prototype, perf issue, hillclimb.
+- The `principle-*` skills and `benchmark-checklist` do not load on their own. When a playbook, a skill or a review names one, read `.agents/skills/<name>/SKILL.md`.
 - Before Git: the `babysit-git` skill. Before a pull request: the `file-pr` skill. For prose: the `unslop` skill. To see a UI change working: the `verify-web` skill.
 
 ## Commands

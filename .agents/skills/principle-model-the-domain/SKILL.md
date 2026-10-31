@@ -1,6 +1,7 @@
 ---
 name: principle-model-the-domain
 description: Apply when writing stateful logic, adding a case to existing branching, or repeating the same shape assumption in several files. Encode the domain in a type or structure instead of scattered conditionals.
+disable-model-invocation: true
 ---
 
 # Model the domain

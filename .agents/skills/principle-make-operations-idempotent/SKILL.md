@@ -1,6 +1,7 @@
 ---
 name: principle-make-operations-idempotent
 description: Apply when writing anything that mutates state and can be retried, re-run or interrupted, such as a migration, a CLI command, a job, a mail send, a webhook handler or a deploy step. It must reach the same end state no matter how often it runs or where the last run stopped.
+disable-model-invocation: true
 ---
 
 # Make operations idempotent

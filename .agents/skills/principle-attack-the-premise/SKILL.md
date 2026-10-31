@@ -1,6 +1,7 @@
 ---
 name: principle-attack-the-premise
 description: Apply when two or more fixes that rest on the same assumption have failed the same check. Write the assumption down and test it directly before writing another fix.
+disable-model-invocation: true
 ---
 
 # Attack the premise

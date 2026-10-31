@@ -1,6 +1,7 @@
 ---
 name: principle-fix-root-causes
 description: Apply when debugging or fixing a bug. Trace the symptom back to the first place the system did something wrong and fix it there. A guard, retry or catch is a fix only when the state it handles is legitimate.
+disable-model-invocation: true
 ---
 
 # Fix root causes

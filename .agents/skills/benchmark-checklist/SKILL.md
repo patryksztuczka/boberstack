@@ -1,6 +1,7 @@
 ---
 name: benchmark-checklist
 description: Vet a performance measurement before you report or act on it, by naming the limiter, checking both sides were set up like production, checking limits, errors, repeatability, end-to-end relevance and that the work happened. Use when you run a benchmark, or report a speedup, a regression, a latency, a throughput or a bundle size you measured.
+disable-model-invocation: true
 ---
 
 # Benchmark checklist

@@ -1,6 +1,7 @@
 ---
 name: principle-subtract-before-you-add
 description: Apply when planning an addition, refactor or rewrite, or when weighing a diff's size. Remove dead code and needless parts first, then build the smallest change that solves the problem on the simpler base.
+disable-model-invocation: true
 ---
 
 # Subtract before you add

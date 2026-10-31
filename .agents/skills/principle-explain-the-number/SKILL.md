@@ -1,6 +1,7 @@
 ---
 name: principle-explain-the-number
 description: Apply before you measure, and before you trust, report or act on a number you measured, such as a speedup, a regression, a latency, a throughput or a bundle size. Find what limits it and rule out that it measured something other than the work.
+disable-model-invocation: true
 ---
 
 # Explain the number

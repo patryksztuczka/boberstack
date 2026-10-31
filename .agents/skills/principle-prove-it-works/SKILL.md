@@ -1,6 +1,7 @@
 ---
 name: principle-prove-it-works
 description: Apply before saying a task is done. Check the real result directly, by running the feature, reading the actual value or inspecting the diff, not through a proxy, a self-report or "it compiles".
+disable-model-invocation: true
 ---
 
 # Prove it works

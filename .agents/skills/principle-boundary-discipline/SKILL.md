@@ -1,6 +1,7 @@
 ---
 name: principle-boundary-discipline
 description: Apply when wiring validation, decoding, error handling or an adapter. Parse and guard at the system's edges, trust the types inside, and keep business logic in service methods and pure functions.
+disable-model-invocation: true
 ---
 
 # Boundary discipline

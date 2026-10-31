@@ -1,6 +1,7 @@
 ---
 name: principle-sequence-verifiable-units
 description: Apply to multi-step work (a migration, a sweep, a run of similar edits) and to how you order commits and pull requests. Split the work into small units that each end in a state you can check, check each before the next, and order delivery so the sequence proves itself.
+disable-model-invocation: true
 ---
 
 # Sequence verifiable units

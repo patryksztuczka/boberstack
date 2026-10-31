@@ -1,6 +1,7 @@
 ---
 name: principle-minimize-reader-load
 description: Apply when code is hard to trace, when you are about to add a layer, wrapper or piece of state, or when reviewing a design. Count the layers between a question and its answer and the state a reader must hold, and cut both.
+disable-model-invocation: true
 ---
 
 # Minimize reader load
