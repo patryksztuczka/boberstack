@@ -6,14 +6,12 @@ import { layerConfigOnlyInRootsRule } from "./rules/layer-config-only-in-roots.t
 import { layerNamingRule } from "./rules/layer-naming.ts";
 import { logLiteralMessageRule } from "./rules/log-literal-message.ts";
 import { moduleBoundariesRule } from "./rules/module-boundaries.ts";
-import { noAmbientDateRule } from "./rules/no-ambient-date.ts";
 import { noDecodeSyncRule } from "./rules/no-decode-sync.ts";
 import { noDomainAdaptersRule } from "./rules/no-domain-adapters.ts";
 import { noDomainSqlRule } from "./rules/no-domain-sql.ts";
 import { noErrorInstanceofRule } from "./rules/no-error-instanceof.ts";
 import { noErrorSubclassRule } from "./rules/no-error-subclass.ts";
 import { noNewPromiseRule } from "./rules/no-new-promise.ts";
-import { noPlatformImportsRule } from "./rules/no-platform-imports.ts";
 import { noStoreFakesRule } from "./rules/no-store-fakes.ts";
 import { noThrowInEffectRule } from "./rules/no-throw-in-effect.ts";
 import { noTryInTestsRule } from "./rules/no-try-in-tests.ts";
@@ -35,14 +33,12 @@ const effectPlugin = eslintCompatPlugin({
     "layer-naming": layerNamingRule,
     "log-literal-message": logLiteralMessageRule,
     "module-boundaries": moduleBoundariesRule,
-    "no-ambient-date": noAmbientDateRule,
     "no-decode-sync": noDecodeSyncRule,
     "no-domain-adapters": noDomainAdaptersRule,
     "no-domain-sql": noDomainSqlRule,
     "no-error-instanceof": noErrorInstanceofRule,
     "no-error-subclass": noErrorSubclassRule,
     "no-new-promise": noNewPromiseRule,
-    "no-platform-imports": noPlatformImportsRule,
     "no-store-fakes": noStoreFakesRule,
     "no-throw-in-effect": noThrowInEffectRule,
     "no-try-in-tests": noTryInTestsRule,
