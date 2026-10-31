@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="apps/web/src/assets/beaver-animated.svg" width="220" alt="The boberstack beaver: a beaver in an orange hard hat carrying a stack of logs on its shoulder">
+  <img src="apps/web/src/assets/beaver-animated.svg?v=9451bd7e" width="220" alt="The boberstack beaver: a beaver in an orange hard hat carrying a stack of logs on its shoulder">
 </p>
 
 <h1 align="center">boberstack</h1>
