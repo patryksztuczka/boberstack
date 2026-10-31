@@ -13,6 +13,8 @@ Effect gives every program five services for free: Clock, Random, Console, Confi
 | `setTimeout`, `setInterval`         | `Effect.sleep`, `Effect.repeat(Schedule…)`                                              |
 | `process.env.X`, the Worker `env`   | `yield* Config.String("X")`, inside a `layerConfig` only ([07](07-configuration.md))    |
 
+The Effect diagnostics flag each global in the left column at `error`, inside Effect code and in a plain module-level function alike, so a helper that reads the clock or the network fails `pnpm typecheck` before it reaches a service. Code that runs outside any Effect runtime, such as a decorative timer in a React effect, turns one diagnostic off for its file with a reason: `// @effect-diagnostics globalRandom:off -- <why>`.
+
 ## Rules
 
 ### defaults.time: time comes from the Clock

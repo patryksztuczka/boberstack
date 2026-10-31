@@ -1,3 +1,4 @@
+// @effect-diagnostics globalRandom:off -- the glance and blink timing is decorative jitter in a React effect, not Effect code
 import { useEffect, useRef, useState } from "react";
 
 import { m } from "../../../paraglide/messages.js";
