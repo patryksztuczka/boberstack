@@ -75,14 +75,12 @@ On `apps/api`, `apps/cli`, `apps/infra` and `packages/domain`.
 | `layer-naming`               | a layer not named `layer` or `layer<Suffix>` (`FooLive`, `Default`)                                                  | 04    |
 | `log-literal-message`        | a non-literal first argument to `Effect.log*`                                                                        | 08    |
 | `module-boundaries`          | a deep import into another module or context; `platform/` past an index; a module importing a root file              | 05    |
-| `no-ambient-date`            | `new Date()` or `Date()` without arguments                                                                           | 01    |
 | `no-decode-sync`             | `Schema.decodeUnknownSync`, `decodeSync`, `decodeUnknownPromise` outside scripts and tests                           | 06    |
 | `no-domain-adapters`         | a module importing a vendor SDK, a network built-in, `platform/`, or using `fetch`                                   | 05    |
 | `no-domain-sql`              | a module, tests included, importing SQL packages, `platform/database/` or `pg-test`; a `*.repository.ts` in a module | 05    |
 | `no-error-instanceof`        | `instanceof` a class whose name ends in `Error`                                                                      | 02    |
 | `no-error-subclass`          | `class X extends Error` or another built-in error                                                                    | 02    |
 | `no-new-promise`             | `new Promise(…)`                                                                                                     | 09    |
-| `no-platform-imports`        | value imports of `node:fs`, `node:os`, `node:child_process` in a module                                              | 04    |
 | `no-store-fakes`             | `layerTest` or `inMemory` on a `*Store` service                                                                      | 05    |
 | `no-throw-in-effect`         | `throw` inside `Effect.gen` or `Effect.fn`                                                                           | 02    |
 | `no-try-in-tests`            | `try` in a test file                                                                                                 | 11    |

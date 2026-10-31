@@ -19,7 +19,7 @@ The Effect diagnostics flag each global in the left column at `error`, inside Ef
 
 ### defaults.time: time comes from the Clock
 
-A timestamp comes from `DateTime.now`; a duration uses `Clock.monotonicTimeNanos`. `DateTime.nowUnsafe` calls `Date.now()` behind the Clock's back, so `TestClock` cannot move it. `@boberstack/effect/no-ambient-date` flags `new Date()` and `Date()` without arguments.
+A timestamp comes from `DateTime.now`; a duration uses `Clock.monotonicTimeNanos`. `DateTime.nowUnsafe` calls `Date.now()` behind the Clock's back, so `TestClock` cannot move it. The Effect diagnostic `globalDate` flags `Date.now()` and every `new Date(…)`.
 
 ```ts
 const create = Effect.fn("TodosService.create")(function* (owner: UserId, input: NewTodo) {

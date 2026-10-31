@@ -81,7 +81,7 @@ Why: `.layer` never reads the environment, so an integration test can use it wit
 
 ### services.platform: the machine is infrastructure too
 
-A domain module never imports `node:fs`, `node:os` or `node:child_process` as values (`@boberstack/effect/no-platform-imports`), nor a vendor SDK, `fetch` or anything in `platform/` (`@boberstack/effect/no-domain-adapters`). The api runs on Workers, where most of those do not exist anyway. On Node (`apps/cli`), a service captures Effect's `FileSystem`, `Path` or `ChildProcessSpawner` in `make`, and `main.ts` provides `NodeServices.layer` from `@effect/platform-node` once.
+Code outside `tools/oxlint` never imports `node:fs`, `node:path`, `node:child_process` or `node:timers`, not even for types (the Effect diagnostic `nodeBuiltinImport`). A domain module never imports a vendor SDK, `fetch` or anything in `platform/` (`@boberstack/effect/no-domain-adapters`). The api runs on Workers, where most of those do not exist anyway. On Node (`apps/cli`), a service captures Effect's `FileSystem`, `Path` or `ChildProcessSpawner` in `make`, and `main.ts` provides `NodeServices.layer` from `@effect/platform-node` once.
 
 ### Resources inside layers
 

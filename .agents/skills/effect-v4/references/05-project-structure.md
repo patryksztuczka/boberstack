@@ -83,7 +83,7 @@ A port that is not storage is named after its job: `PasswordHasher`, `MailSender
 | a module → a root file (`app.layer.ts`, `worker.ts`), tests included                                                              | no      | `@boberstack/effect/module-boundaries` (`rootFiles`) |
 | a module → `platform/`, `better-auth`, `alchemy`, `pg`, `fetch`, `node:http`                                                      | no      | `@boberstack/effect/no-domain-adapters`              |
 | a module, tests included → `effect/sql`, `@effect/sql-pg`, `platform/database/`, `pg-test`; a module file named `*.repository.ts` | no      | `@boberstack/effect/no-domain-sql`                   |
-| a module → `node:fs`, `node:os`, `node:child_process` as values                                                                   | no      | `@boberstack/effect/no-platform-imports`             |
+| any file outside `tools/oxlint` → `node:fs`, `node:path`, `node:child_process`, `node:timers`                                     | no      | Effect diagnostic `nodeBuiltinImport`                |
 | `packages/*` → an app                                                                                                             | no      | review                                               |
 | an app → another app's `src/`; share through `packages/domain`                                                                    | no      | review                                               |
 | any file → a module that imports it back                                                                                          | no      | `import/no-cycle`                                    |
