@@ -1,5 +1,5 @@
 ---
-name: no-shims
+name: principle-no-shims
 description: Replace old code instead of keeping it beside the new code. Use when a change introduces a new version of a function, component, endpoint, table or module ("V2", "new", "legacy", "deprecated", a re-export kept "for compatibility"), when you are about to keep an old path "just in case", or when the user asks to migrate, rename or replace something.
 ---
 
