@@ -4,7 +4,7 @@
   "ignoreDependencies": ["@effect/language-service"],
   "workspaces": {
     ".": {
-      "entry": ["scripts/*.mjs", ".claude/hooks/*.mjs", ".agents/skills/*/*.mjs"]
+      "entry": ["scripts/*.mjs", ".claude/hooks/*.mjs"]
     },
     "apps/infra": {
       "entry": ["alchemy.run.ts"]

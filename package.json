@@ -27,11 +27,13 @@
     "sources:fetch": "node scripts/fetch-sources.mjs",
     "dev:status": "node scripts/dev.mjs status",
     "cli": "node scripts/dev.mjs cli",
-    "github:apply": "node scripts/github-apply.mjs"
+    "github:apply": "node scripts/github-apply.mjs",
+    "browser": "agent-browser"
   },
   "devDependencies": {
     "@effect/tsgo": "catalog:",
     "@types/node": "catalog:",
+    "agent-browser": "0.41.0",
     "knip": "6.44.0",
     "typescript": "catalog:",
     "varlock": "1.24.0",
