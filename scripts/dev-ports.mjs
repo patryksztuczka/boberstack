@@ -13,9 +13,10 @@ export const PORT_VARIABLES = {
   web: "DEV_WEB_PORT",
   api: "DEV_API_PORT",
   postgres: "DEV_POSTGRES_PORT",
+  mailpit: "DEV_MAILPIT_PORT",
 };
 
-const OFFSETS = { web: 0, api: 1, postgres: 2 };
+const OFFSETS = { web: 0, api: 1, postgres: 2, mailpit: 3 };
 
 export const DATABASE_NAME = "app";
 
@@ -72,14 +73,19 @@ export function devEnvironment(root, environment) {
       web: `http://localhost:${String(ports.web)}`,
       api: `http://localhost:${String(ports.api)}`,
       database: databaseUrl,
+      mailpit: `http://localhost:${String(ports.mailpit)}`,
     },
     variables: {
       [PORT_VARIABLES.web]: String(ports.web),
       [PORT_VARIABLES.api]: String(ports.api),
       [PORT_VARIABLES.postgres]: String(ports.postgres),
+      [PORT_VARIABLES.mailpit]: String(ports.mailpit),
       COMPOSE_PROJECT_NAME: composeProjectName(root),
       DATABASE_URL: databaseUrl,
-      AUTH_BASE_URL: `http://localhost:${String(ports.api)}`,
+      AUTH_BASE_URL: `http://localhost:${String(ports.web)}`,
+      AUTH_TRUSTED_ORIGINS: `http://localhost:${String(ports.api)}`,
+      MAIL_TRANSPORT: "mailpit",
+      MAILPIT_URL: `http://localhost:${String(ports.mailpit)}`,
     },
   };
 }

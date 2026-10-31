@@ -8,7 +8,7 @@ import { HealthCommand } from "./commands/health.ts";
 import { OpenApiCommand } from "./commands/openapi.ts";
 
 Command.make("boberstack").pipe(
-  Command.withDescription("Effect Starter command line"),
+  Command.withDescription("boberstack command line"),
   Command.withSubcommands([DbCommand, OpenApiCommand, HealthCommand]),
   Command.run({ version: "0.0.0" }),
   Effect.provide(NodeServices.layer),

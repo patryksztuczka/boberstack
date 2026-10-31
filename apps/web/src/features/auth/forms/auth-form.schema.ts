@@ -23,3 +23,22 @@ export const SignUpForm = Schema.Struct({
 export type SignUpFormValues = typeof SignUpForm.Encoded;
 
 export type SignUpInput = typeof SignUpForm.Type;
+
+export const EmailForm = Schema.Struct({ email: Email });
+
+export type EmailFormValues = typeof EmailForm.Encoded;
+
+export type EmailInput = typeof EmailForm.Type;
+
+export const ResetPasswordForm = Schema.Struct({
+  password: Password,
+  confirm: Schema.String,
+}).check(
+  Schema.makeFilter((values) =>
+    values.password === values.confirm ? undefined : { path: ["confirm"], issue: "mismatch" },
+  ),
+);
+
+export type ResetPasswordFormValues = typeof ResetPasswordForm.Encoded;
+
+export type ResetPasswordInput = typeof ResetPasswordForm.Type;

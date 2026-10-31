@@ -56,14 +56,14 @@ Every dependency is an exact version; `pnpm check:deps` fails on `^` or `~`. Ver
 | `pnpm check:knip`                                     | fails on unused files, exports and dependencies                                                                                                  |
 | `pnpm check:suppressions`                             | counts lint and type-check suppressions against `suppressions.baseline.json`; reports growth, never fails                                        |
 | `pnpm check:changed`                                  | format, lint, typecheck and unit tests for the files changed since `main`                                                                        |
-| `pnpm dev:doctor`                                     | checks the running dev stack and creates the demo user `demo@example.com` / `demo12345`                                                          |
+| `pnpm dev:doctor`                                     | checks the running dev stack and Mailpit, and creates and verifies the demo user `demo@example.com` / `demo12345` through the mail               |
 | `pnpm dev:status`, `pnpm dev:stop`, `pnpm db:down`    | show or stop the dev stack of this checkout; `db:down` also stops its Postgres                                                                   |
 | `pnpm cli <command>`                                  | runs `apps/cli` (`db migrate`, `openapi`, `health`) against this checkout's database and api                                                     |
 | `pnpm sources:fetch`                                  | clones the pinned sources of Effect, Alchemy and better-auth into `.repos/`                                                                      |
 | `pnpm run deploy`                                     | `alchemy deploy` of `apps/infra/alchemy.run.ts`. Plain `pnpm deploy` is pnpm's own command                                                       |
 | `pnpm init:project -- --name <name> --scope <@scope>` | renames the project, the package scope and the service-id prefix                                                                                 |
 
-`pnpm dev` derives its ports from a hash of the checkout path, so worktrees run side by side; each also gets its own Compose project and database. `node scripts/dev.mjs ports` prints them, `.dev/state.json` holds the running URLs and pids, `.dev/logs/` the logs, and `DEV_WEB_PORT`, `DEV_API_PORT` and `DEV_POSTGRES_PORT` override them.
+`pnpm dev` derives its ports from a hash of the checkout path, so worktrees run side by side; each also gets its own Compose project, database and Mailpit inbox (local mail, root ADR 0008). `node scripts/dev.mjs ports` prints them, `.dev/state.json` holds the running URLs and pids, `.dev/logs/` the logs, and `DEV_WEB_PORT`, `DEV_API_PORT`, `DEV_POSTGRES_PORT` and `DEV_MAILPIT_PORT` override them.
 
 Build the change first, then check it once at the end: `pnpm check:changed` for what you touched, then `pnpm verify`, plus `pnpm test:integration` when you touched SQL, migrations, auth or an endpoint, plus the `verify-web` skill when you touched the UI.
 
@@ -82,7 +82,7 @@ apps/
     src/platform/<capability>/ adapters; database/ holds all SQL
     src/testing/               Testcontainers Postgres
   web/      React 19 SPA: React Router, TanStack Query, React Hook Form, Tailwind 4, Paraglide messages (en)
-    src/assets/      the beaver: beaver.svg (source), beaver.png, beaver-animated.svg (README), favicon.svg (head; the icons in public/ come from it)
+    src/assets/      the beaver: beaver.svg (source), beaver.png, beaver-animated.svg (README), favicon.svg (head; the icons in public/ come from it), not-found.png (map sticker), app-error.png (leaking dam sticker)
   cli/      Effect CLI on Node: db migrate, openapi, health
   infra/    Alchemy stack: Neon, Hyperdrive, the api Worker
 packages/
@@ -105,6 +105,7 @@ scripts/        repo checks, init, changed packages, dev launcher, sources:fetch
 | business logic                        | `apps/api/src/modules/<context>/x.service.ts`                                                                             |
 | a query or a table                    | a store port in the module, SQL in `apps/api/src/platform/database/x.repository.ts`, a new file in `apps/api/migrations/` |
 | a call to another system              | a port in the module, an adapter in `apps/api/src/platform/<capability>/`                                                 |
+| an email                              | a template in `apps/api/src/modules/mail/templates/`, sent through the `Mailer` port (root ADR 0008)                      |
 | an env var or secret                  | a `layerConfig` in `platform/`, the value in `apps/infra/alchemy.run.ts`                                                  |
 | a screen                              | `apps/web/src/features/<name>/`; what other features may use is exported from its `index.ts`                              |
 | a UI primitive                        | `packages/ui`                                                                                                             |

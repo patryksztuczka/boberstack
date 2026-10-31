@@ -7,14 +7,27 @@ import { HttpRouter, HttpServerRequest } from "effect/http";
 
 import { AppLayer } from "./app.layer.ts";
 import { Auth } from "./platform/authentication/better-auth.ts";
+import { SocialSignIn } from "./platform/authentication/social-sign-in.ts";
 import { Database } from "./platform/database/database.ts";
+import { MailpitMailer } from "./platform/mail/index.ts";
 
 const isAuthPath = (pathname: string) =>
   pathname === "/api/auth" || pathname.startsWith("/api/auth/");
 
+const MailerLayer = Layer.unwrap(
+  Effect.map(
+    Config.Literals(["mailpit"], "MAIL_TRANSPORT"),
+    (transport) => ({ mailpit: MailpitMailer.layerConfig })[transport],
+  ),
+);
+
 const AuthLayer = Layer.unwrap(
   Effect.map(Database, (connection) =>
-    Auth.layer.pipe(Layer.provide(CloudflareHyperdrive(connection))),
+    Auth.layer.pipe(
+      Layer.provide(CloudflareHyperdrive(connection)),
+      Layer.provide(MailerLayer),
+      Layer.provide(SocialSignIn.layerConfig),
+    ),
   ),
 );
 
@@ -37,6 +50,7 @@ export default class Api extends Cloudflare.Worker<Api>()(
     const app = yield* HttpRouter.toHttpEffect(
       AppLayer.pipe(
         Layer.provide(SQL.PostgresLayer({ url: hyperdrive.connectionString })),
+        Layer.provide(SocialSignIn.layerConfig),
         Layer.provide(Http.Platform),
       ),
     );

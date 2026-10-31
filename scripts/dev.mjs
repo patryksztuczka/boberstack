@@ -201,7 +201,7 @@ function prepareDatabase(root, variables) {
 
   if (composeUp(root, variables, log) !== 0) {
     process.stderr.write(
-      `dev: Postgres did not start (log: ${logPath(root, "db")}). If port ${variables[PORT_VARIABLES.postgres]} is taken, set ${PORT_VARIABLES.postgres}.\n`,
+      `dev: Postgres or Mailpit did not start (log: ${logPath(root, "db")}). If port ${variables[PORT_VARIABLES.postgres]} is taken, set ${PORT_VARIABLES.postgres}.\n`,
     );
     log.end();
 
@@ -240,7 +240,7 @@ async function up(root) {
   }
 
   process.stdout.write(
-    `dev: worktree ${root}\ndev: web ${urls.web}, api ${urls.api}, postgres ${urls.database} (compose project ${environment.composeProject})\n`,
+    `dev: worktree ${root}\ndev: web ${urls.web}, api ${urls.api}, mail ${urls.mailpit}, postgres ${urls.database} (compose project ${environment.composeProject})\n`,
   );
 
   if (prepareDatabase(root, variables) !== 0) return 1;
@@ -289,7 +289,7 @@ async function up(root) {
   if (await waitUntilReady(urls, children)) {
     writeState(root, { ...state, status: "ready" });
     process.stdout.write(
-      `dev: ready. Open ${urls.web}. State in .dev/state.json, logs in .dev/logs/. Stop with Ctrl-C or pnpm dev:stop.\n`,
+      `dev: ready. Open ${urls.web}; mail lands in ${urls.mailpit}. State in .dev/state.json, logs in .dev/logs/. Stop with Ctrl-C or pnpm dev:stop.\n`,
     );
   } else if (!stopping) {
     process.stderr.write("dev: the api or the web app did not answer /api/health in time\n");

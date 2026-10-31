@@ -82,25 +82,70 @@ async function healthOf(url) {
   return `GET ${url}/api/health → 200 ${response.body}`;
 }
 
-async function signedInCookie(web) {
+const VERIFY_LINK = /https?:\/\/\S*\/api\/auth\/verify-email\?\S+/;
+
+const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+const signInDemo = (web) =>
+  postJson(
+    `${web}/api/auth/sign-in/email`,
+    { email: DEMO_USER.email, password: DEMO_USER.password },
+    {},
+  );
+
+async function verificationLink(mailpit) {
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    const search = await request(
+      `${mailpit}/api/v1/search?query=${encodeURIComponent(`to:${DEMO_USER.email}`)}`,
+      {},
+    );
+
+    const latest = JSON.parse(search.body).messages?.[0];
+
+    if (latest !== undefined) {
+      const message = JSON.parse(
+        (await request(`${mailpit}/api/v1/message/${latest.ID}`, {})).body,
+      );
+
+      const link = VERIFY_LINK.exec(message.Text)?.[0];
+
+      if (link !== undefined) return link;
+    }
+
+    await delay(250);
+  }
+
+  return fail(`no verification mail for ${DEMO_USER.email} in ${mailpit}`);
+}
+
+async function signedInCookie(web, mailpit) {
   const signUp = await postJson(`${web}/api/auth/sign-up/email`, DEMO_USER, {});
 
   if (signUp.status !== 200 && !alreadyExists(signUp.status, signUp.body)) {
     fail(`sign-up answered ${String(signUp.status)} ${signUp.body.slice(0, 200)}`);
   }
 
-  const signIn = await postJson(
-    `${web}/api/auth/sign-in/email`,
-    { email: DEMO_USER.email, password: DEMO_USER.password },
-    {},
-  );
+  let signIn = await signInDemo(web);
+  let verified = false;
+
+  if (signIn.status === 403 && signIn.body.includes("EMAIL_NOT_VERIFIED")) {
+    const link = await verificationLink(mailpit);
+    const confirmation = await request(link, {});
+
+    if (confirmation.status >= 400) {
+      fail(`the verification link answered ${String(confirmation.status)}`);
+    }
+
+    verified = true;
+    signIn = await signInDemo(web);
+  }
 
   if (signIn.status !== 200) {
     fail(`sign-in answered ${String(signIn.status)} ${signIn.body.slice(0, 200)}`);
   }
 
   return {
-    created: signUp.status === 200,
+    verified,
     cookie: cookieHeader(signIn.headers.getSetCookie()),
   };
 }
@@ -177,6 +222,15 @@ async function main() {
     return `applied ${applied.join(", ")}`;
   });
 
+  await check(results, "mailpit", async () => {
+    const info = await request(`${state.urls.mailpit}/api/v1/info`, {});
+
+    if (info.status !== 200)
+      fail(`GET ${state.urls.mailpit}/api/v1/info answered ${String(info.status)}`);
+
+    return `${state.urls.mailpit} (Mailpit ${String(JSON.parse(info.body).Version)})`;
+  });
+
   await check(results, "api", () => healthOf(state.urls.api));
   await check(results, "web proxy", () => healthOf(state.urls.web));
 
@@ -191,9 +245,9 @@ async function main() {
   });
 
   await check(results, "demo user", async () => {
-    session = await signedInCookie(state.urls.web);
+    session = await signedInCookie(state.urls.web, state.urls.mailpit);
 
-    return `${DEMO_USER.email} / ${DEMO_USER.password} ${session.created ? "created" : "already existed"}, sign-in 200`;
+    return `${DEMO_USER.email} / ${DEMO_USER.password}${session.verified ? " verified through the mail in Mailpit," : ""} sign-in 200`;
   });
 
   await check(results, "todos api", async () => {

@@ -48,6 +48,7 @@ Every line must say `OK`. A `FAIL` names the log to read. Fix the environment be
 Open the feature file for what you changed and follow its "Drive" steps:
 
 - [features/auth.md](features/auth.md): sign up, sign in, sign out, redirects
+- [features/errors.md](features/errors.md): missing URLs, render crashes and recovery
 - [features/todos.md](features/todos.md): list, add, toggle, remove, HTTP and RPC transports
 
 Use the browser you have, in this order:

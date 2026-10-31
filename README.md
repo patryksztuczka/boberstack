@@ -40,11 +40,13 @@ You need Node 26.13.0 (`.node-version`), pnpm 11.28.9 and Docker.
 
 ```sh
 pnpm install     # also installs the Git hooks
-pnpm dev         # Postgres in Docker, migrations, the api Worker via alchemy dev, the web app via vp dev
-pnpm dev:doctor  # in a second terminal: checks the stack and creates demo@example.com / demo12345
+pnpm dev         # Postgres and Mailpit in Docker, migrations, the api Worker via alchemy dev, the web app via vp dev
+pnpm dev:doctor  # in a second terminal: checks the stack and creates and verifies demo@example.com / demo12345
 ```
 
 Ports come from a hash of the checkout path, so two worktrees can run `pnpm dev` at once; `pnpm dev` prints the URLs and `node scripts/dev.mjs ports` shows them. Local tables come from `apps/api/migrations/`, applied by the CLI's `db migrate` command. Open the web URL, sign in as the demo user, and add a todo.
+
+Every mail the app sends locally (account confirmation, password reset) lands in Mailpit, at the `mail` URL `pnpm dev` prints. Nothing leaves your machine. To try GitHub or Google sign-in, set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` (or the `GOOGLE_` pair) before `pnpm dev`; without them the buttons do not appear. `apps/infra/.env.example` lists every variable.
 
 Before you push, `pnpm verify` runs what CI runs. The pre-push hook runs it too.
 
@@ -64,6 +66,8 @@ pnpm run deploy      # alchemy deploy; plain `pnpm deploy` is a pnpm built-in
 ```
 
 The deploy creates the Neon project and applies `apps/api/migrations/`, creates the Hyperdrive config, and uploads the Worker with `apps/web/dist` as its assets. Secrets such as the better-auth secret are set in the stack, never in a committed file.
+
+A deploy needs a mail transport, because sign-up sends a confirmation link. Only Mailpit exists today; root ADR 0008 describes how to add Cloudflare Email Service (or Resend) and set `MAIL_TRANSPORT`. Without it the Worker refuses to start.
 
 ## Commands
 

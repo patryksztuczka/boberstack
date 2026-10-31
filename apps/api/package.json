@@ -27,6 +27,7 @@
     "@effect/vitest": "catalog:",
     "@testcontainers/postgresql": "12.2.1",
     "@types/pg": "8.23.1",
+    "testcontainers": "12.2.1",
     "vite-plus": "catalog:"
   }
 }
