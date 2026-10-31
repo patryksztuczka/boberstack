@@ -14,8 +14,9 @@
     "test": "vp run -r test",
     "test:integration": "vp run -r test:integration",
     "build": "vp run -r build",
-    "verify": "vp check && pnpm check:deps && pnpm check:suppressions && pnpm check:doc-pins && pnpm check:knip && pnpm typecheck && pnpm test && pnpm build",
-    "deploy": "pnpm build && pnpm --filter @boberstack/infra run deploy",
+    "verify": "vp check && pnpm env:check && pnpm check:deps && pnpm check:suppressions && pnpm check:doc-pins && pnpm check:knip && pnpm typecheck && pnpm test && pnpm build",
+    "deploy": "pnpm build && APP_ENV=production pnpm --filter @boberstack/infra run deploy",
+    "env:check": "varlock load",
     "init:project": "node scripts/init.mjs",
     "db:down": "node scripts/dev.mjs db:down",
     "dev:doctor": "node scripts/dev-doctor.mjs",
@@ -32,6 +33,7 @@
     "@types/node": "catalog:",
     "knip": "6.44.0",
     "typescript": "catalog:",
+    "varlock": "1.24.0",
     "vite-plus": "catalog:"
   },
   "engines": {

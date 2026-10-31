@@ -45,7 +45,7 @@ pnpm dev:doctor  # in a second terminal: checks the stack and creates and verifi
 
 Ports come from a hash of the checkout path, so two worktrees can run `pnpm dev` at once; `pnpm dev` prints the URLs and `node scripts/dev.mjs ports` shows them. Local tables come from `apps/api/migrations/`, applied by the CLI's `db migrate` command. Open the web URL, sign in as the demo user, and add a todo.
 
-Every mail the app sends locally (account confirmation, password reset) lands in Mailpit, at the `mail` URL `pnpm dev` prints. Nothing leaves your machine. To try GitHub or Google sign-in, set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` (or the `GOOGLE_` pair) before `pnpm dev`; without them the buttons do not appear. `apps/infra/.env.example` lists every variable.
+Every mail the app sends locally (account confirmation, password reset) lands in Mailpit, at the `mail` URL `pnpm dev` prints. Nothing leaves your machine. To try GitHub or Google sign-in, put `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` (or the `GOOGLE_` pair) in `.env.local`; without them the buttons do not appear. [`.env.schema`](.env.schema) lists every variable, and `pnpm env:check` validates your values against it.
 
 Before you push, `pnpm verify` runs what CI runs. The pre-push hook runs it too.
 
