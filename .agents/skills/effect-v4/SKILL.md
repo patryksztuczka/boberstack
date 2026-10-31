@@ -9,7 +9,7 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 
 - **Version:** `effect@4.0.7`, with `@effect/platform-node`, `@effect/sql-pg` and `@effect/vitest` on the same exact version. 4.1.0 removed `effect/Crypto`, which `alchemy@2.0.0-beta.84` imports. Do not bump Effect without bumping Alchemy and asking the owner.
 - **Source first.** Before using an API you have not used in this repo, read it at the pinned version. Run `pnpm sources:fetch` once: it clones the tagged sources into `.repos/` (gitignored), with `.repos/effect`, `.repos/alchemy` and `.repos/better-auth` pointing at the versions in `pnpm-workspace.yaml`. Read `.repos/effect/packages/effect/src/` and its tests, and the installed `node_modules/.pnpm/effect@4.0.7/node_modules/effect/AGENTS.md` and `ai-docs/`. Blog posts and model memory are often v3 and wrong. Never invent an API; if the source does not show it, it does not exist.
-- **Principle:** anything that needs a store, the database, the network or secure randomness is a service; a module-level function is pure.
+- **Principle:** features are service methods; transports stay thin. A handler decodes input, calls one service method and maps its errors. Pure work is a plain function next to the service.
 
 ## Which reference to read
 
@@ -45,7 +45,7 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 | `jobs.where`          | recurring work on Workers is a Cron Trigger, not a loop                              | 03  |
 | `jobs.idempotency`    | a job claims `<job>/<period>` before working                                         | 03  |
 | `services.define`     | `Context.Service<Self, Api>()(id, { make })` + `static layer`                        | 04  |
-| `services.purity`     | a dependency makes it a service; everything else is a pure function                  | 04  |
+| `services.placement`  | features are service methods; handlers decode, call one method, map errors           | 04  |
 | `services.layerNames` | `layer`, `layerNoDeps`, `layerConfig`, `layerTest`; never `Live`                     | 04  |
 | `services.wiring`     | `layer` wires services; the root provides infrastructure once                        | 04  |
 | `services.platform`   | modules reach the machine and the network only through services                      | 04  |

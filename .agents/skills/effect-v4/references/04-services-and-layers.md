@@ -44,9 +44,11 @@ Name an API type `XxxApi`. The word "shape" is banned in symbol names (`anti-slo
 
 Consumers write `const todos = yield* TodosService`. v4 has no accessors (`TodosService.list(…)` as a static) and no `Effect.Service` with a generated `.Default`.
 
-### services.purity: a dependency makes it a service
+### services.placement: features are service methods, transports stay thin
 
-Anything that needs a store, the database, the network or secure randomness is a service method. Clock and Random are default services ([01](01-default-services.md)), so code that reads them is Effect code but needs no layer. A module-level function is pure: same input, same output, no `yield*`. Pure functions live in a plainly named file (`todo-title.ts`) and get unit or property tests without layers.
+A feature is a method on the service of its context in `apps/api/src/modules/<context>/`. Extend the service that already owns the domain; add a new one only when none does. An HttpApi or RPC handler does three things: decode the request, call one service method, and map the service's typed errors to the wire error; an error already declared in the contract passes through. Storage, network calls, multi-step work, retries and rollback belong in the service, so HttpApi and RPC reach the same behaviour and a test reaches it without a transport. `apps/api/src/http/todos.http.ts` and `apps/api/src/rpc/todos.rpc.ts` are the reference.
+
+Clock and Random are default services ([01](01-default-services.md)), so code that reads them is Effect code but needs no layer. A module-level function is pure: same input, same output, no `yield*`. Pure functions live in a plainly named file (`todo-title.ts`) and get unit or property tests without layers.
 
 ### services.layerNames: `layer` plus a descriptive suffix
 
