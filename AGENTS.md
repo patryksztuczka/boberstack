@@ -1,6 +1,6 @@
 # Agent instructions
 
-This file is the repo law for agents and contributors: what the project is for, the pins, the commands, where code goes, and when to stop and ask. How code is written is in [CODING_STANDARDS.md](CODING_STANDARDS.md). All documentation is indexed in [docs/README.md](docs/README.md).
+This file is the repo law for agents and contributors: what the project is for, the commands, where code goes, and when to stop and ask. How code is written is in [CODING_STANDARDS.md](CODING_STANDARDS.md). All documentation is indexed in [docs/README.md](docs/README.md).
 
 ## Project thesis
 
@@ -8,7 +8,7 @@ This file is the repo law for agents and contributors: what the project is for, 
 
 It optimises for a codebase an agent can extend without making it worse. Every rule that can be a lint rule, a type or a hook is one, so a mistake fails `pnpm verify` instead of waiting for a reviewer. Rules that cannot be checked live in one place each and are short.
 
-When a project starts from this template, rewrite this section and the [Architecture](#architecture) section on day one. `pnpm init:project` renames the packages, not the prose.
+When a project starts from this template, rewrite this section on day one. `pnpm init:project` renames the packages, not the prose.
 
 ## General rules
 
@@ -20,23 +20,6 @@ When a project starts from this template, rewrite this section and the [Architec
 - Add a lint rule before cleaning up a pattern by hand, so it cannot come back. When you are corrected for the same thing twice, use the `correct` skill.
 - A new version replaces the old one in the same change: no `V2`, no re-export kept for compatibility (the `no-shims` skill).
 - Before Git: the `babysit-git` skill. Before a pull request: the `file-pr` skill. For prose: the `unslop` skill. To see a UI change working: the `verify-web` skill.
-
-## Pins
-
-Every dependency is an exact version; `pnpm check:deps` fails on `^` or `~`. Versions shared by several packages live in `catalog:` in `pnpm-workspace.yaml`. `minimumReleaseAge: 1440` keeps a release out for a day after it is published.
-
-| Tool                                                                  | Version       | Why pinned here                                                                                                                |
-| --------------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Node                                                                  | 26.13.0       | Active LTS; `.node-version`, `engines`                                                                                         |
-| pnpm                                                                  | 11.28.9       | `packageManager`; do not install with npm or Bun                                                                               |
-| Vite+ (`vp`)                                                          | 1.4.0         | dev, build, test, lint, fmt, task runner and Git hooks; `vite` is overridden to its core                                       |
-| TypeScript                                                            | 7.0.2         | native compiler                                                                                                                |
-| `@effect/tsgo`                                                        | 0.63.0        | Effect diagnostics in `pnpm typecheck`                                                                                         |
-| `effect`, `@effect/platform-node`, `@effect/sql-pg`, `@effect/vitest` | 4.0.7         | 4.1.0 removed `effect/Crypto`, which Alchemy 2.0.0-beta.84 imports, and breaks `alchemy dev`. Bump Effect and Alchemy together |
-| Vitest                                                                | 5.0.5         | overridden so `@effect/vitest` and Vite+ share one copy                                                                        |
-| `alchemy`, `@alchemy.run/*`                                           | 2.0.0-beta.84 | infrastructure as Effects; beta, so read its source before using a resource                                                    |
-| `better-auth`                                                         | 1.7.14        | sign-in, through `@alchemy.run/better-auth`                                                                                    |
-| React, React DOM                                                      | 19.3.1        |                                                                                                                                |
 
 ## Commands
 
@@ -69,33 +52,6 @@ Build the change first, then check it once at the end: `pnpm check:changed` for 
 
 Git hooks come from Vite+: `pre-commit` runs `vp staged`, `commit-msg` checks the Conventional Commit subject, `pre-push` runs `pnpm verify`.
 
-## Layout
-
-```
-apps/
-  api/      Cloudflare Worker: Effect HttpApi + RPC + better-auth; serves apps/web/dist as static assets
-    migrations/      NNNN_name.sql for app and better-auth tables (root ADR 0006)
-    src/worker.ts    entry point and composition root
-    src/app.layer.ts composition root layer
-    src/http/, src/rpc/        handlers per group
-    src/modules/<context>/     bounded contexts: ports, services, pure functions
-    src/platform/<capability>/ adapters; database/ holds all SQL
-    src/testing/               Testcontainers Postgres
-  web/      React 19 SPA: React Router, TanStack Query, React Hook Form, Tailwind 4, Paraglide messages (en)
-    src/assets/      the beaver: beaver.svg (source), beaver.png, beaver-animated.svg (README), favicon.svg (head; the icons in public/ come from it), not-found.png (map sticker), app-error.png (leaking dam sticker)
-  cli/      Effect CLI on Node: db migrate, openapi, health
-  infra/    Alchemy stack: Neon, Hyperdrive, the api Worker
-packages/
-  domain/   the contract: Schemas, branded ids, wire errors, HttpApi, RpcGroups, auth middleware tags
-  ui/       shadcn components
-tools/oxlint/   lint config and plugins
-  boberstack/   ours, rules named @boberstack/<plugin>/<rule>: effect, frontend, no-comments, suppressions, test-hygiene
-  anti-slop/    vendored from dmmulroy/anti-slop (MIT), rules named anti-slop/<rule>
-docs/           glossaries and ADRs per context (docs/README.md)
-scripts/        repo checks, init, changed packages, dev launcher, sources:fetch
-.agents/skills/ agent skills; .claude/skills links to them
-```
-
 ## Where things go
 
 | You are adding                        | It goes in                                                                                                                |
@@ -111,49 +67,6 @@ scripts/        repo checks, init, changed packages, dev launcher, sources:fetch
 | a UI primitive                        | `packages/ui`                                                                                                             |
 | a bounded context                     | `CONTEXT-MAP.md`, `docs/internals/<context>/GLOSSARY.md`, then code (the `domain-modeling` skill)                         |
 | a decision worth remembering          | an ADR (the `domain-modeling` skill)                                                                                      |
-
-## Architecture
-
-- Dependency direction: `apps/*` → `packages/domain` → `effect`. Packages never import apps; apps never import each other's `src/`.
-- One Worker, one origin: the api Worker serves the built SPA with SPA fallback, and `/api/*` reaches the Worker first. In dev, `vp dev` proxies `/api` to the local Worker.
-- HttpApi and RPC are two transports over one contract in `packages/domain` (root ADR 0007). Both run in the same Worker behind the same auth middleware; the OpenAPI document comes from the HttpApi.
-- Identity owns users and sessions through better-auth; Todos reads the current user from the auth middleware, never from session tables (`CONTEXT-MAP.md`).
-- Lint enforces the module boundaries: `.agents/skills/effect-v4/references/13-lint-rules.md`.
-
-## Done means proven
-
-- The final message of a change lists what you ran and what came out: the command, then the lines of output that show the result. A UI change adds the `verify-web` evidence. The pull request's Verification section has the same shape.
-- Whatever you did not run is "inconclusive", with the reason. Never write "works", "tested" or "verified" without the output next to it.
-- A check that checked nothing has not passed: 0 test files, 0 packages selected, a skipped suite, an empty diff. Say so and find out why. `scripts/changed-packages.mjs` fails CI when a changed package was not selected.
-
-## Rules and what enforces them
-
-A rule in this table either has a check that fails, or says that it does not. A rule with no check is a candidate for one: use the `correct` skill.
-
-| Rule                                                                                                                                                                         | Enforced by                                                                                                                                                                                                                                                               |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A module-level function is pure: time comes from `Clock`, randomness from `Random` or `Crypto`, config from `Config`, the network from `HttpClient`, files from `FileSystem` | Effect diagnostics `globalDate`, `globalRandom`, `cryptoRandomUUID`, `processEnv`, `globalFetch`, `globalTimers`, `globalConsole`, `nodeBuiltinImport`, each also as `*InEffect`, everywhere but `vite.config.ts` (`processEnv`) and `tools/oxlint` (`nodeBuiltinImport`) |
-| SQL lives only in `platform/database`                                                                                                                                        | lint `@boberstack/effect/no-domain-sql`, `@boberstack/effect/no-domain-adapters`                                                                                                                                                                                          |
-| A store is tested on real Postgres, never with an in-memory fake                                                                                                             | lint `@boberstack/effect/no-store-fakes`                                                                                                                                                                                                                                  |
-| Modules talk through their `index.ts`                                                                                                                                        | lint `@boberstack/effect/module-boundaries`, `import/no-cycle`                                                                                                                                                                                                            |
-| Web imports go `shared → features → app`; a feature is reached only through its `index.ts`                                                                                   | lint `@boberstack/frontend/feature-boundaries`                                                                                                                                                                                                                            |
-| Failures are typed `Schema.TaggedError`s in `*.errors.ts`                                                                                                                    | lint `@boberstack/effect/tagged-error-naming`, `@boberstack/effect/no-untyped-failure`; diagnostic `globalErrorInEffectFailure`                                                                                                                                           |
-| Every Effect is yielded, and its errors and requirements handled                                                                                                             | diagnostics `floatingEffect`, `missingEffectError`, `missingEffectContext`, `missingLayerContext`                                                                                                                                                                         |
-| `Effect.run*` only in entry points                                                                                                                                           | lint `@boberstack/effect/run-only-in-entry-points`                                                                                                                                                                                                                        |
-| Secrets are `Redacted`                                                                                                                                                       | lint `@boberstack/effect/redacted-secrets`                                                                                                                                                                                                                                |
-| No prose comments                                                                                                                                                            | lint `@boberstack/no-comments/no-comments`                                                                                                                                                                                                                                |
-| No skipped test without a `QUARANTINE:` reason, no `.only`, no per-test timeout or retry, no real-time wait or polling loop                                                  | lint `@boberstack/test-hygiene/*`; Vitest `retry: 0`, `allowOnly` off in CI                                                                                                                                                                                               |
-| Every lint, type-check or Effect diagnostics suppression carries a reason; no `@ts-ignore`                                                                                   | lint `@boberstack/suppressions/require-suppression-reason`, unused directives are errors; `pnpm check:suppressions` reports the count                                                                                                                                     |
-| Exact dependency versions, actions pinned by SHA                                                                                                                             | `pnpm check:deps`                                                                                                                                                                                                                                                         |
-| Documents name the installed versions                                                                                                                                        | `pnpm check:doc-pins`                                                                                                                                                                                                                                                     |
-| No unused file, export or dependency                                                                                                                                         | `pnpm check:knip`                                                                                                                                                                                                                                                         |
-| No hook bypass                                                                                                                                                               | `.claude/hooks/block-no-verify.mjs`                                                                                                                                                                                                                                       |
-| Commit subjects and PR titles are Conventional Commits                                                                                                                       | `commit-msg` hook, `.github/workflows/pr-title.yml`                                                                                                                                                                                                                       |
-| No compatibility shims                                                                                                                                                       | partly: `pnpm check:knip` finds the unused old path; the rest is review (`no-shims`)                                                                                                                                                                                      |
-| Do not invent APIs                                                                                                                                                           | none: the `effect-v4` skill and `.repos/`                                                                                                                                                                                                                                 |
-| Code uses the glossary's words                                                                                                                                               | none: review (`domain-modeling`)                                                                                                                                                                                                                                          |
-| Tests check behaviour, not their own setup                                                                                                                                   | none: review (`code-review`)                                                                                                                                                                                                                                              |
-| A UI change is seen working in a browser                                                                                                                                     | none: the `verify-web` skill and the PR's Verification section                                                                                                                                                                                                            |
 
 ## Autonomy
 

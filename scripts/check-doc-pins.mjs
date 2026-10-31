@@ -3,22 +3,8 @@ import { existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const PINS_HEADING = /^## Pins\s*$/m;
-
 const VERSION_MENTION =
   /(?<scope>@[a-z0-9][\w.-]*\/)?(?<name>[a-z0-9][\w.-]*)@(?<version>\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]*[0-9A-Za-z])?)/g;
-
-const BACKTICKED = /`(?<name>[^`]+)`/g;
-
-const PLAIN_NAMES = new Map([
-  ["Node", "node"],
-  ["pnpm", "pnpm"],
-  ["TypeScript", "typescript"],
-  ["Vitest", "vitest"],
-  ["Vite+", "vite-plus"],
-  ["React", "react"],
-  ["React DOM", "react-dom"],
-]);
 
 const DEPENDENCY_FIELDS = ["dependencies", "devDependencies", "peerDependencies"];
 
@@ -78,77 +64,10 @@ function actualVersions(root, manifestPaths) {
   return versions;
 }
 
-function pinsTable(markdown) {
-  const start = markdown.search(PINS_HEADING);
-
-  if (start === -1) return [];
-
-  const rows = [];
-  const lines = markdown.slice(start).split("\n").slice(1);
-
-  for (const [index, line] of lines.entries()) {
-    if (line.startsWith("## ")) break;
-
-    if (!line.startsWith("|") || /^\|\s*-/.test(line)) continue;
-
-    const [tool = "", version = ""] = line
-      .split("|")
-      .slice(1)
-      .map((cell) => cell.trim());
-
-    if (tool === "Tool") continue;
-
-    rows.push({ tool, version, line: markdown.slice(0, start).split("\n").length + index + 1 });
-  }
-
-  return rows;
-}
-
-function toolNames(tool, known) {
-  const plain = tool
-    .replaceAll(/\s*\(`[^`]*`\)/g, "")
-    .split(",")
-    .map((part) => PLAIN_NAMES.get(part.trim()));
-
-  const names = plain.every((name) => name !== undefined)
-    ? plain
-    : [...tool.matchAll(BACKTICKED)].map((match) => match.groups.name);
-
-  return names.flatMap((name) => {
-    if (name === undefined) return [];
-
-    if (!name.endsWith("/*")) return [name];
-
-    const prefix = name.slice(0, -1);
-
-    return [...known.keys()].filter((candidate) => candidate.startsWith(prefix));
-  });
-}
-
 function findDrift(documents, versions) {
   const problems = [];
 
   for (const { path, text } of documents) {
-    for (const row of path === "AGENTS.md" ? pinsTable(text) : []) {
-      const names = toolNames(row.tool, versions);
-
-      if (names.length === 0) {
-        problems.push(`${path}:${row.line}: pins row "${row.tool}" names no known package`);
-      }
-
-      for (const name of names) {
-        const actual = versions.get(name);
-
-        if (actual === undefined) {
-          problems.push(`${path}:${row.line}: ${name} is not installed anywhere in the workspace`);
-        } else if (!actual.has(row.version)) {
-          problems.push(
-            `${path}:${row.line}: pins table says ${name} ${row.version}, the workspace has ${[...actual].join(", ")}`,
-          );
-        }
-      }
-    }
-
     for (const [index, line] of text.split("\n").entries()) {
       for (const match of line.matchAll(VERSION_MENTION)) {
         const name = `${match.groups.scope ?? ""}${match.groups.name}`;
