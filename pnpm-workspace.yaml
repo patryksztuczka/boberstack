@@ -1,0 +1,37 @@
+packages:
+  - apps/*
+  - packages/*
+  - tools/oxlint
+
+minimumReleaseAge: 1440
+
+allowBuilds:
+  workerd: true
+  cpu-features: false
+  protobufjs: false
+  ssh2: false
+
+overrides:
+  vite: npm:@voidzero-dev/vite-plus-core@1.4.0
+  vitest: 5.0.5
+  "@effect/platform-node-shared": 4.0.7
+
+catalog:
+  effect: 4.0.7
+  "@effect/platform-node": 4.0.7
+  "@effect/sql-pg": 4.0.7
+  "@effect/vitest": 4.0.7
+  "@effect/tsgo": 0.63.0
+  typescript: 7.0.2
+  vite-plus: 1.4.0
+  "@types/node": 26.6.6
+  alchemy: 2.0.0-beta.84
+  "@alchemy.run/cloudflare": 2.0.0-beta.84
+  "@alchemy.run/neon": 2.0.0-beta.84
+  "@alchemy.run/sql": 2.0.0-beta.84
+  "@alchemy.run/better-auth": 2.0.0-beta.84
+  better-auth: 1.7.14
+  react: 19.3.1
+  react-dom: 19.3.1
+  "@types/react": 19.3.0
+  "@types/react-dom": 19.3.0

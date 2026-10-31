@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+.alchemy/
+.wrangler/
+.vite-hooks/_/
+apps/web/src/paraglide/
+.scratch/
+.DS_Store
+.dev/
+.repos/

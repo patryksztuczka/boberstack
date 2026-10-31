@@ -1,0 +1,149 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - ".agents/**"
+
+concurrency:
+  group: ci-${{ github.ref == 'refs/heads/main' && github.run_id || github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  changes:
+    name: Changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      code: ${{ steps.detect.outputs.code }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Detect whether anything besides documentation changed
+        id: detect
+        env:
+          CHANGED_SINCE: ${{ github.event.before }}
+        run: node scripts/changed-packages.mjs --code-changed >> "$GITHUB_OUTPUT"
+
+  static:
+    name: Static checks
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup
+
+      - name: Format and lint (vp check)
+        run: pnpm check
+
+      - name: Exact dependency versions and pinned actions
+        run: pnpm check:deps
+
+      - name: Documentation agrees with the pins
+        run: pnpm check:doc-pins
+
+      - name: Dead files, exports and dependencies (knip)
+        run: pnpm check:knip
+
+      - name: Suppression count against the baseline (reports, never fails)
+        run: pnpm check:suppressions
+
+  typecheck:
+    name: Typecheck
+    needs: static
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+  unit:
+    name: Unit tests
+    needs: typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup
+        with:
+          task-cache: "true"
+
+      - name: Unit tests of changed packages and their dependents
+        env:
+          CHANGED_SINCE: ${{ github.event.before }}
+        run: node scripts/changed-packages.mjs
+
+  build:
+    name: Build
+    needs: unit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup
+        with:
+          task-cache: "true"
+
+      - name: Build
+        run: pnpm build
+
+  integration:
+    name: Integration tests
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup
+
+      - name: Integration tests (Testcontainers, Docker on the runner)
+        run: pnpm test:integration
+
+  ci-ok:
+    name: CI OK
+    if: always()
+    needs: [changes, static, typecheck, unit, build, integration]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Fail when a job failed or was cancelled
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: exit 1
+
+      - name: Report
+        run: echo "All CI jobs passed or were skipped because only documentation changed."

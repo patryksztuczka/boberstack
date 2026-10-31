@@ -1,0 +1,17 @@
+{
+  "name": "@boberstack/infra",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "alchemy dev",
+    "deploy": "alchemy deploy",
+    "destroy": "alchemy destroy"
+  },
+  "dependencies": {
+    "@alchemy.run/cloudflare": "catalog:",
+    "@alchemy.run/neon": "catalog:",
+    "@boberstack/api": "workspace:*",
+    "alchemy": "catalog:",
+    "effect": "catalog:"
+  }
+}

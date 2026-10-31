@@ -1,0 +1,33 @@
+#!/usr/bin/env sh
+
+# Runs `pnpm verify` (the same steps as CI) before a branch leaves the machine.
+# A push that only deletes remote branches or pushes tags skips it.
+
+set -eu
+
+zero=0000000000000000000000000000000000000000
+pushes_branch=false
+while read -r _local_ref local_sha remote_ref _remote_sha; do
+  case "$remote_ref" in
+    refs/heads/*) [ "$local_sha" = "$zero" ] || pushes_branch=true ;;
+  esac
+done
+
+if [ "$pushes_branch" = false ]; then
+  exit 0
+fi
+
+root="$(git rev-parse --show-toplevel)"
+
+# Git hands a hook GIT_DIR and friends. The scripts tests build throwaway repositories with plain
+# `git` calls, which would otherwise act on this repository.
+for variable in $(env | sed -n 's/^\(GIT_[A-Za-z0-9_]*\)=.*/\1/p'); do
+  unset "$variable"
+done
+
+cd "$root"
+
+if ! pnpm verify; then
+  echo "pre-push: fix the failing checks above and push again." >&2
+  exit 1
+fi

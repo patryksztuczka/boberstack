@@ -1,0 +1,41 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "app_title": "Effect Starter",
+  "nav_sign_out": "Wyloguj",
+  "language_label": "Język",
+  "auth_sign_in_title": "Logowanie",
+  "auth_sign_in_description": "Użyj adresu e-mail i hasła z rejestracji.",
+  "auth_sign_up_title": "Załóż konto",
+  "auth_sign_up_description": "Podaj imię, e-mail i hasło o długości co najmniej 8 znaków.",
+  "auth_name": "Imię",
+  "auth_email": "E-mail",
+  "auth_password": "Hasło",
+  "auth_sign_in_submit": "Zaloguj",
+  "auth_sign_up_submit": "Załóż konto",
+  "auth_to_sign_up": "Nie masz konta? Załóż je",
+  "auth_to_sign_in": "Masz już konto? Zaloguj się",
+  "auth_failed": "Nie udało się: {reason}",
+  "auth_name_invalid": "Podaj imię.",
+  "auth_email_invalid": "Podaj poprawny adres e-mail.",
+  "auth_password_invalid": "Użyj co najmniej 8 znaków.",
+  "todos_title": "Zadania",
+  "todos_transport": "Rozmowa z API przez {transport}.",
+  "todos_new_placeholder": "Co jest do zrobienia?",
+  "todos_add": "Dodaj",
+  "todos_title_invalid": "Zadanie potrzebuje tytułu od 1 do 200 znaków.",
+  "todos_empty": "Nic do zrobienia. Dodaj pierwsze zadanie powyżej.",
+  "todos_remove": "Usuń",
+  "todos_load_failed": "Nie udało się wczytać zadań.",
+  "todos_remaining": [
+    {
+      "declarations": ["input count", "local n = count: plural"],
+      "selectors": ["n"],
+      "match": {
+        "n=one": "Zostało {count} zadanie",
+        "n=few": "Zostały {count} zadania",
+        "n=many": "Zostało {count} zadań",
+        "n=*": "Zostało {count} zadania"
+      }
+    }
+  ]
+}

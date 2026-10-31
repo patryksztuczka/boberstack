@@ -1,0 +1,24 @@
+{
+  "name": "@boberstack/oxlint-plugins",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./anti-slop": "./anti-slop/index.ts",
+    "./anti-slop-effect": "./anti-slop/effect/index.ts",
+    "./effect": "./effect/index.ts",
+    "./no-comments": "./no-comments/index.ts",
+    "./suppressions": "./suppressions/index.ts",
+    "./test-hygiene": "./test-hygiene/index.ts",
+    "./frontend": "./frontend/index.ts",
+    "./lint.config": "./lint.config.ts"
+  },
+  "scripts": {
+    "test": "vp test"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:"
+  }
+}

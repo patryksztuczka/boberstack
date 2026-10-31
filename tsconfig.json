@@ -1,0 +1,26 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "packages/domain"
+    },
+    {
+      "path": "packages/ui"
+    },
+    {
+      "path": "apps/api"
+    },
+    {
+      "path": "apps/cli"
+    },
+    {
+      "path": "apps/infra"
+    },
+    {
+      "path": "apps/web"
+    },
+    {
+      "path": "tools/oxlint"
+    }
+  ]
+}

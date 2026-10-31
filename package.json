@@ -1,0 +1,42 @@
+{
+  "name": "boberstack",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prepare": "vp config",
+    "dev": "node scripts/dev.mjs",
+    "db:up": "node scripts/dev.mjs db:up",
+    "db:migrate": "node scripts/dev.mjs db:migrate",
+    "check": "vp check",
+    "check:deps": "node scripts/check-exact-deps.mjs",
+    "check:suppressions": "node scripts/suppressions.mjs",
+    "typecheck": "effect-tsgo tsc -b",
+    "test": "vp run -r test",
+    "test:integration": "vp run -r test:integration",
+    "build": "vp run -r build",
+    "verify": "vp check && pnpm check:deps && pnpm check:suppressions && pnpm check:doc-pins && pnpm check:knip && pnpm typecheck && pnpm test && pnpm build",
+    "deploy": "pnpm build && pnpm --filter @boberstack/infra run deploy",
+    "init:project": "node scripts/init.mjs",
+    "db:down": "node scripts/dev.mjs db:down",
+    "dev:doctor": "node scripts/dev-doctor.mjs",
+    "dev:stop": "node scripts/dev.mjs stop",
+    "check:changed": "node scripts/check-changed.mjs",
+    "check:doc-pins": "node scripts/check-doc-pins.mjs",
+    "check:knip": "knip --no-progress",
+    "sources:fetch": "node scripts/fetch-sources.mjs",
+    "dev:status": "node scripts/dev.mjs status",
+    "cli": "node scripts/dev.mjs cli"
+  },
+  "devDependencies": {
+    "@effect/tsgo": "catalog:",
+    "@types/node": "catalog:",
+    "knip": "6.44.0",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "engines": {
+    "node": ">=26.5.0 <27",
+    "pnpm": "11.28.9"
+  },
+  "packageManager": "pnpm@11.28.9"
+}

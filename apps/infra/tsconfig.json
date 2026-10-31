@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "node_modules/.cache/tsc",
+    "types": ["node"]
+  },
+  "include": ["alchemy.run.ts"],
+  "references": [{ "path": "../api" }]
+}

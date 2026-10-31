@@ -1,0 +1,19 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignoreExportsUsedInFile": true,
+  "ignoreDependencies": ["@effect/language-service"],
+  "workspaces": {
+    ".": {
+      "entry": ["scripts/*.mjs", ".claude/hooks/*.mjs", ".agents/skills/*/*.mjs"]
+    },
+    "apps/infra": {
+      "entry": ["alchemy.run.ts"]
+    },
+    "apps/web": {
+      "ignoreDependencies": ["tailwindcss"]
+    },
+    "tools/oxlint": {
+      "ignore": ["anti-slop/**"]
+    }
+  }
+}

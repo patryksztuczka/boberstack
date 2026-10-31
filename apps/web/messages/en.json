@@ -1,0 +1,39 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "app_title": "Effect Starter",
+  "nav_sign_out": "Sign out",
+  "language_label": "Language",
+  "auth_sign_in_title": "Sign in",
+  "auth_sign_in_description": "Use the email and password you signed up with.",
+  "auth_sign_up_title": "Create an account",
+  "auth_sign_up_description": "Pick a name, an email and a password of at least 8 characters.",
+  "auth_name": "Name",
+  "auth_email": "Email",
+  "auth_password": "Password",
+  "auth_sign_in_submit": "Sign in",
+  "auth_sign_up_submit": "Create account",
+  "auth_to_sign_up": "No account yet? Create one",
+  "auth_to_sign_in": "Already have an account? Sign in",
+  "auth_failed": "That did not work: {reason}",
+  "auth_name_invalid": "Enter your name.",
+  "auth_email_invalid": "Enter a valid email address.",
+  "auth_password_invalid": "Use at least 8 characters.",
+  "todos_title": "Todos",
+  "todos_transport": "Talking to the API over {transport}.",
+  "todos_new_placeholder": "What needs doing?",
+  "todos_add": "Add",
+  "todos_title_invalid": "A todo needs a title of 1 to 200 characters.",
+  "todos_empty": "Nothing to do. Add your first todo above.",
+  "todos_remove": "Remove",
+  "todos_load_failed": "Could not load todos.",
+  "todos_remaining": [
+    {
+      "declarations": ["input count", "local n = count: plural"],
+      "selectors": ["n"],
+      "match": {
+        "n=one": "{count} todo left",
+        "n=*": "{count} todos left"
+      }
+    }
+  ]
+}

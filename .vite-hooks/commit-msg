@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+set -eu
+
+exec node "$(git rev-parse --show-toplevel)/scripts/conventional-commit.mjs" "$1"
