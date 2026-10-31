@@ -140,7 +140,38 @@ export async function openBrowser(evidenceDir, port = 9333) {
     await evaluate(`document.querySelector(${JSON.stringify(selector)}).click()`);
   };
 
-  const screenshot = async (name) => {
+  const viewport = (width, height, mobile = false) =>
+    send(
+      "Emulation.setDeviceMetricsOverride",
+      { width, height, deviceScaleFactor: mobile ? 2 : 1, mobile },
+      sessionId,
+    );
+
+  const screenshot = async (name, fullPage = false) => {
+    if (fullPage) {
+      const { cssContentSize } = await send("Page.getLayoutMetrics", {}, sessionId);
+      const { data } = await send(
+        "Page.captureScreenshot",
+        {
+          format: "png",
+          captureBeyondViewport: true,
+          clip: {
+            x: 0,
+            y: 0,
+            width: cssContentSize.width,
+            height: cssContentSize.height,
+            scale: 1,
+          },
+        },
+        sessionId,
+      );
+      const path = join(evidenceDir, `${name}.png`);
+
+      writeFileSync(path, Buffer.from(data, "base64"));
+
+      return path;
+    }
+
     const { data } = await send("Page.captureScreenshot", { format: "png" }, sessionId);
     const path = join(evidenceDir, `${name}.png`);
 
@@ -155,5 +186,5 @@ export async function openBrowser(evidenceDir, port = 9333) {
     rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   };
 
-  return { goto, waitFor, evaluate, type, click, screenshot, console, close };
+  return { goto, waitFor, evaluate, type, click, viewport, screenshot, console, close };
 }

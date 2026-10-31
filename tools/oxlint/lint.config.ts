@@ -29,9 +29,9 @@ const antiSlopRules = {
 } satisfies OxlintConfig["rules"];
 
 const effectRules = {
-  "effect/branded-ids": "error",
-  "effect/effect-fn-name": "error",
-  "effect/layer-config-only-in-roots": [
+  "@boberstack/effect/branded-ids": "error",
+  "@boberstack/effect/effect-fn-name": "error",
+  "@boberstack/effect/layer-config-only-in-roots": [
     "error",
     {
       allow: [
@@ -42,9 +42,9 @@ const effectRules = {
       ],
     },
   ],
-  "effect/layer-naming": "error",
-  "effect/log-literal-message": "error",
-  "effect/module-boundaries": [
+  "@boberstack/effect/layer-naming": "error",
+  "@boberstack/effect/log-literal-message": "error",
+  "@boberstack/effect/module-boundaries": [
     "error",
     {
       sourceRoot: "apps/*/src/modules",
@@ -52,21 +52,21 @@ const effectRules = {
       rootFiles: ["apps/*/src/*"],
     },
   ],
-  "effect/no-ambient-date": "error",
-  "effect/no-decode-sync": "error",
-  "effect/no-domain-adapters": "error",
-  "effect/no-domain-sql": "error",
-  "effect/no-error-instanceof": "error",
-  "effect/no-error-subclass": "error",
-  "effect/no-new-promise": "error",
-  "effect/no-platform-imports": "error",
-  "effect/no-store-fakes": "error",
-  "effect/no-throw-in-effect": "error",
-  "effect/no-try-in-tests": "error",
-  "effect/no-untyped-failure": "error",
-  "effect/redacted-secrets": "error",
-  "effect/retry-requires-while": "error",
-  "effect/run-only-in-entry-points": [
+  "@boberstack/effect/no-ambient-date": "error",
+  "@boberstack/effect/no-decode-sync": "error",
+  "@boberstack/effect/no-domain-adapters": "error",
+  "@boberstack/effect/no-domain-sql": "error",
+  "@boberstack/effect/no-error-instanceof": "error",
+  "@boberstack/effect/no-error-subclass": "error",
+  "@boberstack/effect/no-new-promise": "error",
+  "@boberstack/effect/no-platform-imports": "error",
+  "@boberstack/effect/no-store-fakes": "error",
+  "@boberstack/effect/no-throw-in-effect": "error",
+  "@boberstack/effect/no-try-in-tests": "error",
+  "@boberstack/effect/no-untyped-failure": "error",
+  "@boberstack/effect/redacted-secrets": "error",
+  "@boberstack/effect/retry-requires-while": "error",
+  "@boberstack/effect/run-only-in-entry-points": [
     "error",
     {
       allow: [
@@ -78,8 +78,8 @@ const effectRules = {
       ],
     },
   ],
-  "effect/service-explicit-shape": "error",
-  "effect/service-id-matches-path": [
+  "@boberstack/effect/service-explicit-shape": "error",
+  "@boberstack/effect/service-id-matches-path": [
     "error",
     {
       prefix: "boberstack",
@@ -91,14 +91,14 @@ const effectRules = {
       idSource: "class",
     },
   ],
-  "effect/tagged-error-naming": ["error", { filePattern: "\\.errors\\.ts$" }],
-  "effect/try-requires-catch": "error",
+  "@boberstack/effect/tagged-error-naming": ["error", { filePattern: "\\.errors\\.ts$" }],
+  "@boberstack/effect/try-requires-catch": "error",
 } satisfies OxlintConfig["rules"];
 
 const testHygieneRules = {
-  "test-hygiene/no-polling-loop-in-tests": "error",
-  "test-hygiene/no-real-time-wait-in-tests": "error",
-  "test-hygiene/no-test-timeout-or-unreasoned-skip": "error",
+  "@boberstack/test-hygiene/no-polling-loop-in-tests": "error",
+  "@boberstack/test-hygiene/no-real-time-wait-in-tests": "error",
+  "@boberstack/test-hygiene/no-test-timeout-or-unreasoned-skip": "error",
   "vitest/no-disabled-tests": "off",
   "vitest/no-focused-tests": "off",
 } satisfies OxlintConfig["rules"];
@@ -109,18 +109,27 @@ const lint = {
   jsPlugins: [
     { name: "anti-slop", specifier: "./tools/oxlint/anti-slop/index.ts" },
     { name: "anti-slop-effect", specifier: "./tools/oxlint/anti-slop/effect/index.ts" },
-    { name: "effect", specifier: "./tools/oxlint/effect/index.ts" },
-    { name: "no-comments", specifier: "./tools/oxlint/no-comments/index.ts" },
-    { name: "suppressions", specifier: "./tools/oxlint/suppressions/index.ts" },
-    { name: "test-hygiene", specifier: "./tools/oxlint/test-hygiene/index.ts" },
-    { name: "frontend", specifier: "./tools/oxlint/frontend/index.ts" },
+    { name: "@boberstack/effect", specifier: "./tools/oxlint/boberstack/effect/index.ts" },
+    {
+      name: "@boberstack/no-comments",
+      specifier: "./tools/oxlint/boberstack/no-comments/index.ts",
+    },
+    {
+      name: "@boberstack/suppressions",
+      specifier: "./tools/oxlint/boberstack/suppressions/index.ts",
+    },
+    {
+      name: "@boberstack/test-hygiene",
+      specifier: "./tools/oxlint/boberstack/test-hygiene/index.ts",
+    },
+    { name: "@boberstack/frontend", specifier: "./tools/oxlint/boberstack/frontend/index.ts" },
   ],
   categories: { correctness: "error" },
   env: { builtin: true, es2024: true },
   rules: {
     ...antiSlopRules,
-    "no-comments/no-comments": "error",
-    "suppressions/require-suppression-reason": "error",
+    "@boberstack/no-comments/no-comments": "error",
+    "@boberstack/suppressions/require-suppression-reason": "error",
     "no-alert": "error",
     "no-debugger": "error",
     "no-unused-vars": "off",
@@ -148,7 +157,7 @@ const lint = {
     {
       files: ["apps/web/src/**"],
       rules: {
-        "frontend/feature-boundaries": [
+        "@boberstack/frontend/feature-boundaries": [
           "error",
           {
             featuresRoot: "apps/web/src/features",

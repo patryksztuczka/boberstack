@@ -6,7 +6,7 @@ Dependency injection is where Effect shapes the code most. A service is a named 
 
 ### services.define: declare the API, build it in `make`
 
-A service is a class extending `Context.Service<Self, Api>()(id, { make })`. The API type comes first, so the contract is readable at the top of the file and an implementation cannot widen its error type (`effect/service-explicit-shape`). `make` captures every dependency once, so the methods themselves require nothing. Methods are `Effect.fn` ([08](08-observability.md)).
+A service is a class extending `Context.Service<Self, Api>()(id, { make })`. The API type comes first, so the contract is readable at the top of the file and an implementation cannot widen its error type (`@boberstack/effect/service-explicit-shape`). `make` captures every dependency once, so the methods themselves require nothing. Methods are `Effect.fn` ([08](08-observability.md)).
 
 ```ts
 // apps/api/src/modules/todos/todo.service.ts
@@ -57,7 +57,7 @@ Anything that needs a store, the database, the network or secure randomness is a
 | `Service.layerConfig` | reads `Config`; only composition roots use it ([07](07-configuration.md))                                                            |
 | `Service.layerTest`   | a shared test implementation, only when several test files need it, never on a `*Store` ([12](12-test-layers-and-infrastructure.md)) |
 
-Never `Live`, `Default` or `FooLive` (`effect/layer-naming`).
+Never `Live`, `Default` or `FooLive` (`@boberstack/effect/layer-naming`).
 
 ### services.wiring: `layer` wires services, not infrastructure
 
@@ -81,7 +81,7 @@ Why: `.layer` never reads the environment, so an integration test can use it wit
 
 ### services.platform: the machine is infrastructure too
 
-A domain module never imports `node:fs`, `node:os` or `node:child_process` as values (`effect/no-platform-imports`), nor a vendor SDK, `fetch` or anything in `platform/` (`effect/no-domain-adapters`). The api runs on Workers, where most of those do not exist anyway. On Node (`apps/cli`), a service captures Effect's `FileSystem`, `Path` or `ChildProcessSpawner` in `make`, and `main.ts` provides `NodeServices.layer` from `@effect/platform-node` once.
+A domain module never imports `node:fs`, `node:os` or `node:child_process` as values (`@boberstack/effect/no-platform-imports`), nor a vendor SDK, `fetch` or anything in `platform/` (`@boberstack/effect/no-domain-adapters`). The api runs on Workers, where most of those do not exist anyway. On Node (`apps/cli`), a service captures Effect's `FileSystem`, `Path` or `ChildProcessSpawner` in `make`, and `main.ts` provides `NodeServices.layer` from `@effect/platform-node` once.
 
 ### Resources inside layers
 

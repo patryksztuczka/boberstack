@@ -8,7 +8,7 @@ An in-memory fake has to reimplement ordering, uniqueness, constraints, transact
 
 ## Consequences
 
-- Lint enforces both halves: `effect/no-domain-sql` keeps SQL and database imports out of modules, `effect/no-store-fakes` refuses a store fake.
+- Lint enforces both halves: `@boberstack/effect/no-domain-sql` keeps SQL and database imports out of modules, `@boberstack/effect/no-store-fakes` refuses a store fake.
 - Integration tests need Docker and run as their own CI stage, after the build.
 - A service test that needs stored state is an integration test.
 

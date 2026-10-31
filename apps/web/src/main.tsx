@@ -1,3 +1,5 @@
+import "@fontsource-variable/archivo/wdth.css";
+import "@fontsource-variable/jetbrains-mono";
 import "@boberstack/ui/globals.css";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { StrictMode } from "react";

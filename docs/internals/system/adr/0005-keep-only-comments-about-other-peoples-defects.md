@@ -10,12 +10,12 @@ A vendor workaround is the one reason that belongs at the line. The code looks w
 
 - `VENDOR:` comments. One may run over several lines; the comment lines directly after it belong to it.
 - Tool directives with their reason on the same line: `oxlint-disable-next-line <rule> -- <reason>`, `@ts-expect-error <reason>`, `@effect-diagnostics-next-line`, triple-slash references, `@vite-ignore`, `@__PURE__`, `@jsxImportSource`, formatter and coverage ignores.
-- Markers other rules ask for: `SAFETY:` above a type assertion, `BRIDGE:` above a `run*With` at a library callback, `THROW:` at a library callback whose protocol needs a throw, `DETACH:` above `Effect.forkDetach`.
+- Markers other rules ask for: `SAFETY:` above a type assertion, `BRIDGE:` above a `run*With` at a library callback, `QUARANTINE:` above a skipped test.
 - JSDoc made only of type tags in plain JavaScript, where it is the types.
 
 ## Enforcement
 
-`no-comments/no-comments` in `tools/oxlint/no-comments` reports every other comment in TypeScript and JavaScript. It offers the removal as a suggestion, not an autofix, so a fix run never deletes a reason that has no home yet.
+`@boberstack/no-comments/no-comments` in `tools/oxlint/boberstack/no-comments` reports every other comment in TypeScript and JavaScript. It offers the removal as a suggestion, not an autofix, so a fix run never deletes a reason that has no home yet.
 
 ## Cost
 

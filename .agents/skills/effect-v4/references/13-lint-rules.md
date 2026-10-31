@@ -43,15 +43,15 @@ All lint config lives in the root `vite.config.ts` (`lint` block); Vite+ ignores
 | `no-service-constructor-imports` | importing a project `make<Name>` outside tests; depend on the service                     |
 | `prefer-effect-match`            | chained ternaries on one value; use `Match`                                               |
 
-### `no-comments`
+### `@boberstack/no-comments`
 
-`no-comments/no-comments` reports every comment except tool directives, JSDoc types in plain JavaScript, and lines starting with `VENDOR:`, `SAFETY:`, `THROW:`, `BRIDGE:` or `DETACH:`. It offers removal as a suggestion, never an autofix, so a reason without a home is never deleted silently. Why: root ADR 0005.
+`@boberstack/no-comments/no-comments` reports every comment except tool directives, JSDoc types in plain JavaScript, and lines starting with `VENDOR:`, `SAFETY:`, `BRIDGE:` or `QUARANTINE:`. It offers removal as a suggestion, never an autofix, so a reason without a home is never deleted silently. Why: root ADR 0005.
 
-### `suppressions`
+### `@boberstack/suppressions`
 
 `require-suppression-reason`: an `oxlint-disable*` or `eslint-disable*` names its rule and ends with ` -- <reason>`; `@ts-expect-error` carries a reason; `@ts-ignore` and `@ts-nocheck` are banned. A directive that suppresses nothing is an error too. `pnpm check:suppressions` counts them against `suppressions.baseline.json` and warns on growth.
 
-### `test-hygiene` (test files; ideas from pingdotgg/t3code, MIT)
+### `@boberstack/test-hygiene` (test files; ideas from pingdotgg/t3code, MIT)
 
 | Rule                                 | Flags                                                                                                             | Read                             |
 | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------- | -------------------------------- |
@@ -59,11 +59,11 @@ All lint config lives in the root `vite.config.ts` (`lint` block); Vite+ ignores
 | `no-real-time-wait-in-tests`         | `setTimeout` and friends, `sleep`/`delay` helpers, `Effect.sleep` outside the TestClock                           | [11](11-testing.md) `test.flaky` |
 | `no-polling-loop-in-tests`           | a loop that sleeps or yields each turn until a condition holds                                                    | [11](11-testing.md) `test.flaky` |
 
-### `frontend` (`apps/web`)
+### `@boberstack/frontend` (`apps/web`)
 
 `feature-boundaries`: imports go `shared → features → app`, and another feature is reached only through `features/<name>/index.ts`. `src/runtime.ts` is a root and exempt.
 
-## Effect code: `effect/*`
+## Effect code: `@boberstack/effect/*`
 
 On `apps/api`, `apps/cli`, `apps/infra` and `packages/domain`.
 

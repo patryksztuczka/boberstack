@@ -31,7 +31,7 @@ Effect.fn("TodosService.list");
 Effect.fn("TodosService.update");
 ```
 
-The name is a string literal (`effect/effect-fn-name`, which can autofix it).
+The name is a string literal (`@boberstack/effect/effect-fn-name`, which can autofix it).
 
 ### obs.logs: constant message, structured fields
 
@@ -43,7 +43,7 @@ yield * Effect.logInfo("Todo created", { todoId: todo.id, owner });
 yield * Effect.logInfo("Created todo " + todo.id + " for " + owner);
 ```
 
-The first argument is a literal (`effect/log-literal-message`). Loggers are installed as a set, and the minimum level is a reference:
+The first argument is a literal (`@boberstack/effect/log-literal-message`). Loggers are installed as a set, and the minimum level is a reference:
 
 ```ts
 Logger.layer([Logger.consoleJson, Logger.tracerLogger]);

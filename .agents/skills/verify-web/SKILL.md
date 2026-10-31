@@ -49,7 +49,6 @@ Open the feature file for what you changed and follow its "Drive" steps:
 
 - [features/auth.md](features/auth.md): sign up, sign in, sign out, redirects
 - [features/todos.md](features/todos.md): list, add, toggle, remove, HTTP and RPC transports
-- [features/i18n.md](features/i18n.md): English and Polish, plurals
 
 Use the browser you have, in this order:
 

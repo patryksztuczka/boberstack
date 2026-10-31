@@ -72,21 +72,21 @@ A port that is not storage is named after its job: `PasswordHasher`, `MailSender
 
 ### structure.imports: who may import what
 
-| Import                                                                                                                            | Allowed | Rule                                     |
-| --------------------------------------------------------------------------------------------------------------------------------- | ------- | ---------------------------------------- |
-| a root file (`worker.ts`, `app.layer.ts`) → anything                                                                              | yes     |                                          |
-| `http/`, `rpc/` → a context's `index.ts`, `@boberstack/domain`                                                                    | yes     |                                          |
-| `platform/` → a context's or module's `index.ts`, a vendor SDK, `effect/sql`                                                      | yes     |                                          |
-| `platform/` → a file inside a module                                                                                              | no      | `effect/module-boundaries` (`indexOnly`) |
-| a module → its own files, another module's or context's `index.ts`, `@boberstack/domain`                                          | yes     |                                          |
-| a module → a file inside another module or context                                                                                | no      | `effect/module-boundaries`               |
-| a module → a root file (`app.layer.ts`, `worker.ts`), tests included                                                              | no      | `effect/module-boundaries` (`rootFiles`) |
-| a module → `platform/`, `better-auth`, `alchemy`, `pg`, `fetch`, `node:http`                                                      | no      | `effect/no-domain-adapters`              |
-| a module, tests included → `effect/sql`, `@effect/sql-pg`, `platform/database/`, `pg-test`; a module file named `*.repository.ts` | no      | `effect/no-domain-sql`                   |
-| a module → `node:fs`, `node:os`, `node:child_process` as values                                                                   | no      | `effect/no-platform-imports`             |
-| `packages/*` → an app                                                                                                             | no      | review                                   |
-| an app → another app's `src/`; share through `packages/domain`                                                                    | no      | review                                   |
-| any file → a module that imports it back                                                                                          | no      | `import/no-cycle`                        |
+| Import                                                                                                                            | Allowed | Rule                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------- | ------- | ---------------------------------------------------- |
+| a root file (`worker.ts`, `app.layer.ts`) → anything                                                                              | yes     |                                                      |
+| `http/`, `rpc/` → a context's `index.ts`, `@boberstack/domain`                                                                    | yes     |                                                      |
+| `platform/` → a context's or module's `index.ts`, a vendor SDK, `effect/sql`                                                      | yes     |                                                      |
+| `platform/` → a file inside a module                                                                                              | no      | `@boberstack/effect/module-boundaries` (`indexOnly`) |
+| a module → its own files, another module's or context's `index.ts`, `@boberstack/domain`                                          | yes     |                                                      |
+| a module → a file inside another module or context                                                                                | no      | `@boberstack/effect/module-boundaries`               |
+| a module → a root file (`app.layer.ts`, `worker.ts`), tests included                                                              | no      | `@boberstack/effect/module-boundaries` (`rootFiles`) |
+| a module → `platform/`, `better-auth`, `alchemy`, `pg`, `fetch`, `node:http`                                                      | no      | `@boberstack/effect/no-domain-adapters`              |
+| a module, tests included → `effect/sql`, `@effect/sql-pg`, `platform/database/`, `pg-test`; a module file named `*.repository.ts` | no      | `@boberstack/effect/no-domain-sql`                   |
+| a module → `node:fs`, `node:os`, `node:child_process` as values                                                                   | no      | `@boberstack/effect/no-platform-imports`             |
+| `packages/*` → an app                                                                                                             | no      | review                                               |
+| an app → another app's `src/`; share through `packages/domain`                                                                    | no      | review                                               |
+| any file → a module that imports it back                                                                                          | no      | `import/no-cycle`                                    |
 
 Test code (`*.test.ts`, `testing/`) may import `platform/` except the database, because a test composes its own layers as a root does. A unit test never touches the database; a store's contract runs on Postgres from `platform/database/x.repository.integration.test.ts`.
 
@@ -145,7 +145,7 @@ export const TodoRepository = {
 };
 ```
 
-- **A store has one implementation.** No `layerTest` or `inMemory` on a `*Store` (`effect/no-store-fakes`). Its repository runs the store's contract on Postgres. Why: root ADR 0004.
+- **A store has one implementation.** No `layerTest` or `inMemory` on a `*Store` (`@boberstack/effect/no-store-fakes`). Its repository runs the store's contract on Postgres. Why: root ADR 0004.
 - **Test each behaviour where it can be observed.** Rows, ordering, constraints and races: the repository's integration suite. A pure decision: a unit test of the pure function. A failure Postgres cannot produce on demand: `Layer.mock(XStore, { oneOp: … })` for that one operation in a service test.
 - **An operation is named after its job** (`listByOwner`, `markDone`), not after tables or queries.
 - **What lands together is one operation.** A service never splits one transaction across two store calls.
@@ -156,7 +156,7 @@ export const TodoRepository = {
 
 ### structure.ids: the service id mirrors the path
 
-The id is `boberstack/<path under the source root>/<Class>` (`effect/service-id-matches-path`, which can autofix it):
+The id is `boberstack/<path under the source root>/<Class>` (`@boberstack/effect/service-id-matches-path`, which can autofix it):
 
 | Source root           | Id prefix              | Example                                  |
 | --------------------- | ---------------------- | ---------------------------------------- |

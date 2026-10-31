@@ -1,8 +1,27 @@
-# boberstack
+<p align="center">
+  <img src="apps/web/src/assets/beaver-animated.svg" width="220" alt="The boberstack beaver: a beaver in an orange hard hat carrying a stack of logs on its shoulder">
+</p>
 
-A TypeScript monorepo to start a product from: an Effect v4 api on Cloudflare Workers that also serves a React SPA, a Node CLI, and Postgres on Neon, deployed as one Alchemy stack. It ships with a working todo list behind sign-in, so every layer has a real example, and with the lint rules, hooks, CI and agent skills that keep the code in shape as it grows.
+<h1 align="center">boberstack</h1>
 
-[AGENTS.md](AGENTS.md) holds the exact pins, commands and rules; [docs/README.md](docs/README.md) indexes the rest.
+<p align="center">
+  <strong>Mistakes stop at the dam. </strong><br>
+  A TypeScript starter on Effect v4: an api and a React app on one Cloudflare Worker, Postgres on Neon,<br>
+  and the lint rules, hooks and checks that keep the code in shape as it grows.
+</p>
+
+<p align="center">
+  <a href="#quickstart">Quickstart</a> ·
+  <a href="#keep-or-cut">Keep or cut</a> ·
+  <a href="AGENTS.md">AGENTS.md</a> ·
+  <a href="docs/README.md">Docs</a>
+</p>
+
+## Why a beaver
+
+A beaver does not ask the river to behave; it builds a dam that holds. This starter works the same way. Every rule that a tool can check is a lint rule, a type, an Effect diagnostic, a hook or a CI step, so a mistake fails `pnpm verify` on your machine instead of waiting for a reviewer. Whatever no tool can check is written down once, short, in [AGENTS.md](AGENTS.md), together with the table of which check enforces which rule.
+
+It ships a working product, not a hello world: a todo list behind sign-in, served over HttpApi and Effect RPC, stored in Postgres, tested against a real database, and a welcome page with the beaver. Each piece shows how that layer is meant to be written, and each one can be cut (see [Keep or cut](#keep-or-cut)).
 
 ## Stack
 
@@ -11,7 +30,7 @@ A TypeScript monorepo to start a product from: an Effect v4 api on Cloudflare Wo
 - **Neon Postgres** through Hyperdrive in production, Postgres in Docker locally, Testcontainers in tests.
 - **Alchemy 2** (beta): the infrastructure is an Effect program in `apps/infra/alchemy.run.ts`.
 - **better-auth** for sign-in, wired through `@alchemy.run/better-auth`.
-- **React 19** with React Router, TanStack Query, React Hook Form (validated by the same Effect Schemas the api decodes), Tailwind 4, shadcn components and Paraglide i18n (English, Polish).
+- **React 19** with React Router, TanStack Query, React Hook Form (validated by the same Effect Schemas the api decodes), Tailwind 4, shadcn components and Paraglide for UI strings (English; add a locale in `apps/web/project.inlang`).
 - **Vite+ 1.4.0** (`vp`): dev server, build, Vitest, oxlint, oxfmt, task runner and Git hooks.
 - **TypeScript 7** with Effect diagnostics, **pnpm 11**, **Node 26**.
 
@@ -96,6 +115,11 @@ pnpm check
 
 The starter is a working project. Delete what you will not use on day one. Lint, the type checker and the tests point at whatever still depends on what you removed. After each cut run `pnpm install`, then `pnpm verify` and `pnpm test:integration`, and update `AGENTS.md` and `CONTEXT-MAP.md`.
 
+### The welcome page and the beaver
+
+- [ ] Delete `apps/web/src/features/welcome/`, point the index route in `apps/web/src/app/router.tsx` at your own page, and remove the `welcome_*` messages from `apps/web/messages/*.json`.
+- [ ] Replace or delete `apps/web/src/assets/` (the beaver as SVG, PNG, the animated SVG at the top of this README and the favicon head) and the icons in `apps/web/public/` (`favicon.svg`, `favicon.ico`, `apple-touch-icon.png`).
+
 ### The todos example
 
 - [ ] Delete `packages/domain/src/todos/` and its group in `packages/domain/src/api.ts`.
@@ -126,7 +150,6 @@ The mirror image of cutting RPC: delete `*.http-api.ts`, `packages/domain/src/ap
 ### i18n
 
 - [ ] Remove Paraglide from `apps/web` (its Vite plugin, `messages/`, the generated folder) and replace `m.*()` calls with literal strings.
-- [ ] Drop the language switcher.
 
 ### Authentication
 

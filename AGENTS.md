@@ -81,13 +81,16 @@ apps/
     src/modules/<context>/     bounded contexts: ports, services, pure functions
     src/platform/<capability>/ adapters; database/ holds all SQL
     src/testing/               Testcontainers Postgres
-  web/      React 19 SPA: React Router, TanStack Query, React Hook Form, Tailwind 4, Paraglide (en, pl)
+  web/      React 19 SPA: React Router, TanStack Query, React Hook Form, Tailwind 4, Paraglide messages (en)
+    src/assets/      the beaver: beaver.svg (source), beaver.png, beaver-animated.svg (README), favicon.svg (head; the icons in public/ come from it)
   cli/      Effect CLI on Node: db migrate, openapi, health
   infra/    Alchemy stack: Neon, Hyperdrive, the api Worker
 packages/
   domain/   the contract: Schemas, branded ids, wire errors, HttpApi, RpcGroups, auth middleware tags
   ui/       shadcn components
-tools/oxlint/   custom lint plugins: anti-slop, effect, no-comments
+tools/oxlint/   lint config and plugins
+  boberstack/   ours, rules named @boberstack/<plugin>/<rule>: effect, frontend, no-comments, suppressions, test-hygiene
+  anti-slop/    vendored from dmmulroy/anti-slop (MIT), rules named anti-slop/<rule>
 docs/           glossaries and ADRs per context (docs/README.md)
 scripts/        repo checks, init, changed packages, dev launcher, sources:fetch
 .agents/skills/ agent skills; .claude/skills links to them
@@ -126,30 +129,30 @@ scripts/        repo checks, init, changed packages, dev launcher, sources:fetch
 
 A rule in this table either has a check that fails, or says that it does not. A rule with no check is a candidate for one: use the `correct` skill.
 
-| Rule                                                                                                                        | Enforced by                                                                                                               |
-| --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Time comes from `Clock`, randomness from `Random`, config from `Config`                                                     | lint `effect/no-ambient-date`; Effect diagnostics `globalDateInEffect`, `globalRandomInEffect`, `processEnvInEffect`      |
-| SQL lives only in `platform/database`                                                                                       | lint `effect/no-domain-sql`, `effect/no-domain-adapters`                                                                  |
-| A store is tested on real Postgres, never with an in-memory fake                                                            | lint `effect/no-store-fakes`                                                                                              |
-| Modules talk through their `index.ts`                                                                                       | lint `effect/module-boundaries`, `import/no-cycle`                                                                        |
-| Web imports go `shared → features → app`; a feature is reached only through its `index.ts`                                  | lint `frontend/feature-boundaries`                                                                                        |
-| Failures are typed `Schema.TaggedError`s in `*.errors.ts`                                                                   | lint `effect/tagged-error-naming`, `effect/no-untyped-failure`; diagnostic `globalErrorInEffectFailure`                   |
-| Every Effect is yielded, and its errors and requirements handled                                                            | diagnostics `floatingEffect`, `missingEffectError`, `missingEffectContext`, `missingLayerContext`                         |
-| `Effect.run*` only in entry points                                                                                          | lint `effect/run-only-in-entry-points`                                                                                    |
-| Secrets are `Redacted`                                                                                                      | lint `effect/redacted-secrets`                                                                                            |
-| No prose comments                                                                                                           | lint `no-comments/no-comments`                                                                                            |
-| No skipped test without a `QUARANTINE:` reason, no `.only`, no per-test timeout or retry, no real-time wait or polling loop | lint `test-hygiene/*`; Vitest `retry: 0`, `allowOnly` off in CI                                                           |
-| Every lint or type-check suppression carries a reason; no `@ts-ignore`                                                      | lint `suppressions/require-suppression-reason`, unused directives are errors; `pnpm check:suppressions` reports the count |
-| Exact dependency versions, actions pinned by SHA                                                                            | `pnpm check:deps`                                                                                                         |
-| Documents name the installed versions                                                                                       | `pnpm check:doc-pins`                                                                                                     |
-| No unused file, export or dependency                                                                                        | `pnpm check:knip`                                                                                                         |
-| No hook bypass                                                                                                              | `.claude/hooks/block-no-verify.mjs`                                                                                       |
-| Commit subjects and PR titles are Conventional Commits                                                                      | `commit-msg` hook, `.github/workflows/pr-title.yml`                                                                       |
-| No compatibility shims                                                                                                      | partly: `pnpm check:knip` finds the unused old path; the rest is review (`no-shims`)                                      |
-| Do not invent APIs                                                                                                          | none: the `effect-v4` skill and `.repos/`                                                                                 |
-| Code uses the glossary's words                                                                                              | none: review (`domain-modeling`)                                                                                          |
-| Tests check behaviour, not their own setup                                                                                  | none: review (`code-review`)                                                                                              |
-| A UI change is seen working in a browser                                                                                    | none: the `verify-web` skill and the PR's Verification section                                                            |
+| Rule                                                                                                                        | Enforced by                                                                                                                           |
+| --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Time comes from `Clock`, randomness from `Random`, config from `Config`                                                     | lint `@boberstack/effect/no-ambient-date`; Effect diagnostics `globalDateInEffect`, `globalRandomInEffect`, `processEnvInEffect`      |
+| SQL lives only in `platform/database`                                                                                       | lint `@boberstack/effect/no-domain-sql`, `@boberstack/effect/no-domain-adapters`                                                      |
+| A store is tested on real Postgres, never with an in-memory fake                                                            | lint `@boberstack/effect/no-store-fakes`                                                                                              |
+| Modules talk through their `index.ts`                                                                                       | lint `@boberstack/effect/module-boundaries`, `import/no-cycle`                                                                        |
+| Web imports go `shared → features → app`; a feature is reached only through its `index.ts`                                  | lint `@boberstack/frontend/feature-boundaries`                                                                                        |
+| Failures are typed `Schema.TaggedError`s in `*.errors.ts`                                                                   | lint `@boberstack/effect/tagged-error-naming`, `@boberstack/effect/no-untyped-failure`; diagnostic `globalErrorInEffectFailure`       |
+| Every Effect is yielded, and its errors and requirements handled                                                            | diagnostics `floatingEffect`, `missingEffectError`, `missingEffectContext`, `missingLayerContext`                                     |
+| `Effect.run*` only in entry points                                                                                          | lint `@boberstack/effect/run-only-in-entry-points`                                                                                    |
+| Secrets are `Redacted`                                                                                                      | lint `@boberstack/effect/redacted-secrets`                                                                                            |
+| No prose comments                                                                                                           | lint `@boberstack/no-comments/no-comments`                                                                                            |
+| No skipped test without a `QUARANTINE:` reason, no `.only`, no per-test timeout or retry, no real-time wait or polling loop | lint `@boberstack/test-hygiene/*`; Vitest `retry: 0`, `allowOnly` off in CI                                                           |
+| Every lint or type-check suppression carries a reason; no `@ts-ignore`                                                      | lint `@boberstack/suppressions/require-suppression-reason`, unused directives are errors; `pnpm check:suppressions` reports the count |
+| Exact dependency versions, actions pinned by SHA                                                                            | `pnpm check:deps`                                                                                                                     |
+| Documents name the installed versions                                                                                       | `pnpm check:doc-pins`                                                                                                                 |
+| No unused file, export or dependency                                                                                        | `pnpm check:knip`                                                                                                                     |
+| No hook bypass                                                                                                              | `.claude/hooks/block-no-verify.mjs`                                                                                                   |
+| Commit subjects and PR titles are Conventional Commits                                                                      | `commit-msg` hook, `.github/workflows/pr-title.yml`                                                                                   |
+| No compatibility shims                                                                                                      | partly: `pnpm check:knip` finds the unused old path; the rest is review (`no-shims`)                                                  |
+| Do not invent APIs                                                                                                          | none: the `effect-v4` skill and `.repos/`                                                                                             |
+| Code uses the glossary's words                                                                                              | none: review (`domain-modeling`)                                                                                                      |
+| Tests check behaviour, not their own setup                                                                                  | none: review (`code-review`)                                                                                                          |
+| A UI change is seen working in a browser                                                                                    | none: the `verify-web` skill and the PR's Verification section                                                                        |
 
 ## Autonomy
 

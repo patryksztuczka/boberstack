@@ -46,7 +46,7 @@ SignInOutcome.match(outcome, {
 
 ### schema.ids: every identifier is branded
 
-A field named `*Id` is a branded schema, never a plain `Schema.String` or `Schema.Number` (`effect/branded-ids`).
+A field named `*Id` is a branded schema, never a plain `Schema.String` or `Schema.Number` (`@boberstack/effect/branded-ids`).
 
 ```ts
 export const TodoId = Schema.String.pipe(Schema.brand("TodoId"));
@@ -71,7 +71,7 @@ const row = JSON.parse(text) as TodoRow;
 const row = Schema.decodeUnknownSync(TodoRow)(raw);
 ```
 
-`decodeUnknownSync`, `decodeSync` and `decodeUnknownPromise` are allowed only in scripts and tests (`effect/no-decode-sync`). A type assertion needs a `// SAFETY:` comment naming the invariant (`anti-slop/require-safety-comment-for-type-assertion`); getting around a type is never one.
+`decodeUnknownSync`, `decodeSync` and `decodeUnknownPromise` are allowed only in scripts and tests (`@boberstack/effect/no-decode-sync`). A type assertion needs a `// SAFETY:` comment naming the invariant (`anti-slop/require-safety-comment-for-type-assertion`); getting around a type is never one.
 
 ### schema.sharing: a contract that crosses an app boundary lives in `packages/domain`
 

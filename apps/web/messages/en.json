@@ -1,8 +1,7 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
-  "app_title": "Effect Starter",
+  "app_title": "boberstack",
   "nav_sign_out": "Sign out",
-  "language_label": "Language",
   "auth_sign_in_title": "Sign in",
   "auth_sign_in_description": "Use the email and password you signed up with.",
   "auth_sign_up_title": "Create an account",
@@ -35,5 +34,30 @@
         "n=*": "{count} todos left"
       }
     }
-  ]
+  ],
+  "welcome_beaver_label": "Poke the beaver",
+  "welcome_title": "Mistakes stop at the dam",
+  "welcome_lead": "A starter for TypeScript products on Effect v4: an API and a React app on one Cloudflare Worker, Postgres on Neon, and the lint rules, hooks and checks that keep the code in shape as it grows.",
+  "welcome_open_example": "Open the todo example",
+  "welcome_create_account": "Create an account",
+  "welcome_inside_title": "What is inside",
+  "welcome_inside_effect_title": "Effect v4 end to end",
+  "welcome_inside_effect_body": "HttpApi and RPC over one contract in packages/domain, typed errors, services and layers you can test.",
+  "welcome_inside_worker_title": "One Worker, one origin",
+  "welcome_inside_worker_body": "The API Worker serves this app too. Alchemy deploys it with Neon and Hyperdrive in one stack.",
+  "welcome_inside_data_title": "Real Postgres everywhere",
+  "welcome_inside_data_body": "Neon in production, Docker locally, Testcontainers in tests. No in-memory fakes.",
+  "welcome_inside_web_title": "React that stays boring",
+  "welcome_inside_web_body": "React Router, TanStack Query, forms validated with Effect Schema, Tailwind and shadcn.",
+  "welcome_inside_guards_title": "Guards that run themselves",
+  "welcome_inside_guards_body": "Custom oxlint rules, Effect diagnostics, Git hooks and a CI that stops at the first failing step.",
+  "welcome_inside_agents_title": "Ready for agents",
+  "welcome_inside_agents_body": "AGENTS.md, skills and checks that turn a review comment into a rule, so the same mistake does not come back.",
+  "welcome_quickstart_title": "Quickstart",
+  "welcome_quickstart_body": "pnpm dev starts Postgres, the Worker and this app on ports picked for your checkout. pnpm verify runs what CI runs.",
+  "welcome_delete_hint": "This page lives in {path}. Delete it when you build your own.",
+  "nav_github": "GitHub",
+  "nav_sign_in": "Sign in",
+  "welcome_inside_meta": "06 parts",
+  "welcome_quickstart_meta": "3 commands"
 }

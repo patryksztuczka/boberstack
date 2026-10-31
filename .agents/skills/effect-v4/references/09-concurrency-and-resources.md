@@ -24,7 +24,7 @@ A Worker request holds few connections. Through Hyperdrive, keep database fan-ou
 
 ### conc.background: background fibers belong to a scope
 
-Use `Effect.forkChild` for work the parent waits on, and `Effect.forkScoped`, `FiberSet`, `FiberMap` or `FiberHandle` for work that lives as long as a layer. Everything is interrupted on shutdown. `Effect.forkDetach` escapes the scope; it needs a `// DETACH: …` comment saying why.
+Use `Effect.forkChild` for work the parent waits on, and `Effect.forkScoped`, `FiberSet`, `FiberMap` or `FiberHandle` for work that lives as long as a layer. Everything is interrupted on shutdown. `Effect.forkDetach` escapes the scope, so shutdown never interrupts it: avoid it. If a fiber really has to outlive its scope, say why in the pull request, and in an ADR when it is a design decision. No lint rule checks this.
 
 ```ts
 static readonly layer = Layer.effect(
@@ -61,7 +61,7 @@ const pool =
 
 ### conc.callbacks: wrap a callback with `Effect.callback`, never `new Promise`
 
-`new Promise(…)` loses interruption and typed errors (`effect/no-new-promise`). Wrap a callback API with `Effect.callback`, and a Promise API with `Effect.tryPromise`.
+`new Promise(…)` loses interruption and typed errors (`@boberstack/effect/no-new-promise`). Wrap a callback API with `Effect.callback`, and a Promise API with `Effect.tryPromise`.
 
 ## Notes
 

@@ -71,7 +71,7 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 | `obs.logs`            | constant message, structured fields                                                  | 08  |
 | `obs.errors`          | report once, at the boundary                                                         | 08  |
 | `conc.parallel`       | concurrency is a named, small number                                                 | 09  |
-| `conc.background`     | background fibers belong to a scope; `forkDetach` needs `DETACH:`                    | 09  |
+| `conc.background`     | background fibers belong to a scope; avoid `forkDetach`                              | 09  |
 | `conc.resources`      | `acquireRelease` inside a layer                                                      | 09  |
 | `conc.callbacks`      | `Effect.callback`, never `new Promise`                                               | 09  |
 | `runtime.allowlist`   | only the four entry points start runtimes                                            | 10  |
@@ -110,7 +110,7 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 [rat-stack](https://github.com/joelhooks/rat-stack) shaped several rules here; where we differ, on purpose:
 
 - **Taken:** the `Context.Service(id, { make })` + `static layer = Layer.effect(this, this.make)` shape, dependencies captured in `make`; branded error classes; the error model (name the failure, keep the source, say how to fix it, fall back only to a valid domain answer); `message` and `Runtime.errorExitCode` on errors a person reads; the hook that blocks `--no-verify`.
-- **Config:** rat-stack's config service has `layer` read Config and `configLayer` take values. We keep `layer(options)` and `layerConfig`, because `effect/layer-config-only-in-roots` keys on `layerConfig`.
+- **Config:** rat-stack's config service has `layer` read Config and `configLayer` take values. We keep `layer(options)` and `layerConfig`, because `@boberstack/effect/layer-config-only-in-roots` keys on `layerConfig`.
 - **Surfaces:** rat-stack projects one capability onto CLI, HTTP, MCP and RPC through its own `defineContract`. We use Effect's `HttpApi` and `RpcGroup` directly, both in `packages/domain` (root ADR 0007). Less machinery, two contracts per operation.
 - **Lifecycles:** rat-stack puts finite lifecycles in XState machines. The starter has none; add XState when a real lifecycle appears.
 - **Tests:** rat-stack prefers property and model tests. We do too for pure functions, but a store's contract runs on real Postgres with no in-memory fake (root ADR 0004), which rat-stack does not require.

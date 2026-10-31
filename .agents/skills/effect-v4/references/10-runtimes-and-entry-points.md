@@ -13,7 +13,7 @@ An entry point is a file that starts the Effect runtime for a host: a Worker, a 
 
 ### runtime.allowlist: only entry points start runtimes
 
-`Effect.runPromise`, `runSync`, `runFork`, `runCallback`, `NodeRuntime.runMain` and `ManagedRuntime.make` appear only in the four files above (`effect/run-only-in-entry-points`). Adding an entry point is a change to the rule's `allow` list in the root `vite.config.ts`, which needs owner sign-off. Calling `runtime.runPromise(…)` on the existing web runtime is allowed anywhere in `apps/web`: that is the bridge.
+`Effect.runPromise`, `runSync`, `runFork`, `runCallback`, `NodeRuntime.runMain` and `ManagedRuntime.make` appear only in the four files above (`@boberstack/effect/run-only-in-entry-points`). Adding an entry point is a change to the rule's `allow` list in the root `vite.config.ts`, which needs owner sign-off. Calling `runtime.runPromise(…)` on the existing web runtime is allowed anywhere in `apps/web`: that is the bridge.
 
 Route and handler modules never run effects. They export layers, and the entry point merges them.
 

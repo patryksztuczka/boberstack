@@ -7,7 +7,7 @@
 ### config.pair: every configurable layer has `layer(options)` and `layerConfig`
 
 - `layer(options)` takes plain values. Tests use it.
-- `layerConfig` reads `Config.*` and calls `layer(options)`. Only composition roots use it (`effect/layer-config-only-in-roots`): `apps/api/src/worker.ts`, `apps/api/src/app.layer.ts`, `apps/cli/src/main.ts`, `apps/cli/src/commands/*.ts`.
+- `layerConfig` reads `Config.*` and calls `layer(options)`. Only composition roots use it (`@boberstack/effect/layer-config-only-in-roots`): `apps/api/src/worker.ts`, `apps/api/src/app.layer.ts`, `apps/cli/src/main.ts`, `apps/cli/src/commands/*.ts`.
 
 There is no global config object. A value a module needs from the deployment is a service named after what the module does with it, so the module never sees a variable name.
 
@@ -43,7 +43,7 @@ const TestConfig = ConfigProvider.layer(ConfigProvider.fromUnknown({ BETTER_AUTH
 
 ### config.secrets: secrets are `Config.Redacted`
 
-A redacted value prints as `<redacted>` in logs, spans and error reports. Unwrap it with `Redacted.value` only at the client that needs the raw string. `effect/redacted-secrets` flags a secret-looking key read with `Config.String`.
+A redacted value prints as `<redacted>` in logs, spans and error reports. Unwrap it with `Redacted.value` only at the client that needs the raw string. `@boberstack/effect/redacted-secrets` flags a secret-looking key read with `Config.String`.
 
 ```ts
 const secret = yield * Config.Redacted("BETTER_AUTH_SECRET");

@@ -1,0 +1,188 @@
+.beaver {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.beaver g {
+  transform-box: view-box;
+}
+
+.beaver-figure {
+  transform-origin: 490px 950px;
+  animation: beaver-breathe 4.2s ease-in-out infinite;
+}
+
+.beaver-squash {
+  transform-origin: 490px 950px;
+}
+
+.beaver-tail-pivot {
+  transform-origin: 660px 800px;
+  animation: beaver-tail 3.4s ease-in-out infinite;
+}
+
+.beaver-head-pivot {
+  transform-origin: 480px 560px;
+  animation: beaver-bob 6.5s ease-in-out infinite;
+}
+
+.beaver-hat-pivot {
+  transform-origin: 500px 250px;
+}
+
+.beaver-eyeballs {
+  transform-origin: 460px 330px;
+  transition: transform 70ms ease-in;
+}
+
+.beaver.is-blinking .beaver-eyeballs {
+  transform: scaleY(0.08);
+}
+
+.beaver-pupils {
+  transform: translate(var(--beaver-look-x, 0px), var(--beaver-look-y, 0px));
+  transition: transform 140ms ease-out;
+}
+
+.beaver-brows {
+  transform: translateY(var(--beaver-brows, 0px));
+  transition: transform 180ms cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.beaver:hover {
+  --beaver-brows: -6px;
+}
+
+.beaver.is-popping {
+  --beaver-brows: -16px;
+}
+
+.beaver.is-popping .beaver-hat-pivot {
+  animation: beaver-hat-pop 900ms cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+
+.beaver.is-popping .beaver-squash {
+  animation: beaver-squash 900ms cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+
+.beaver.is-popping .beaver-tail-pivot {
+  animation: beaver-wag 900ms ease-in-out;
+}
+
+@keyframes beaver-breathe {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+
+  50% {
+    transform: scale(1.008, 1.018);
+  }
+}
+
+@keyframes beaver-tail {
+  0%,
+  100% {
+    transform: rotate(-1deg);
+  }
+
+  50% {
+    transform: rotate(4deg);
+  }
+}
+
+@keyframes beaver-bob {
+  0%,
+  100% {
+    transform: rotate(-1.2deg);
+  }
+
+  50% {
+    transform: rotate(1.4deg);
+  }
+}
+
+@keyframes beaver-wag {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+
+  20% {
+    transform: rotate(12deg);
+  }
+
+  40% {
+    transform: rotate(-6deg);
+  }
+
+  60% {
+    transform: rotate(10deg);
+  }
+
+  80% {
+    transform: rotate(-3deg);
+  }
+}
+
+@keyframes beaver-squash {
+  0% {
+    transform: scale(1, 1);
+  }
+
+  12% {
+    transform: scale(1.05, 0.93);
+  }
+
+  30% {
+    transform: scale(0.97, 1.05);
+  }
+
+  48% {
+    transform: scale(1.02, 0.98);
+  }
+
+  64%,
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+@keyframes beaver-hat-pop {
+  0% {
+    transform: translate(0, 0) rotate(0);
+  }
+
+  12% {
+    transform: translate(0, 12px) rotate(0);
+  }
+
+  34% {
+    transform: translate(-10px, -150px) rotate(-16deg);
+  }
+
+  56% {
+    transform: translate(0, 0) rotate(5deg);
+  }
+
+  68% {
+    transform: translate(0, -26px) rotate(-3deg);
+  }
+
+  80% {
+    transform: translate(0, 0) rotate(1deg);
+  }
+
+  100% {
+    transform: translate(0, 0) rotate(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beaver * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

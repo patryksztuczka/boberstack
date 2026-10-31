@@ -6,7 +6,7 @@ Test layers inject failures or replace systems Postgres cannot stand in for. Dat
 
 ### tl.mocks: `Layer.mock` scenarios in the test file
 
-Tests compose `Service.layer` (or `layerNoDeps`) with `Layer.mock` scenarios defined in the test file. Methods left out of a mock die with an unimplemented defect if called, so a mock only needs what the scenario uses. A `layerTest` static exists only when several test files share the same default, and never on a `*Store` (`effect/no-store-fakes`).
+Tests compose `Service.layer` (or `layerNoDeps`) with `Layer.mock` scenarios defined in the test file. Methods left out of a mock die with an unimplemented defect if called, so a mock only needs what the scenario uses. A `layerTest` static exists only when several test files share the same default, and never on a `*Store` (`@boberstack/effect/no-store-fakes`).
 
 ```ts
 // good: the scenario is visible in the test file
@@ -55,7 +55,7 @@ layer(TodoRepository.layer.pipe(Layer.provide(PgTest.layer)))("TodoRepository", 
 
 It would take three independent failures:
 
-1. **Structural.** The database URL comes only from the container. Tests use `layer(options)`, never `layerConfig` (`effect/layer-config-only-in-roots`).
+1. **Structural.** The database URL comes only from the container. Tests use `layer(options)`, never `layerConfig` (`@boberstack/effect/layer-config-only-in-roots`).
 2. **No environment.** Tests read no `Config`, so a stray `Config.String("DATABASE_URL")` fails with `ConfigError`.
 3. **Guard.** `PgTest` refuses any host that is not `localhost` or `127.0.0.1`.
 

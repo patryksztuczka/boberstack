@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -176,7 +176,7 @@ function trackedFiles(root, patterns) {
     },
   )
     .split("\n")
-    .filter((line) => line !== "");
+    .filter((line) => line !== "" && existsSync(join(root, line)));
 }
 
 function main() {

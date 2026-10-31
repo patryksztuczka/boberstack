@@ -6,7 +6,7 @@ Retrying, backing off, timing out and running on a schedule are solved problems 
 
 ### retry.while: retry inline, and only transient errors
 
-Declare a retry at the call site with `Effect.retry({ schedule, times, while })`. Retry only the failures you name as transient, so every retry has a `while` or `until` (`effect/retry-requires-while`).
+Declare a retry at the call site with `Effect.retry({ schedule, times, while })`. Retry only the failures you name as transient, so every retry has a `while` or `until` (`@boberstack/effect/retry-requires-while`).
 
 ```ts
 // good

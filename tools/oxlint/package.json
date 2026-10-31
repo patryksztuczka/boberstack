@@ -6,11 +6,11 @@
   "exports": {
     "./anti-slop": "./anti-slop/index.ts",
     "./anti-slop-effect": "./anti-slop/effect/index.ts",
-    "./effect": "./effect/index.ts",
-    "./no-comments": "./no-comments/index.ts",
-    "./suppressions": "./suppressions/index.ts",
-    "./test-hygiene": "./test-hygiene/index.ts",
-    "./frontend": "./frontend/index.ts",
+    "./effect": "./boberstack/effect/index.ts",
+    "./no-comments": "./boberstack/no-comments/index.ts",
+    "./suppressions": "./boberstack/suppressions/index.ts",
+    "./test-hygiene": "./boberstack/test-hygiene/index.ts",
+    "./frontend": "./boberstack/frontend/index.ts",
     "./lint.config": "./lint.config.ts"
   },
   "scripts": {

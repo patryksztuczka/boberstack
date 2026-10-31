@@ -6,7 +6,7 @@ The E channel is how a function says what can go wrong. When every expected fail
 
 ### errors.base: domain errors are `Schema.TaggedError`
 
-Every domain error extends `Schema.TaggedError`. It is yieldable, a handler catches it by tag, and it encodes over HTTP and RPC with the same schema. Nothing extends `Error` or another built-in error class, tests included (`effect/no-error-subclass`).
+Every domain error extends `Schema.TaggedError`. It is yieldable, a handler catches it by tag, and it encodes over HTTP and RPC with the same schema. Nothing extends `Error` or another built-in error class, tests included (`@boberstack/effect/no-error-subclass`).
 
 Pass `{ readonly brand: unique symbol }` as the second type argument. Two error classes with the same fields are otherwise assignable to each other, and the compiler would let one stand in for the other.
 
@@ -23,7 +23,7 @@ return yield * new TodoNotFoundError({ id });
 
 ### errors.home: an error lives in a `*.errors.ts` file
 
-An error that crosses the wire (an HttpApi endpoint's or an Rpc's `error`) lives in `packages/domain/src/<context>/<x>.errors.ts`, beside the contract that names it. An error only the server sees, such as a store's storage failure, lives in the module's `x.errors.ts` under `apps/api/src/modules/<context>/`. `effect/tagged-error-naming` refuses an error class anywhere else.
+An error that crosses the wire (an HttpApi endpoint's or an Rpc's `error`) lives in `packages/domain/src/<context>/<x>.errors.ts`, beside the contract that names it. An error only the server sees, such as a store's storage failure, lives in the module's `x.errors.ts` under `apps/api/src/modules/<context>/`. `@boberstack/effect/tagged-error-naming` refuses an error class anywhere else.
 
 ### errors.naming: the name ends in `Error` and equals the tag
 
@@ -85,8 +85,8 @@ An error that an HttpApi endpoint returns declares its status as the third argum
 
 - A failure is anything a caller could react to. It goes in E as a typed error.
 - A defect is a broken invariant, meaning a bug. Use `Effect.orDie` or `Effect.die`. Defects are not retried and do not appear in the type.
-- `Effect.try` and `Effect.tryPromise` always map the thrown value to one typed error in `catch` (`effect/try-requires-catch`). The `catch` never checks whether the cause is already one of ours: that turns a bug in our code into an expected failure. The `try` thunk only calls the foreign code.
-- Never `throw` inside Effect code (`effect/no-throw-in-effect`), and never `Effect.fail("…")` or `Effect.fail(new Error(…))` (`effect/no-untyped-failure`).
+- `Effect.try` and `Effect.tryPromise` always map the thrown value to one typed error in `catch` (`@boberstack/effect/try-requires-catch`). The `catch` never checks whether the cause is already one of ours: that turns a bug in our code into an expected failure. The `try` thunk only calls the foreign code.
+- Never `throw` inside Effect code (`@boberstack/effect/no-throw-in-effect`), and never `Effect.fail("…")` or `Effect.fail(new Error(…))` (`@boberstack/effect/no-untyped-failure`).
 
 ```ts
 const session =
@@ -130,7 +130,7 @@ effect.pipe(
 );
 ```
 
-Recover by tag, never by class: no `instanceof …Error` (`effect/no-error-instanceof`) and no hand-written `_tag` checks (`anti-slop-effect/no-manual-effect-error-tag`, `no-manual-tag-comparison`). Outside `catchTag`, test a value with `Predicate.isTagged(value, "TodoNotFoundError")` or `Schema.is(TodoNotFoundError)`.
+Recover by tag, never by class: no `instanceof …Error` (`@boberstack/effect/no-error-instanceof`) and no hand-written `_tag` checks (`anti-slop-effect/no-manual-effect-error-tag`, `no-manual-tag-comparison`). Outside `catchTag`, test a value with `Predicate.isTagged(value, "TodoNotFoundError")` or `Schema.is(TodoNotFoundError)`.
 
 A fallback is right only when its value is a valid domain answer. Turning a storage failure into an empty list hides an outage; keep refusal, defect and success distinct.
 

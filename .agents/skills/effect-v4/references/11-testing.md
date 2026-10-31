@@ -32,7 +32,7 @@ layer(TodosService.layer.pipe(Layer.provide(StoreDown)))(
 );
 ```
 
-Running an Effect with `Effect.runPromise` inside a test is refused (`effect/run-only-in-entry-points`): there is no TestClock and no scope, and failures turn into promise rejections.
+Running an Effect with `Effect.runPromise` inside a test is refused (`@boberstack/effect/run-only-in-entry-points`): there is no TestClock and no scope, and failures turn into promise rejections.
 
 ### test.seams: test the seams first
 
@@ -70,7 +70,7 @@ await expect(Effect.runPromise(update(missingId))).rejects.toThrow();
 
 ### test.noTry: no `try` in tests
 
-A `catch` accepts whatever was thrown (`effect/no-try-in-tests`). Assert an Effect's failure with `Effect.flip` or `Effect.exit`, and a pure function's refusal on the `Result` it returns. Restore state with a scoped resource (`Effect.acquireRelease`, a layer), not `finally`.
+A `catch` accepts whatever was thrown (`@boberstack/effect/no-try-in-tests`). Assert an Effect's failure with `Effect.flip` or `Effect.exit`, and a pure function's refusal on the `Result` it returns. Restore state with a scoped resource (`Effect.acquireRelease`, a layer), not `finally`.
 
 ```ts
 const result = parseLimit("0");
@@ -84,7 +84,7 @@ Time-dependent tests use `TestClock.adjust`; random-dependent tests pin `Random.
 
 ### test.flaky: no timeouts, sleeps, polling or silent skips
 
-A test that needs more time, a retry or a skip to go green is reporting a bug, in the code or in the test. Fix the wait; do not hide it. The `test-hygiene/*` lint rules enforce this in every `*.test.ts(x)` (see `tools/oxlint/test-hygiene/README.md`):
+A test that needs more time, a retry or a skip to go green is reporting a bug, in the code or in the test. Fix the wait; do not hide it. The `@boberstack/test-hygiene/*` lint rules enforce this in every `*.test.ts(x)` (see `tools/oxlint/boberstack/test-hygiene/README.md`):
 
 - No per-test timeout, `retry` or `repeats`, not on `it`, `describe`, `layer(…)` or a hook, and no `vi.setConfig`. The timeouts in the package's `vite.config.ts` are the ceiling (the integration project allows 120 s for the Testcontainers start). Every package sets `retry: 0` and `passWithNoTests: false`, and CI refuses `.only`.
 - No real-clock waits: no `setTimeout`, `setInterval`, `node:timers/promises` or `sleep(…)` helper. Await what marks the milestone: a `Deferred`, `Queue.take`, a Stream element, `vi.waitFor`, Testing Library's `findBy*`. Under `it.effect`, `Effect.sleep` runs on the TestClock and fires only after `TestClock.adjust`.

@@ -1,5 +1,12 @@
 import { execFileSync, spawnSync } from "node:child_process";
-import { existsSync, lstatSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  lstatSync,
+  readdirSync,
+  readFileSync,
+  renameSync,
+  writeFileSync,
+} from "node:fs";
 import { extname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -158,17 +165,36 @@ function detectCurrent(root, files) {
     DEFAULT_SCOPE,
   ];
 
-  const viteConfig = join(root, "vite.config.ts");
-  const config = existsSync(viteConfig) ? readFileSync(viteConfig, "utf8") : "";
+  const config = ["tools/oxlint/lint.config.ts", "vite.config.ts"]
+    .flatMap((path) =>
+      existsSync(join(root, path)) ? [readFileSync(join(root, path), "utf8")] : [],
+    )
+    .join("\n");
+
   const ruleIndex = config.indexOf("service-id-matches-path");
   const prefixMatch = ruleIndex === -1 ? null : SERVICE_PREFIX_OPTION.exec(config.slice(ruleIndex));
+
+  const pluginFolder = join(root, "tools", "oxlint", scope.slice(1));
+
+  const plugins = existsSync(pluginFolder)
+    ? readdirSync(pluginFolder, { withFileTypes: true }).flatMap((entry) =>
+        entry.isDirectory() ? [entry.name] : [],
+      )
+    : [];
 
   return {
     name: readJson(join(root, "package.json")).name,
     scope,
     servicePrefix: prefixMatch?.groups.prefix ?? DEFAULT_SERVICE_PREFIX,
+    plugins,
   };
 }
+
+const pluginFolderAhead = (current) =>
+  `/(?:(?:${current.plugins.map(escapeRegExp).join("|")})\\b|\\s)`;
+
+const pluginFolderGuard = (current) =>
+  current.plugins.length === 0 ? "" : `(?!${pluginFolderAhead(current)})`;
 
 function buildReplacements(current, options) {
   const replacements = [];
@@ -176,7 +202,10 @@ function buildReplacements(current, options) {
   if (options.name !== undefined && options.name !== current.name) {
     replacements.push({
       label: "project name",
-      pattern: new RegExp(`(?<![\\w@.-])${escapeRegExp(current.name)}(?![\\w-])`, "g"),
+      pattern: new RegExp(
+        `(?<![\\w@.-])${escapeRegExp(current.name)}(?![\\w-])${pluginFolderGuard(current)}`,
+        "g",
+      ),
       replacement: options.name,
     });
     replacements.push({
@@ -200,6 +229,17 @@ function buildReplacements(current, options) {
       pattern: new RegExp(`(?<![\\w@])${escapeRegExp(current.scope)}/`, "g"),
       replacement: `${options.scope}/`,
     });
+
+    if (current.plugins.length > 0) {
+      replacements.push({
+        label: "lint plugin folder",
+        pattern: new RegExp(
+          `(?<![\\w@.-])${escapeRegExp(current.scope.slice(1))}(?=${pluginFolderAhead(current)})`,
+          "g",
+        ),
+        replacement: options.scope.slice(1),
+      });
+    }
   }
 
   return replacements;
@@ -239,6 +279,26 @@ function planInit(root, options) {
   return { current, changes };
 }
 
+function pluginFolderMove(root, current, options) {
+  if (
+    options.scope === undefined ||
+    options.scope === current.scope ||
+    current.plugins.length === 0
+  ) {
+    return undefined;
+  }
+
+  const from = `tools/oxlint/${current.scope.slice(1)}`;
+  const to = `tools/oxlint/${options.scope.slice(1)}`;
+
+  return existsSync(join(root, from)) ? { from, to } : undefined;
+}
+
+const movedPath = (path, folder) =>
+  folder !== undefined && path.startsWith(`${folder.from}/`)
+    ? `${folder.to}${path.slice(folder.from.length)}`
+    : path;
+
 function describe(counts) {
   return [...counts.entries()].map(([label, count]) => `${count} ${label}`).join(", ");
 }
@@ -265,6 +325,16 @@ function main(argv) {
     process.stdout.write(`init: ${verb} ${change.path} (${describe(change.counts)})\n`);
   }
 
+  const folder = pluginFolderMove(root, current, options);
+
+  if (folder !== undefined) {
+    if (!options.dryRun) renameSync(join(root, folder.from), join(root, folder.to));
+
+    process.stdout.write(
+      `init: ${options.dryRun ? "would move" : "moved"} ${folder.from} to ${folder.to}\n`,
+    );
+  }
+
   if (options.dryRun) {
     process.stdout.write(`init: dry run, ${changes.length} file(s) left untouched\n`);
 
@@ -274,7 +344,7 @@ function main(argv) {
   const vp = join(root, "node_modules", ".bin", "vp");
 
   const formatted = existsSync(vp)
-    ? spawnSync(vp, ["fmt", ...changes.map((change) => change.path)], {
+    ? spawnSync(vp, ["fmt", ...changes.map((change) => movedPath(change.path, folder))], {
         cwd: root,
         encoding: "utf8",
       })
