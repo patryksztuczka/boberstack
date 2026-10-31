@@ -8,6 +8,22 @@ pnpm check
 
 `--name` replaces `boberstack` and the `boberstack` prefix of every service id; `--scope` replaces `@starter`. Then rewrite the Project thesis section of [AGENTS.md](../../AGENTS.md), replace the todos example with your first context ([CONTEXT-MAP.md](../../CONTEXT-MAP.md), the `domain-modeling` skill), and rewrite `docs/user/` for your product.
 
+## GitHub settings
+
+A repository created from a template gets the files, not the settings. Apply them once, with `gh` signed in as an admin of the new repository:
+
+```sh
+pnpm github:apply
+```
+
+It makes squash the only merge method, with the pull request title as the commit subject and an empty body, and deletes a branch once its pull request merges. It creates the `default-branch` ruleset from `.github/rulesets/default-branch.json`, or updates it when one with that name exists:
+
+- The default branch, `master`, changes only through a pull request, and cannot be deleted or force-pushed.
+- A pull request merges when `CI OK` and `Conventional PR title` pass and no review thread is open. No approval is required; raise `required_approving_review_count` when a second person joins.
+- A repository admin can bypass every rule, including a direct push to `master`.
+
+Then delete `scripts/github-apply.mjs`, `.github/rulesets/` and the `github:apply` script in `package.json`. Rulesets on a private repository of a personal account need GitHub Pro.
+
 ## Keep or cut
 
 The starter is a working project. Delete what you will not use on day one. Lint, the type checker and the tests point at whatever still depends on what you removed. After each cut run `pnpm install`, then `pnpm verify` and `pnpm test:integration`, and update `AGENTS.md`, `CONTEXT-MAP.md` and the pages in `docs/user/` that describe what you cut.

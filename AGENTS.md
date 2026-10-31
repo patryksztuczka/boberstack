@@ -39,7 +39,7 @@ When a project starts from this template, rewrite this section on day one. `pnpm
 | `pnpm check:knip`                                     | fails on unused files, exports and dependencies                                                                                                  |
 | `pnpm env:check`                                      | `varlock load`: validates the environment, `.env.local` included, against `.env.schema`                                                          |
 | `pnpm check:suppressions`                             | counts lint and type-check suppressions against `suppressions.baseline.json`; reports growth, never fails                                        |
-| `pnpm check:changed`                                  | format, lint, typecheck and unit tests for the files changed since `main`                                                                        |
+| `pnpm check:changed`                                  | format, lint, typecheck and unit tests for the files changed since `master`                                                                      |
 | `pnpm dev:doctor`                                     | checks the running dev stack and Mailpit, and creates and verifies the demo user `demo@example.com` / `demo12345` through the mail               |
 | `pnpm dev:status`, `pnpm dev:stop`, `pnpm db:down`    | show or stop the dev stack of this checkout; `db:down` also stops its Postgres                                                                   |
 | `pnpm cli <command>`                                  | runs `apps/cli` (`db migrate`, `openapi`, `health`) against this checkout's database and api                                                     |

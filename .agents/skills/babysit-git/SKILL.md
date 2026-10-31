@@ -32,4 +32,4 @@ Start every branch name with one of these prefixes:
 
 ## Never without the user asking
 
-Force-push, rewrite published history, delete a branch you did not create, or push to `main`.
+Force-push, rewrite published history, delete a branch you did not create, or push to `master`.
