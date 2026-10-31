@@ -14,6 +14,7 @@ create(42);
 | ----------------------------------------------------------- | --------------------------------------------------------------------------- |
 | `oxlint-disable`, `-next-line`, `-line` (and `eslint-` too) | at least one rule name, then ` -- <reason>`                                 |
 | `@ts-expect-error`                                          | a reason after it (`--` optional)                                           |
+| `@effect-diagnostics`, `@effect-diagnostics-next-line`      | at least one `<rule>:off`, then ` -- <reason>`                              |
 | `@ts-ignore`, `@ts-nocheck`                                 | banned: use `@ts-expect-error <reason>`, which fails once the error is gone |
 
 Two more checks back the rule up:

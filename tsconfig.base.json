@@ -51,15 +51,33 @@
           "unknownInEffectCatch": "error",
           "extendsNativeError": "error",
           "instanceOfSchema": "error",
+          "globalFetch": "error",
           "globalFetchInEffect": "error",
+          "globalDate": "error",
           "globalDateInEffect": "error",
+          "globalRandom": "error",
           "globalRandomInEffect": "error",
+          "globalTimers": "error",
           "globalTimersInEffect": "error",
+          "globalConsole": "error",
           "globalConsoleInEffect": "error",
+          "processEnv": "error",
           "processEnvInEffect": "error",
+          "cryptoRandomUUID": "error",
           "cryptoRandomUUIDInEffect": "error",
+          "nodeBuiltinImport": "error",
           "abortControllerInEffect": "error"
         },
+        "overrides": [
+          {
+            "include": ["**/vite.config.ts"],
+            "options": { "diagnosticSeverity": { "processEnv": "off" } }
+          },
+          {
+            "include": ["**/tools/oxlint/**/*.ts"],
+            "options": { "diagnosticSeverity": { "nodeBuiltinImport": "off" } }
+          }
+        ],
         "allowedUnstableApis": [
           "effect/http",
           "effect/http-api",

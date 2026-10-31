@@ -7,6 +7,8 @@ const expectErrorPattern = /^@ts-expect-error(?=\s|$)(?<rest>.*)$/su;
 
 const ignorePattern = /^@ts-(?:ignore|nocheck)\b/u;
 
+const effectDiagnosticsPattern = /^@effect-diagnostics(?:-next-line)?(?=\s|$)(?<rest>.*)$/su;
+
 const textOf = (comment: Comment): string =>
   comment.value
     .split("\n")
@@ -36,6 +38,8 @@ export const requireSuppressionReasonRule = defineRule({
         "Say why the rule does not apply here, after ` -- `: `// oxlint-disable-next-line <plugin/rule> -- <why>`. If you cannot say why, fix the code instead; `pnpm check:suppressions` counts every disable (see tools/oxlint/boberstack/suppressions/README.md).",
       expectErrorReason:
         "Say which error you expect and why it is fine: `// @ts-expect-error <why>`. If you cannot, fix the type instead (see tools/oxlint/boberstack/suppressions/README.md).",
+      effectDiagnosticsReason:
+        "Name the diagnostic and say why it does not apply here: `// @effect-diagnostics-next-line <rule>:off -- <why>`. If you cannot say why, fix the code instead (see tools/oxlint/boberstack/suppressions/README.md).",
       ignore:
         "`@ts-ignore` and `@ts-nocheck` hide every error, including future ones. Fix the type, or use `// @ts-expect-error <why>` so the line fails once the error is gone (see tools/oxlint/boberstack/suppressions/README.md).",
     },
@@ -56,6 +60,16 @@ export const requireSuppressionReasonRule = defineRule({
       if (expectError !== null) {
         if ((expectError.groups?.["rest"] ?? "").replace(/^\s*--/u, "").trim() === "") {
           context.report({ loc: comment.loc, messageId: "expectErrorReason" });
+        }
+
+        return;
+      }
+
+      const effectDiagnostics = effectDiagnosticsPattern.exec(text);
+
+      if (effectDiagnostics !== null) {
+        if (disableProblem(effectDiagnostics.groups?.["rest"] ?? "") !== undefined) {
+          context.report({ loc: comment.loc, messageId: "effectDiagnosticsReason" });
         }
 
         return;
