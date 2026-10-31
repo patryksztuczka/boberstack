@@ -21,6 +21,8 @@ Write the title from the final diff, the way a commit subject tells a human what
 
 The description follows [`.github/pull_request_template.md`](../../../.github/pull_request_template.md): its Problem, Change and Verification sections, in that order. The comment under each heading says what the section holds. Write each section to that brief from the final diff, then delete the comments.
 
+When the diff makes a change listed under "Needs owner sign-off" in AGENTS.md, start the description with a `## Needs sign-off` section above Problem: one line per change, saying what changed and why. The owner reads that list first.
+
 Screenshots and recordings go into the description by dragging them into the GitHub editor. Never commit them. Show development screens with synthetic data only.
 
 Leave `Co-Authored-By` trailers and other AI attribution footers out of the title and description.

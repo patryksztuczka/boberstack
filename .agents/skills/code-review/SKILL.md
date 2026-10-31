@@ -62,7 +62,7 @@ Each smell reads _what it is_ → _how to fix_; match it against the diff:
 
 ### 4. List the guarded paths the diff touches
 
-Run `git diff --name-only <fixed-point>...HEAD` and pick out every file under a path that needs owner sign-off (AGENTS.md, "Needs owner sign-off"): `vite.config.ts` lint and fmt blocks, `tools/oxlint/`, `tsconfig.base.json`, `.vite-hooks/`, `.github/`, `.claude/settings.json`, `.claude/hooks/`, `suppressions.baseline.json`, `knip.json`, `pnpm-workspace.yaml`, any `package.json` dependency change, and `apps/api/migrations/` files that already existed at the fixed point. For each, say in one line whether the change loosens a check (a rule turned off, a path ignored, a threshold raised, a hook step removed). This list goes first in the report, above every axis, so a loosened guard cannot hide under a long review.
+Run `git diff --name-only <fixed-point>...HEAD` and pick out every file under a path that needs owner sign-off (AGENTS.md, "Needs owner sign-off" and "Ask first"): `vite.config.ts` lint and fmt blocks, `tools/oxlint/`, `tsconfig.base.json`, `.vite-hooks/`, `.github/`, `.claude/settings.json`, `.claude/hooks/`, `suppressions.baseline.json`, `knip.json`, `pnpm-workspace.yaml`, any `package.json` dependency change, and `apps/api/migrations/` files that already existed at the fixed point. For each, say in one line whether the change loosens a check (a rule turned off, a path ignored, a threshold raised, a hook step removed). This list goes first in the report, above every axis, so a loosened guard cannot hide under a long review.
 
 ### 5. Spawn the sub-agents in parallel
 

@@ -73,24 +73,36 @@ Git hooks come from Vite+: `pre-commit` runs `vp staged`, `commit-msg` checks th
 
 ## Autonomy
 
+The owner reviews after the fact, so an agent does not wait for permission on work that a revert can undo. Make the call, do the work, then say what you did and why. Ask first only when a step cannot be undone or reaches outside this repository. What a feature does and who it is for comes from the owner; how it is built is yours.
+
 ### On your own
 
-Read anything; run every command in the Commands table except `pnpm run deploy`; edit code, tests, migrations you are adding, docs and skills; add a lint rule or raise a diagnostic to `error`; start and stop the local dev stack; create branches and commits when the user asked for the change.
+Read anything; run every command in the Commands table except `pnpm run deploy`; edit code, tests, migrations you are adding, docs and skills; add a lint rule or raise a diagnostic to `error`; start and stop the local dev stack; create branches and commits when the user asked for the change. The changes under "Needs owner sign-off" are yours to make too, flagged as that section says.
+
+If the repo's rules and the task disagree, do the version that keeps the rule and finish it. End your reply with the disagreement and what you recommend changing.
+
+### Ask first
+
+These cannot be undone with a revert, or they weaken the checks the after-the-fact review relies on:
+
+- `pnpm run deploy` to a shared stage, `alchemy destroy`, and any deploy whose plan replaces or deletes a resource.
+- Running a migration that drops or rewrites data against any database but this checkout's local one.
+- Loosening a check in `.vite-hooks/`, `.github/`, `.claude/settings.json` or `.claude/hooks/`.
 
 ### Never
 
 - Never `--no-verify`, `git commit -n`, `HUSKY=0`, `VP_GIT_HOOKS=0` or another hook bypass. `.claude/hooks/block-no-verify.mjs` blocks them. A failing hook is work: fix the cause.
-- Never weaken a check to make it pass: no deleted or skipped test, no raised timeout, no `oxlint-disable` without a reason on the same line, no `@ts-expect-error` without one.
+- Never weaken a check to make your own change pass: no deleted or skipped test, no raised timeout, no `oxlint-disable` without a reason on the same line, no `@ts-expect-error` without one.
 - Never commit secrets, `.env*` files, generated output or customer data.
 - Never force-push, rewrite published history, merge, or deploy unless the user asks.
-- If the repo's rules and the task disagree, stop and ask one question with a recommendation. Keep doing independent work while you wait.
 
 ### Needs owner sign-off
 
+The owner signs these off when reviewing the pull request, not before you start. Make each one when the task needs it, in its own commit whose body says why, and list it under `## Needs sign-off` at the top of the pull request description (the `file-pr` skill). The `code-review` skill lists changes to these paths above everything else.
+
 - Adding, removing or changing the version of a dependency.
-- Any change that loosens a check: the lint config in `vite.config.ts` and `tools/oxlint/`, `tsconfig.base.json` diagnostics, `knip.json`, `suppressions.baseline.json`, `.vite-hooks/`, `.github/`, `.claude/settings.json` and `.claude/hooks/`. The `code-review` skill lists changes to these paths above everything else.
+- Any change that loosens a check in the lint config in `vite.config.ts` and `tools/oxlint/`, `tsconfig.base.json` diagnostics, `knip.json` or `suppressions.baseline.json`, because the check is wrong and not because your change fails it.
 - Adding an entry point or a composition root to the lint allow lists.
-- `pnpm run deploy` to a shared stage, `alchemy destroy`, and any deploy whose plan replaces or deletes a resource.
 - A migration that drops or rewrites data. Migrations are append-only: never edit one that has been applied.
 - Changing an ADR's decision. Write a new ADR that supersedes it.
 - Widening CORS, cookie scope, auth providers or trusted origins.
