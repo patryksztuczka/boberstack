@@ -13,7 +13,7 @@ When a project starts from this template, rewrite this section on day one. `pnpm
 ## General rules
 
 - Read [CONTEXT-MAP.md](CONTEXT-MAP.md) and the context's `GLOSSARY.md` before naming anything. Code uses the glossary's words.
-- Anything that needs a store, the database, the network or secure randomness is an Effect service; a module-level function is pure.
+- Features are service methods in `apps/api/src/modules/<context>/`; transports stay thin. An HttpApi or RPC handler decodes input, calls one service method and maps its errors, if they are not already wire errors. Pure work (a slug, a label, a calculation) can be a plain function next to the service.
 - Before writing or reviewing Effect code, load the `effect-v4` skill. Before using an Effect, Alchemy or better-auth API you have not seen in this repo, read it at the pinned version: `pnpm sources:fetch` clones the tagged sources into `.repos/` (gitignored). Do not invent APIs.
 - SQL lives only in `apps/api/src/platform/database/`, and a store is tested on real Postgres, never with an in-memory fake (root ADR 0004).
 - No prose comments in code. A workaround for someone else's bug keeps a `VENDOR:` comment (root ADR 0005).
