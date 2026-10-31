@@ -45,6 +45,7 @@ When a project starts from this template, rewrite this section on day one. `pnpm
 | `pnpm dev:doctor`                                     | checks the running dev stack and Mailpit, and creates and verifies the demo user `demo@example.com` / `demo12345` through the mail               |
 | `pnpm dev:status`, `pnpm dev:stop`, `pnpm db:down`    | show or stop the dev stack of this checkout; `db:down` also stops its Postgres                                                                   |
 | `pnpm cli <command>`                                  | runs `apps/cli` (`db migrate`, `openapi`, `health`) against this checkout's database and api                                                     |
+| `pnpm pr-evidence <files>`                            | uploads screenshots and recordings to the R2 bucket and prints the Markdown for a pull request ([pr-evidence](docs/operations/pr-evidence.md))   |
 | `pnpm sources:fetch`                                  | clones the pinned sources of Effect, Alchemy and better-auth into `.repos/`                                                                      |
 | `pnpm run deploy`                                     | `alchemy deploy` of `apps/infra/alchemy.run.ts`. Plain `pnpm deploy` is pnpm's own command                                                       |
 | `pnpm init:project -- --name <name> --scope <@scope>` | renames the project, the package scope and the service-id prefix                                                                                 |

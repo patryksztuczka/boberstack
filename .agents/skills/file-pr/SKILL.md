@@ -23,7 +23,9 @@ The description follows [`.github/pull_request_template.md`](../../../.github/pu
 
 When the diff makes a change listed under "Needs owner sign-off" in AGENTS.md, start the description with a `## Needs sign-off` section above Problem: one line per change, saying what changed and why. The owner reads that list first.
 
-Screenshots and recordings go into the description by dragging them into the GitHub editor. Never commit them. Show development screens with synthetic data only.
+Upload the screenshots and recordings the Verification section shows with `pnpm -s pr-evidence <files>` ([`scripts/pr-evidence.mjs`](scripts/pr-evidence.mjs)) and paste the Markdown it prints. A recording becomes an MP4 behind a still of its last frame, because GitHub plays only videos uploaded through its own editor. The bucket is public: upload development screens with synthetic data and nothing from production. Never commit evidence.
+
+When `pr-evidence` fails because the bucket does not exist, list the evidence paths under Verification instead, and tell the user once that [`docs/operations/pr-evidence.md`](../../../docs/operations/pr-evidence.md) would put them in the pull request. Do not run `pr-evidence setup` yourself unless the owner asks: it creates a public bucket on the project's Cloudflare account.
 
 Leave `Co-Authored-By` trailers and other AI attribution footers out of the title and description.
 

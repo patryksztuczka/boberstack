@@ -24,8 +24,9 @@ a migration, a secret to set in the Alchemy stack, a deploy step. -->
 result, and for a UI change the verify-web evidence (screenshot, log excerpt). Write
 "inconclusive" next to anything you could not run, and say why. "Tests pass" alone is not evidence,
 and pnpm verify does not replace checking the affected behavior. Say whether you ran
-pnpm test:integration. Drag screenshots or recordings into this description and never commit them.
-Show synthetic data only. Example:
+pnpm test:integration. Upload screenshots and recordings with pnpm -s pr-evidence <files> and paste
+the Markdown it prints, or drag them into this description. Never commit them. Show synthetic data
+only. Example:
 
 $ pnpm --filter @boberstack/api test
       Tests  6 passed (6)

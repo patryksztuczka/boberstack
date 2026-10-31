@@ -359,6 +359,9 @@ function main(argv) {
   process.stdout.write(
     `init: ${changes.length} file(s) updated and formatted. Run pnpm install to refresh pnpm-lock.yaml, then pnpm verify.\n`,
   );
+  process.stdout.write(
+    "init: next, follow docs/operations/make-it-yours.md. Ask the owner whether to set up the R2 bucket for pull request screenshots and recordings (docs/operations/pr-evidence.md).\n",
+  );
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

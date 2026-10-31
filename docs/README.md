@@ -15,6 +15,7 @@ The [README](../README.md) has the quickstart. The runbooks:
 - [Deploy](operations/deploy.md): Alchemy, Cloudflare, Neon and the mail transport
 - [CI](operations/ci.md): the stages and what each one checks
 - [Make it yours](operations/make-it-yours.md): rename the project, then keep or cut each part
+- [Pull request evidence](operations/pr-evidence.md): upload screenshots and recordings to R2 and paste them into a pull request
 
 ## I work on this repository
 
