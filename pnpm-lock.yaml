@@ -76,6 +76,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 26.6.6
+      agent-browser:
+        specifier: 0.41.0
+        version: 0.41.0
       knip:
         specifier: 6.44.0
         version: 6.44.0
@@ -3382,6 +3385,11 @@ packages:
   acorn@8.19.0:
     resolution: {integrity: sha512-oJlA3XiRm7Cyk6qFD2Jn8ak9B7jSy0qy00ADO3+8dpT0LSjFihQYv4C02LFCSYJV3Q37xYwwRy5m+IpIiUzqWw==}
     engines: {node: '>=0.4.0'}
+    hasBin: true
+
+  agent-browser@0.41.0:
+    resolution: {integrity: sha512-XJtBouE5+gGUKyZU1COSmnxU6MKIlmLE2oEyHzl0ohLVOhuRjx9kqQ9vOqxiiW/Gbvi4JPF4Oz777Mn3FGiHAA==}
+    engines: {node: '>=24.0.0', pnpm: '>=11.0.0'}
     hasBin: true
 
   alchemy@2.0.0-beta.84:
@@ -7527,6 +7535,8 @@ snapshots:
       event-target-shim: 5.0.1
 
   acorn@8.19.0: {}
+
+  agent-browser@0.41.0: {}
 
   alchemy@2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/vitest@4.0.7(effect@4.0.7)(vitest@5.0.5))(@types/node@26.6.6)(@types/react@19.3.0)(effect@4.0.7)(jiti@2.7.0)(typescript@7.0.2)(ws@8.22.0):
     dependencies:

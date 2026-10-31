@@ -54,41 +54,38 @@ Open the feature file for what you changed and follow its "Drive" steps:
 Use the browser you have, in this order:
 
 1. The host's browser tools (in-app preview, Claude in Chrome). Open a new tab on `urls.web`.
-2. If they time out or are missing, headless Chrome through [headless-chrome.mjs](headless-chrome.mjs). It needs Chrome on the machine and nothing from npm. Write the script under `.scratch/verify/` and run it with `node`:
+2. If they time out or are missing, `agent-browser`, a devDependency of this repo that `pnpm -s browser` runs. It uses the Chrome on the machine; without one, `pnpm -s browser install` downloads Chrome for Testing. Before the first command, load its guide for the installed version with `pnpm -s browser skills get core`. Give the run its own session, so you never drive another agent's browser:
 
-```js
-import { readFileSync } from "node:fs";
+```sh
+export AGENT_BROWSER_SESSION="$(pnpm -s browser session id --scope worktree --prefix verify-web)"
+WEB="$(node -p 'require("./.dev/state.json").urls.web')"
+EVIDENCE="$PWD/.scratch/evidence"
 
-import { openBrowser } from "../../.agents/skills/verify-web/headless-chrome.mjs";
-
-const { urls } = JSON.parse(readFileSync(".dev/state.json", "utf8"));
-const browser = await openBrowser(".scratch/evidence");
-
-try {
-  await browser.goto(`${urls.web}/sign-in`);
-  await browser.type("#email", "demo@example.com");
-  await browser.type("#password", "demo12345");
-  await browser.click("form button[type=submit]");
-  await browser.waitFor("location.pathname === '/todos'", "redirect to /todos");
-  console.log(await browser.screenshot("todos"));
-  console.log(browser.console);
-} finally {
-  browser.close();
-}
+pnpm -s browser open "$WEB/sign-in"
+pnpm -s browser record start "$EVIDENCE/sign-in.mp4" --cursor
+pnpm -s browser snapshot -i
+pnpm -s browser fill @e1 "demo@example.com"
+pnpm -s browser fill @e2 "demo12345"
+pnpm -s browser click @e3
+pnpm -s browser wait --url "**/todos"
+pnpm -s browser screenshot "$EVIDENCE/todos.png"
+pnpm -s browser record stop
+pnpm -s browser errors
+pnpm -s browser console
 ```
 
-Each run gets a fresh profile, so you start signed out. `browser.console` collects page errors and warnings.
+Take the refs from your own `snapshot -i`, not from this example, and snapshot again after every change on the page. Give `screenshot` an absolute path: a lone argument that starts with `.` is read as a CSS selector, and the image lands in a temporary directory. A session without `--restore` starts with an empty profile, so you start signed out. `errors` and `console` print the page errors and the console output.
 
 Drive it like a user, not like a test. Type into the field, click the button, wait for what a person would see. Do the thing twice when the feature file says so. Change one thing at a time and look at the screen after each step.
 
 ## 4. Evidence
 
-Save screenshots to `.scratch/evidence/` (gitignored). In your final message, quote:
+Save screenshots and recordings to `.scratch/evidence/` (gitignored). In your final message, quote:
 
 - the doctor output,
 - each step you drove and what you saw, in one line each,
-- the screenshot paths, embedded as images when the host renders them,
-- the lines from `.dev/logs/api.log` or `.dev/logs/web.log` that cover your requests, and any error or warning there or in `browser.console`.
+- the screenshot and recording paths, embedded when the host renders them,
+- the lines from `.dev/logs/api.log` or `.dev/logs/web.log` that cover your requests, and any error or warning there or in `agent-browser errors` and `console`.
 
 If you could not drive a step, say which and why. "Verified" without this evidence is a claim, not a result.
 
@@ -96,7 +93,7 @@ If you could not drive a step, say which and why. "Verified" without this eviden
 
 - Stop a `pnpm dev` you started: `pnpm dev:stop`. Leave one you reused running.
 - The Postgres container stays up between runs. Stop it with `node scripts/dev.mjs db:down`; its volume and the demo user survive.
-- Close browser tabs you opened. `headless-chrome.mjs` deletes its profile on `close()`.
+- Close browser tabs you opened, and the `agent-browser` session with `pnpm -s browser close`.
 - Remove your test todos only when the feature file asks for a clean list.
 
 ## When the app lies
