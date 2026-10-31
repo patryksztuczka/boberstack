@@ -28,7 +28,8 @@
     "dev:status": "node scripts/dev.mjs status",
     "cli": "node scripts/dev.mjs cli",
     "github:apply": "node scripts/github-apply.mjs",
-    "browser": "agent-browser"
+    "browser": "agent-browser",
+    "pr-evidence": "node .agents/skills/file-pr/scripts/pr-evidence.mjs"
   },
   "devDependencies": {
     "@effect/tsgo": "catalog:",

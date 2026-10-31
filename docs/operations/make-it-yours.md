@@ -24,6 +24,12 @@ It makes squash the only merge method, with the pull request title as the commit
 
 Then delete `scripts/github-apply.mjs`, `.github/rulesets/` and the `github:apply` script in `package.json`. Rulesets on a private repository of a personal account need GitHub Pro.
 
+## Screenshots and recordings in pull requests
+
+An agent cannot drag a file into a pull request, so without help its `verify-web` screenshots and recordings stay on its disk. The starter ships an upload to a public Cloudflare R2 bucket that prints Markdown to paste ([pr-evidence.md](pr-evidence.md)), but not the bucket.
+
+An agent setting up the project asks the owner, before the "Keep or cut" list, whether to set it up, and says what it costs: a public bucket on the project's Cloudflare account, objects deleted after 180 days, and synthetic data only. With a yes, the owner runs `pnpm -s pr-evidence setup` once and the agent signs in with `wrangler login`. With a no, the agent deletes the pieces listed under "Take it out" on that page.
+
 ## Keep or cut
 
 The starter is a working project. Delete what you will not use on day one. Lint, the type checker and the tests point at whatever still depends on what you removed. After each cut run `pnpm install`, then `pnpm verify` and `pnpm test:integration`, and update `AGENTS.md`, `CONTEXT-MAP.md` and the pages in `docs/user/` that describe what you cut.

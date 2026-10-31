@@ -87,6 +87,8 @@ Save screenshots and recordings to `.scratch/evidence/` (gitignored). In your fi
 - the screenshot and recording paths, embedded when the host renders them,
 - the lines from `.dev/logs/api.log` or `.dev/logs/web.log` that cover your requests, and any error or warning there or in `agent-browser errors` and `console`.
 
+For a pull request, upload the same files with `pnpm -s pr-evidence` (the `file-pr` skill).
+
 If you could not drive a step, say which and why. "Verified" without this evidence is a claim, not a result.
 
 ## 5. Cleanup
