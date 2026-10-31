@@ -30,10 +30,6 @@ Reproduce the original mistake against the new check and paste the failing outpu
 
 Then fix every existing violation in the repo, so the check lands green.
 
-## 4. Record it
-
-Add or update the row in the "Rules and what enforces them" table in AGENTS.md: the rule, then the enforcer. If you had to stop at level 6, say so in the row; that row is a candidate for a future check.
-
 ## Report
 
 End with the rule, the enforcer, the failing output from step 3 and the files changed. Do not say the correction is fixed without that output.

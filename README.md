@@ -18,7 +18,7 @@
 
 ## Why a beaver
 
-A beaver does not ask the river to behave; it builds a dam that holds. This starter works the same way. Every rule that a tool can check is a lint rule, a type, an Effect diagnostic, a hook or a CI step, so a mistake fails `pnpm verify` on your machine instead of waiting for a reviewer. Whatever no tool can check is written down once, short, in [AGENTS.md](AGENTS.md), together with the table of which check enforces which rule.
+A beaver does not ask the river to behave; it builds a dam that holds. This starter works the same way. Every rule that a tool can check is a lint rule, a type, an Effect diagnostic, a hook or a CI step, so a mistake fails `pnpm verify` on your machine instead of waiting for a reviewer. Whatever no tool can check is written down once, short, in [AGENTS.md](AGENTS.md).
 
 It ships a working product, not a hello world: a todo list behind sign-in, served over HttpApi and Effect RPC, stored in Postgres, tested against a real database, and a welcome page with the beaver. Each piece shows how that layer is meant to be written, and each one can be cut (see [Keep or cut](#keep-or-cut)).
 
@@ -112,7 +112,7 @@ pnpm install
 pnpm check
 ```
 
-`--name` replaces `boberstack` and the `boberstack` prefix of every service id; `--scope` replaces `@starter`. Then rewrite the Project thesis and Architecture sections of [AGENTS.md](AGENTS.md), and replace the todos example with your first context ([CONTEXT-MAP.md](CONTEXT-MAP.md), the `domain-modeling` skill).
+`--name` replaces `boberstack` and the `boberstack` prefix of every service id; `--scope` replaces `@starter`. Then rewrite the Project thesis section of [AGENTS.md](AGENTS.md), and replace the todos example with your first context ([CONTEXT-MAP.md](CONTEXT-MAP.md), the `domain-modeling` skill).
 
 ## Keep or cut
 

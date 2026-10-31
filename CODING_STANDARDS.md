@@ -7,4 +7,4 @@ The rules code in this repository is written and reviewed against. Each has one 
 - **Docs**: [docs/README.md](docs/README.md#where-a-sentence-belongs) says where a sentence belongs. Prose follows the [`unslop` skill](.agents/skills/unslop/SKILL.md).
 - **Comments**: code keeps only `VENDOR:` comments about defects in software we do not own, plus the `SAFETY:`, `BRIDGE:` and `QUARANTINE:` markers and tool directives ([root ADR 0005](docs/internals/system/adr/0005-keep-only-comments-about-other-peoples-defects.md)), enforced by `@boberstack/no-comments/no-comments`.
 - **Commits and pull requests**: Conventional Commit subjects from [`scripts/conventional-commit.mjs`](scripts/conventional-commit.mjs); the [`babysit-git`](.agents/skills/babysit-git/SKILL.md) and [`file-pr`](.agents/skills/file-pr/SKILL.md) skills.
-- **Dependencies**: exact versions only, shared ones in the pnpm catalog ([AGENTS.md](AGENTS.md#pins)).
+- **Dependencies**: exact versions only (`pnpm check:deps`), shared ones in the pnpm catalog.
