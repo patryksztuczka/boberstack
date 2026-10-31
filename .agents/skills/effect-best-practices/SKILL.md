@@ -1,9 +1,9 @@
 ---
-name: effect-v4
-description: House rules for Effect v4 code in this repository. Use whenever you write, review or refactor Effect code (apps/api, apps/cli, apps/infra, packages/domain, apps/web/src/runtime.ts and feature api hooks): services and layers, typed errors, Schema, Config, HttpApi and RPC handlers, repositories, retries, entry points, and @effect/vitest tests. Also use when a lint message links to .agents/skills/effect-v4/references/.
+name: effect-best-practices
+description: House rules for Effect v4 code in this repository. Use whenever you write, review or refactor Effect code (apps/api, apps/cli, apps/infra, packages/domain, apps/web/src/runtime.ts and feature api hooks): services and layers, typed errors, Schema, Config, HttpApi and RPC handlers, repositories, retries, entry points, and @effect/vitest tests. Also use when a lint message links to .agents/skills/effect-best-practices/references/.
 ---
 
-# Effect v4
+# Effect best practices
 
 How Effect code is written here. Each rule has an id (`errors.naming`); cite it in a review finding. The rules oxlint enforces are listed in [13](references/13-lint-rules.md), so a review spends its attention on the rest.
 

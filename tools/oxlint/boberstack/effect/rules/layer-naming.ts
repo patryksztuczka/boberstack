@@ -49,7 +49,7 @@ export const layerNamingRule = defineRule({
     type: "suggestion",
     docs: { description: "Enforce `layer` / `layer<Suffix>` layer names." },
     messages: {
-      name: "Name this layer `layer` or `layer<Suffix>` (layerNoDeps, layerConfig, layerTest), not `{{name}}` (see .agents/skills/effect-v4/references/04-services-and-layers.md).",
+      name: "Name this layer `layer` or `layer<Suffix>` (layerNoDeps, layerConfig, layerTest), not `{{name}}` (see .agents/skills/effect-best-practices/references/04-services-and-layers.md).",
     },
     schema: [
       {

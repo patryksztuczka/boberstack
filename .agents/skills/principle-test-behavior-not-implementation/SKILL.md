@@ -23,4 +23,4 @@ Keep a test that catches the first edit and survives the second. Rewrite or dele
 - A store's contract runs on real Postgres (`tl.postgres`, root ADR 0004). A `Layer.mock` stands in only for what the code under test does not own (`tl.mocks`). The payload a mocked external service receives is behavior, because that service observes it.
 - When the promise is "never does X", pair the test with a case where X happens, so the test shows it can see X.
 
-The rules for writing the test itself are in the `effect-v4` skill, references 11 and 12.
+The rules for writing the test itself are in the `effect-best-practices` skill, references 11 and 12.

@@ -17,7 +17,7 @@ export const noErrorInstanceofRule = defineRule({
     docs: { description: "Disallow `instanceof` checks against error classes." },
     messages: {
       errorInstanceof:
-        '`instanceof {{name}}` recovers by class, and treats a defect that happens to be one as an expected failure. Recover with `Effect.catchTag` / `catchTags`, test a value with `Predicate.isTagged("…")` or `Schema.is(…)`, or use `Predicate.isError` for a foreign value (see .agents/skills/effect-v4/references/02-typed-errors.md).',
+        '`instanceof {{name}}` recovers by class, and treats a defect that happens to be one as an expected failure. Recover with `Effect.catchTag` / `catchTags`, test a value with `Predicate.isTagged("…")` or `Schema.is(…)`, or use `Predicate.isError` for a foreign value (see .agents/skills/effect-best-practices/references/02-typed-errors.md).',
     },
     schema: [],
   },

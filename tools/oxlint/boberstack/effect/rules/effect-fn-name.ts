@@ -42,11 +42,11 @@ export const effectFnNameRule = defineRule({
     docs: { description: "Require literal `<Service>.<method>` span names for Effect.fn." },
     messages: {
       missing:
-        "Give Effect.fn a span name{{expected}}: unnamed functions produce no span (see .agents/skills/effect-v4/references/08-observability.md).",
+        "Give Effect.fn a span name{{expected}}: unnamed functions produce no span (see .agents/skills/effect-best-practices/references/08-observability.md).",
       nonLiteral:
-        "The Effect.fn span name must be a string literal (see .agents/skills/effect-v4/references/08-observability.md).",
+        "The Effect.fn span name must be a string literal (see .agents/skills/effect-best-practices/references/08-observability.md).",
       mismatch:
-        'Span name should be "{{expected}}" to match the service and method (see .agents/skills/effect-v4/references/08-observability.md).',
+        'Span name should be "{{expected}}" to match the service and method (see .agents/skills/effect-best-practices/references/08-observability.md).',
     },
     schema: [
       {

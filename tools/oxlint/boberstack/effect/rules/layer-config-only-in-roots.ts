@@ -36,7 +36,7 @@ export const layerConfigOnlyInRootsRule = defineRule({
     docs: { description: "Restrict use of `layerConfig` layers to composition roots." },
     messages: {
       notRoot:
-        "`{{object}}.layerConfig` reads the environment. Only composition roots (the Worker, app.layer.ts, the CLI entry point and its commands) may use it; use `layer(options)` here (see .agents/skills/effect-v4/references/07-configuration.md).",
+        "`{{object}}.layerConfig` reads the environment. Only composition roots (the Worker, app.layer.ts, the CLI entry point and its commands) may use it; use `layer(options)` here (see .agents/skills/effect-best-practices/references/07-configuration.md).",
     },
     schema: [
       {

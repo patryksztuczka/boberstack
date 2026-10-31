@@ -37,10 +37,10 @@ export const taggedErrorNamingRule = defineRule({
     docs: { description: "Enforce naming and placement of tagged error classes." },
     messages: {
       suffix:
-        "Error class `{{name}}` must end in `Error` (see .agents/skills/effect-v4/references/02-typed-errors.md).",
-      tag: 'Error class `{{name}}` must use `"{{name}}"` as its tag, not `"{{tag}}"` (see .agents/skills/effect-v4/references/02-typed-errors.md).',
+        "Error class `{{name}}` must end in `Error` (see .agents/skills/effect-best-practices/references/02-typed-errors.md).",
+      tag: 'Error class `{{name}}` must use `"{{name}}"` as its tag, not `"{{tag}}"` (see .agents/skills/effect-best-practices/references/02-typed-errors.md).',
       location:
-        "Declare error class `{{name}}` in the module's errors file (matching /{{pattern}}/) (see .agents/skills/effect-v4/references/05-project-structure.md).",
+        "Declare error class `{{name}}` in the module's errors file (matching /{{pattern}}/) (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
     },
     schema: [
       {

@@ -2,7 +2,7 @@
 
 The rules code in this repository is written and reviewed against. Each has one home; this file only points to it.
 
-- **Effect code**: the [`effect-v4` skill](.agents/skills/effect-v4/SKILL.md). Each rule carries an id such as `errors.naming`; cite it in a review finding. The rules oxlint enforces are listed in [13-lint-rules.md](.agents/skills/effect-v4/references/13-lint-rules.md), so a review spends its attention on the rest.
+- **Effect code**: the [`effect-best-practices` skill](.agents/skills/effect-best-practices/SKILL.md). Each rule carries an id such as `errors.naming`; cite it in a review finding. The rules oxlint enforces are listed in [13-lint-rules.md](.agents/skills/effect-best-practices/references/13-lint-rules.md), so a review spends its attention on the rest.
 - **Domain language and boundaries**: the [Context Map](CONTEXT-MAP.md) and each context's `GLOSSARY.md` and ADRs under [docs/internals](docs/internals). Code uses the glossary's terms and stays inside its context's boundary. Changing the model follows the [`domain-modeling` skill](.agents/skills/domain-modeling/SKILL.md).
 - **Engineering principles**: the `principle-*` skills in [`.agents/skills/`](.agents/skills), one rule each: root causes, tests of behaviour, edges, the domain model, idempotency, reader load, subtraction, proof, sequencing, numbers, no shims. Cite one by name in a review finding.
 - **Docs**: [docs/README.md](docs/README.md#where-a-sentence-belongs) says where a sentence belongs. Prose follows the [`unslop` skill](.agents/skills/unslop/SKILL.md).

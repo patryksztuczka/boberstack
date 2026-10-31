@@ -83,13 +83,13 @@ export const noDomainAdaptersRule = defineRule({
     },
     messages: {
       vendor:
-        "`{{source}}` is an adapter's SDK. A domain module cannot import HTTP clients or adapters: declare a port in the module, implement it in platform/, and provide it from the composition root (see .agents/skills/effect-v4/references/05-project-structure.md).",
+        "`{{source}}` is an adapter's SDK. A domain module cannot import HTTP clients or adapters: declare a port in the module, implement it in platform/, and provide it from the composition root (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
       network:
-        "`{{source}}` reaches the network without a port. Declare a port in the module, implement it in platform/, and provide it from the composition root (see .agents/skills/effect-v4/references/05-project-structure.md).",
+        "`{{source}}` reaches the network without a port. Declare a port in the module, implement it in platform/, and provide it from the composition root (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
       platform:
-        "`{{source}}` is an adapter in platform/. A domain module depends on its own port, never on an adapter; the composition root chooses the adapter (see .agents/skills/effect-v4/references/05-project-structure.md).",
+        "`{{source}}` is an adapter in platform/. A domain module depends on its own port, never on an adapter; the composition root chooses the adapter (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
       global:
-        "`{{name}}` reaches the network without a port. Declare a port in the module, implement it in platform/, and provide it from the composition root (see .agents/skills/effect-v4/references/05-project-structure.md).",
+        "`{{name}}` reaches the network without a port. Declare a port in the module, implement it in platform/, and provide it from the composition root (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
     },
     schema: [
       {

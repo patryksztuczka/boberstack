@@ -8,7 +8,7 @@ export const serviceExplicitApiRule = defineRule({
     docs: { description: "Require Context.Service classes to declare their API type." },
     messages: {
       missingApi:
-        "Declare the service API as the second type argument: `Context.Service<Self, SelfApi>()(id)`, so the contract is visible and implementations cannot widen it (see .agents/skills/effect-v4/references/04-services-and-layers.md).",
+        "Declare the service API as the second type argument: `Context.Service<Self, SelfApi>()(id)`, so the contract is visible and implementations cannot widen it (see .agents/skills/effect-best-practices/references/04-services-and-layers.md).",
     },
     schema: [],
   },

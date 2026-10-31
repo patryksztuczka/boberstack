@@ -87,7 +87,7 @@ Write a module file whole, covering the module, not a fragment for one rule. Whe
 
 ### Adding a context
 
-A new bounded context gets, in one change: a line in `CONTEXT-MAP.md` with its relationships, `docs/internals/<context>/GLOSSARY.md`, `apps/api/src/modules/<context>/index.ts`, and `packages/domain/src/<context>/` if anything crosses the wire. Its service ids start `boberstack/<context>/` (the `effect-v4` skill, `05-project-structure.md`).
+A new bounded context gets, in one change: a line in `CONTEXT-MAP.md` with its relationships, `docs/internals/<context>/GLOSSARY.md`, `apps/api/src/modules/<context>/index.ts`, and `packages/domain/src/<context>/` if anything crosses the wire. Its service ids start `boberstack/<context>/` (the `effect-best-practices` skill, `05-project-structure.md`).
 
 ### Recording a decision
 

@@ -26,7 +26,7 @@ export const noDecodeSyncRule = defineRule({
     },
     messages: {
       throwing:
-        "`Schema.{{method}}` throws, turning bad input into a defect. Use `Schema.decodeUnknownEffect` / `encodeEffect` so the failure stays typed (see .agents/skills/effect-v4/references/06-schema.md).",
+        "`Schema.{{method}}` throws, turning bad input into a defect. Use `Schema.decodeUnknownEffect` / `encodeEffect` so the failure stays typed (see .agents/skills/effect-best-practices/references/06-schema.md).",
     },
     schema: [
       {

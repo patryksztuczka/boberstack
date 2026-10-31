@@ -1,6 +1,6 @@
 # effect
 
-Oxlint JS plugin (`@boberstack/effect/<rule>`) that enforces the Effect v4 style in [`.agents/skills/effect-v4`](../../../.agents/skills/effect-v4/SKILL.md). Every message names the reference file that explains it. Ported from `single-source-panel/ssp-audiomatching` (`tools/oxlint/ssp-effect`); `bounded-concurrency`, `fork-detach-reason` and `no-throw` were left out.
+Oxlint JS plugin (`@boberstack/effect/<rule>`) that enforces the Effect v4 style in [`.agents/skills/effect-best-practices`](../../../.agents/skills/effect-best-practices/SKILL.md). Every message names the reference file that explains it. Ported from `single-source-panel/ssp-audiomatching` (`tools/oxlint/ssp-effect`); `bounded-concurrency`, `fork-detach-reason` and `no-throw` were left out.
 
 - One file per rule in `rules/`, with a co-located `RuleTester` test (`pnpm --filter @boberstack/oxlint-plugins test`).
 - No build step: oxlint loads `index.ts` directly.

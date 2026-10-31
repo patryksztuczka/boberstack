@@ -31,9 +31,9 @@ export const noUntypedFailureRule = defineRule({
     docs: { description: "Disallow failing with strings or built-in Error instances." },
     messages: {
       stringFailure:
-        "Fail with a Schema.TaggedError subclass, not a string: callers cannot catchTag a string (see .agents/skills/effect-v4/references/02-typed-errors.md).",
+        "Fail with a Schema.TaggedError subclass, not a string: callers cannot catchTag a string (see .agents/skills/effect-best-practices/references/02-typed-errors.md).",
       bareError:
-        "Fail with a Schema.TaggedError subclass, not a built-in Error: it carries no tag and no evidence (see .agents/skills/effect-v4/references/02-typed-errors.md).",
+        "Fail with a Schema.TaggedError subclass, not a built-in Error: it carries no tag and no evidence (see .agents/skills/effect-best-practices/references/02-typed-errors.md).",
     },
     schema: [],
   },

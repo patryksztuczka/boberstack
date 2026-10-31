@@ -2,7 +2,7 @@
 
 Oxlint JS plugin (`@boberstack/test-hygiene/<rule>`) against the two ways a red test is turned green without fixing anything: giving it more time and switching it off. The rules run on test files only (`*.test.ts`, `*.test.tsx`, `*.integration.test.ts`); config files such as a package's `vite.config.ts` keep their timeouts, which are the ceiling for every test.
 
-The house rules they enforce are in [`.agents/skills/effect-v4/references/11-testing.md`](../../../.agents/skills/effect-v4/references/11-testing.md) (`test.flaky`). Vitest backs them up: every package's `vite.config.ts` sets `retry: 0`, `passWithNoTests: false` and `allowOnly: !process.env.CI`.
+The house rules they enforce are in [`.agents/skills/effect-best-practices/references/11-testing.md`](../../../.agents/skills/effect-best-practices/references/11-testing.md) (`test.flaky`). Vitest backs them up: every package's `vite.config.ts` sets `retry: 0`, `passWithNoTests: false` and `allowOnly: !process.env.CI`.
 
 | Rule                                 | Flags                                                                                                                                                                                                                                                                            |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

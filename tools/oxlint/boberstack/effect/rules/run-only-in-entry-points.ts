@@ -47,11 +47,11 @@ export const runOnlyInEntryPointsRule = defineRule({
     docs: { description: "Restrict starting Effect runtimes to configured entry points." },
     messages: {
       notEntry:
-        "`{{call}}` starts a runtime. Only entry points may do that (see the rule's `allow` list); export an Effect or a Layer from here instead (see .agents/skills/effect-v4/references/10-runtimes-and-entry-points.md).",
+        "`{{call}}` starts a runtime. Only entry points may do that (see the rule's `allow` list); export an Effect or a Layer from here instead (see .agents/skills/effect-best-practices/references/10-runtimes-and-entry-points.md).",
       unmarkedBridge:
-        "`{{call}}` runs an Effect from outside Effect. Only a library that calls back through Promises needs that: name it and why in a `// {{marker}} …` comment directly above, or keep the code in Effect (see .agents/skills/effect-v4/references/10-runtimes-and-entry-points.md).",
+        "`{{call}}` runs an Effect from outside Effect. Only a library that calls back through Promises needs that: name it and why in a `// {{marker}} …` comment directly above, or keep the code in Effect (see .agents/skills/effect-best-practices/references/10-runtimes-and-entry-points.md).",
       inTests:
-        "`{{call}}` bypasses @effect/vitest. Use `it.effect` / `layer(…)` so the test gets TestClock and a scope (see .agents/skills/effect-v4/references/11-testing.md).",
+        "`{{call}}` bypasses @effect/vitest. Use `it.effect` / `layer(…)` so the test gets TestClock and a scope (see .agents/skills/effect-best-practices/references/11-testing.md).",
     },
     schema: [
       {

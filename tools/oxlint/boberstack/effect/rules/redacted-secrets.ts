@@ -21,7 +21,7 @@ export const redactedSecretsRule = defineRule({
     docs: { description: "Require Config.Redacted for secret-looking configuration keys." },
     messages: {
       secret:
-        "`{{key}}` looks like a secret: read it with `Config.Redacted` so it shows as <redacted> in logs, spans and error reports (see .agents/skills/effect-v4/references/07-configuration.md).",
+        "`{{key}}` looks like a secret: read it with `Config.Redacted` so it shows as <redacted> in logs, spans and error reports (see .agents/skills/effect-best-practices/references/07-configuration.md).",
     },
     schema: [
       {

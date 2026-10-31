@@ -62,7 +62,7 @@ export const brandedIdsRule = defineRule({
     docs: { description: "Require identifier fields in Schema structs and classes to be branded." },
     messages: {
       unbranded:
-        "`{{key}}` is an identifier: use a branded schema (e.g. `{{brand}}`), not a plain `Schema.{{primitive}}` (see .agents/skills/effect-v4/references/06-schema.md).",
+        "`{{key}}` is an identifier: use a branded schema (e.g. `{{brand}}`), not a plain `Schema.{{primitive}}` (see .agents/skills/effect-best-practices/references/06-schema.md).",
     },
     schema: [
       {

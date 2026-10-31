@@ -28,7 +28,7 @@ const namedConstructors: ReadonlySet<string> = new Set([
 
 const defaultSchema = ".env.schema";
 
-const reference = ".agents/skills/effect-v4/references/07-configuration.md";
+const reference = ".agents/skills/effect-best-practices/references/07-configuration.md";
 
 const item = /^(?<key>[A-Za-z_][A-Za-z0-9_]*)=/u;
 

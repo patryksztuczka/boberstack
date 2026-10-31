@@ -4,7 +4,8 @@ import { keyName } from "../../effect/shared/ast.ts";
 
 export const testFilePattern = /\.test\.[cm]?[jt]sx?$/u;
 
-export const seeTestingDoc = "(see .agents/skills/effect-v4/references/11-testing.md, test.flaky)";
+export const seeTestingDoc =
+  "(see .agents/skills/effect-best-practices/references/11-testing.md, test.flaky)";
 
 export const functionTypes: ReadonlySet<string> = new Set([
   "ArrowFunctionExpression",

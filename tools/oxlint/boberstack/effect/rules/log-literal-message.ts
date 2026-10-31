@@ -21,7 +21,7 @@ export const logLiteralMessageRule = defineRule({
     },
     messages: {
       dynamicMessage:
-        'Log a constant message and pass values in a fields object, e.g. `Effect.logInfo("Todo completed", { todoId })` (see .agents/skills/effect-v4/references/08-observability.md).',
+        'Log a constant message and pass values in a fields object, e.g. `Effect.logInfo("Todo completed", { todoId })` (see .agents/skills/effect-best-practices/references/08-observability.md).',
     },
     schema: [],
   },
