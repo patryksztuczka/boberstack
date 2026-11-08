@@ -122,6 +122,9 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Boot the built web client in Chrome (agent-browser)
+        run: pnpm check:web-boot
+
   integration:
     name: Integration tests
     needs: build
