@@ -25,11 +25,16 @@ result, and for a UI change the verify-web evidence (screenshot, log excerpt). W
 "inconclusive" next to anything you could not run, and say why. "Tests pass" alone is not evidence,
 and pnpm verify does not replace checking the affected behavior. Say whether you ran
 pnpm test:integration. Upload screenshots and recordings with pnpm -s pr-evidence <files> and paste
-the Markdown it prints, or drag them into this description. Never commit them. Show synthetic data
+the Markdown it prints, or drag them into this description. Put screenshots in a table, before on
+the left and after on the right, one row per screen. Never commit them. Show synthetic data
 only. Example:
 
 $ pnpm --filter @boberstack/api test
       Tests  6 passed (6)
-$ verify-web: added two todos in a row, both listed -> screenshot attached
+$ verify-web: added two todos in a row, both listed -> before/after screenshots below
 $ pnpm test:integration: inconclusive, Docker was not running
+
+| Screen | Before | After |
+| ------ | ------ | ----- |
+| Todos  | ![todos before](…) | ![todos after](…) |
 -->

@@ -111,7 +111,7 @@ These cannot be undone with a revert, or they weaken the checks the after-the-fa
 
 ### Needs owner sign-off
 
-The owner signs these off when reviewing the pull request, not before you start. Make each one when the task needs it, in its own commit whose body says why, and list it under `## Needs sign-off` at the top of the pull request description (the `file-pr` skill). The `code-review` skill lists changes to these paths above everything else.
+The owner signs these off after the work is done, not before you start. Make each one when the task needs it, in its own commit whose body says why, and finish the task. Then list them in your final message to the user, under "Needs sign-off": one line per change, saying what changed and why. The list goes in the chat, not in the pull request description. The `code-review` skill lists changes to these paths above everything else.
 
 - Adding, removing or changing the version of a dependency.
 - Any change that loosens a check in the lint config in `vite.config.ts` and `tools/oxlint/`, `tsconfig.base.json` diagnostics, `knip.json` or `suppressions.baseline.json`, because the check is wrong and not because your change fails it.

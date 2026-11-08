@@ -80,14 +80,14 @@ Drive it like a user, not like a test. Type into the field, click the button, wa
 
 ## 4. Evidence
 
-Save screenshots and recordings to `.scratch/evidence/` (gitignored). In your final message, quote:
+Save screenshots and recordings to `.scratch/evidence/` (gitignored). Name each screenshot of a screen your change alters `<screen>.after.png`, and take a `<screen>.before.png` of the same screen in the same state without your change: before you edit, or from the base commit in its own worktree, where `pnpm dev` gets its own ports. The pull request shows them side by side (the `file-pr` skill). In your final message, quote:
 
 - the doctor output,
 - each step you drove and what you saw, in one line each,
 - the screenshot and recording paths, embedded when the host renders them,
 - the lines from `.dev/logs/api.log` or `.dev/logs/web.log` that cover your requests, and any error or warning there or in `agent-browser errors` and `console`.
 
-For a pull request, upload the same files with `pnpm -s pr-evidence` (the `file-pr` skill).
+For a pull request, upload the same files with `pnpm -s pr-evidence` (the `file-pr` skill). When that upload is not set up, the chat is the only place the user sees them, so embed them there.
 
 If you could not drive a step, say which and why. "Verified" without this evidence is a claim, not a result.
 

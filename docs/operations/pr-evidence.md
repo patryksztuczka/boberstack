@@ -13,7 +13,7 @@ pnpm -s pr-evidence .scratch/evidence/todos.png .scratch/evidence/sign-in.mp4
 
 GitHub plays only videos uploaded through its own editor, so a recording becomes an H.264 MP4 behind a still of its last frame; a click opens the video.
 
-The starter ships the script, [`.agents/skills/file-pr/scripts/pr-evidence.mjs`](../../.agents/skills/file-pr/scripts/pr-evidence.mjs), but no bucket. Until someone sets it up, `pr-evidence` fails with a pointer to this page and the evidence stays as file paths in the description.
+The starter ships the script, [`.agents/skills/file-pr/scripts/pr-evidence.mjs`](../../.agents/skills/file-pr/scripts/pr-evidence.mjs), but no bucket. Until someone sets it up, `pr-evidence` fails with a pointer to this page, the evidence stays as file paths in the description, and the agent shows the screenshots and recordings in its chat reply instead.
 
 ## What it costs
 
