@@ -56,6 +56,7 @@ export const SocialButtons = ({ redirectTo }: { readonly redirectTo: string }) =
     const result = await gateway.signInSocial(provider, absoluteUrl(redirectTo));
 
     if (!result.ok) setFailure(m.auth_failed({ reason: result.message }));
+    else if (result.url !== undefined) gateway.followRedirect(result.url);
   };
 
   return (

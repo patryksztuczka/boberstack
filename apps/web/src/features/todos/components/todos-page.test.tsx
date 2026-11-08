@@ -1,5 +1,5 @@
 import { clientLayer } from "@boberstack/client-runtime/atom-runtime";
-import { SignInMethodsClient } from "@boberstack/client-runtime/identity";
+import { McpClientDirectory, SignInMethodsClient } from "@boberstack/client-runtime/identity";
 import { TodosClient } from "@boberstack/client-runtime/todos";
 import { Todo, TodoId } from "@boberstack/domain/todos/todo";
 import { RegistryProvider } from "@effect/atom-react";
@@ -34,6 +34,7 @@ const todosInMemory = Layer.mergeAll(
     ),
   ),
   Layer.mock(SignInMethodsClient, {}),
+  Layer.mock(McpClientDirectory, {}),
 );
 
 describe("TodosPage", () => {

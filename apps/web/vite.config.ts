@@ -24,6 +24,8 @@ export default defineConfig({
     port: WEB_PORT,
     strictPort: true,
     proxy: {
+      "/api/mcp": { target: LOCAL_API, changeOrigin: true },
+      "/.well-known": { target: LOCAL_API, changeOrigin: true },
       "/api": {
         target: LOCAL_API,
         changeOrigin: true,

@@ -57,6 +57,13 @@ Keep the folders: the next context goes in the same places.
 - [ ] Switch the web app's hooks to the `HttpApi` client.
 - [ ] Update root ADR 0007 with a superseding ADR.
 
+### MCP
+
+- [ ] Delete `packages/domain/src/*/*.mcp.ts`, `apps/api/src/mcp/` and the MCP layer in `app.layer.ts`.
+- [ ] Delete `packages/auth/src/mcp-authentication.ts`, `access-token.errors.ts`, and `jwt()`, `mcp()` and `mcpResourceServer` in `packages/auth/src/better-auth.ts`; remove `@better-auth/mcp` and `@better-auth/oauth-provider`.
+- [ ] Delete the consent page and `mcp-client-request.ts` in `apps/web/src/features/auth/`, the `oauthProviderClient()` plugin, the `/oauth/consent` route, and the `/.well-known` routes in `apps/api/src/worker.ts` and `apps/web/vite.config.ts`.
+- [ ] Add a migration that drops the OAuth provider tables (root ADR 0014), delete `docs/user/ai-assistants.md`, and supersede root ADR 0015 and Identity ADR 0002.
+
 ### HttpApi and OpenAPI
 
 The mirror image of cutting RPC: delete `*.http-api.ts`, `packages/domain/src/api.ts`, `apps/api/src/http/` and the HTTP auth middleware, and drop `openapi` from the CLI.

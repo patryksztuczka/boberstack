@@ -4,6 +4,8 @@ export { redirectSignedIn, requireSession } from "./api/session.ts";
 
 export { CheckEmailPage } from "./forms/check-email-page.tsx";
 
+export { ConsentPage } from "./forms/consent-page.tsx";
+
 export { EmailVerifiedPage } from "./forms/email-verified-page.tsx";
 
 export { ForgotPasswordPage } from "./forms/forgot-password-page.tsx";

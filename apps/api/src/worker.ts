@@ -11,7 +11,10 @@ import { AppLayer } from "./app.layer.ts";
 import { Database } from "./database.ts";
 
 const isAuthPath = (pathname: string) =>
-  pathname === "/api/auth" || pathname.startsWith("/api/auth/");
+  pathname === "/api/auth" ||
+  pathname.startsWith("/api/auth/") ||
+  pathname.startsWith("/.well-known/oauth-") ||
+  pathname.startsWith("/.well-known/openid-configuration");
 
 const MailerLayer = Layer.unwrap(
   Effect.map(
@@ -38,7 +41,7 @@ export default class Api extends Cloudflare.Worker<Api>()(
     assets: {
       directory: "../web/dist",
       notFoundHandling: "single-page-application",
-      runWorkerFirst: ["/api/*"],
+      runWorkerFirst: ["/api/*", "/.well-known/*"],
     },
     dev: { port, strictPort: true },
   })),

@@ -79,6 +79,7 @@
           }
         ],
         "allowedUnstableApis": [
+          "effect/ai",
           "effect/http",
           "effect/http-api",
           "effect/rpc",

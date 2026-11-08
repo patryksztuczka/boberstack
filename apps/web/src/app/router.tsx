@@ -3,6 +3,7 @@ import type { RouteObject } from "react-router";
 
 import {
   CheckEmailPage,
+  ConsentPage,
   EmailVerifiedPage,
   ForgotPasswordPage,
   redirectSignedIn,
@@ -21,6 +22,10 @@ export const privateRoutes: Array<RouteObject> = [
   {
     path: "todos",
     element: <TodosPage />,
+  },
+  {
+    path: "oauth/consent",
+    element: <ConsentPage />,
   },
 ];
 

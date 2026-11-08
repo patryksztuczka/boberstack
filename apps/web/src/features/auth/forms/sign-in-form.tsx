@@ -8,6 +8,7 @@ import { m } from "../../../paraglide/messages.js";
 import { useAuthGateway } from "../api/auth-gateway-context.tsx";
 import { AuthPage, Notice, PRIMARY_ACTION } from "../components/auth-page.tsx";
 import { SocialButtons } from "../components/social-buttons.tsx";
+import { isMcpRequestExpired, mcpClientRequest } from "../mcp-client-request.ts";
 import { absoluteUrl, safeRedirectTo } from "../redirect-to.ts";
 import { SignInForm } from "./auth-form.schema.ts";
 import type { SignInFormValues, SignInInput } from "./auth-form.schema.ts";
@@ -18,6 +19,7 @@ const EMAIL_NOT_VERIFIED = "EMAIL_NOT_VERIFIED";
 
 type Failure =
   | { readonly kind: "unverified"; readonly email: string }
+  | { readonly kind: "mcpRequestExpired" }
   | { readonly kind: "other"; readonly reason: string };
 
 export const SignInPage = () => {
@@ -25,6 +27,7 @@ export const SignInPage = () => {
   const gateway = useAuthGateway();
   const [searchParams] = useSearchParams();
   const redirectTo = safeRedirectTo(searchParams.get("redirectTo"));
+  const forMcpClient = mcpClientRequest(searchParams) !== undefined;
   const [failure, setFailure] = useState<Failure | undefined>(undefined);
 
   const form = useForm<SignInFormValues, unknown, SignInInput>({
@@ -37,10 +40,14 @@ export const SignInPage = () => {
   const onSubmit = form.handleSubmit(async (input) => {
     const result = await gateway.signInEmail(input.email, input.password, absoluteUrl(redirectTo));
 
-    if (result.ok) {
+    if (result.ok && forMcpClient && result.url !== undefined) {
+      gateway.followRedirect(result.url);
+    } else if (result.ok) {
       await navigate(redirectTo);
     } else if (result.code === EMAIL_NOT_VERIFIED) {
       setFailure({ kind: "unverified", email: input.email });
+    } else if (forMcpClient && isMcpRequestExpired(result.code)) {
+      setFailure({ kind: "mcpRequestExpired" });
     } else {
       setFailure({ kind: "other", reason: result.message });
     }
@@ -82,6 +89,9 @@ export const SignInPage = () => {
             <Notice>{m.auth_unverified({ email: failure.email })}</Notice>
             <ResendVerification email={failure.email} />
           </div>
+        ) : undefined}
+        {failure?.kind === "mcpRequestExpired" ? (
+          <Notice tone="error">{m.auth_mcp_request_expired()}</Notice>
         ) : undefined}
         {failure?.kind === "other" ? (
           <Notice tone="error">{m.auth_failed({ reason: failure.reason })}</Notice>
