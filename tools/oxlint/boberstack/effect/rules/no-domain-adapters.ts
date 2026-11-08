@@ -13,9 +13,12 @@ const defaults = {
   allow: ["**/*.test.ts", "**/tests/**", "**/testing/**"],
   vendors: ["better-auth", "@alchemy.run/*", "alchemy", "pg", "@effect/sql-pg", "undici"],
   network: ["http", "https", "http2", "net", "tls", "dns", "dgram"],
-  platform: ["packages/auth/**", "packages/database/**", "packages/mail/**"],
-  platformAliases: ["@boberstack/auth", "@boberstack/database", "@boberstack/mail"],
+  platform: ["packages/*/**"],
+  platformAliases: ["@boberstack/"],
+  contractPackages: ["@boberstack/domain"],
 };
+
+const workspaceOf = (file: string): string => file.split("/").slice(0, 2).join("/");
 
 const networkGlobals: ReadonlySet<string> = new Set([
   "fetch",
@@ -101,6 +104,7 @@ export const noDomainAdaptersRule = defineRule({
           network: { type: "array", items: { type: "string" } },
           platform: { type: "array", items: { type: "string" } },
           platformAliases: { type: "array", items: { type: "string" } },
+          contractPackages: { type: "array", items: { type: "string" } },
         },
         additionalProperties: false,
       },
@@ -118,11 +122,17 @@ export const noDomainAdaptersRule = defineRule({
     const intoPlatform = ({ text, partial }: Specifier): boolean => {
       const options = ruleOptions(context, defaults);
 
-      if (options.platformAliases.some((alias) => text.startsWith(alias))) return true;
+      if (options.platformAliases.some((alias) => text.startsWith(alias))) {
+        return !options.contractPackages.some(
+          (name) => text === name || text.startsWith(`${name}/`),
+        );
+      }
 
       if (!text.startsWith("./") && !text.startsWith("../")) return false;
       const importer = relativeFilename(context);
       const target = path.posix.normalize(path.posix.join(path.posix.dirname(importer), text));
+
+      if (workspaceOf(target) === workspaceOf(importer)) return false;
 
       if (partial) return mayReach(target, options.platform);
 

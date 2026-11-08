@@ -72,7 +72,7 @@ The mirror image of cutting RPC: delete `*.http-api.ts`, `packages/domain/src/ap
 
 ### Authentication
 
-- [ ] Delete `packages/auth/` and `packages/domain/src/identity/`, and drop `packages/auth` from the `effectRules` override and the `service-id-matches-path` `extraRoots` in `tools/oxlint/lint.config.ts`.
+- [ ] Delete `packages/auth/` and `packages/domain/src/identity/`.
 - [ ] Remove `.middleware(…)` from every `HttpApiGroup` and `RpcGroup`, and stop reading `CurrentUser` in handlers; Todos would then need a new ownership rule (Todos ADR 0001).
 - [ ] Remove `@boberstack/auth` and `@alchemy.run/better-auth` from `apps/api/package.json`, `packages/auth` from `apps/api/tsconfig.json`, and the better-auth bindings from `apps/infra/alchemy.run.ts`.
 - [ ] Add a migration that drops the better-auth tables.

@@ -117,7 +117,7 @@ A module owns the port: the service tag, its API and its typed errors. Code that
 
 A value a module needs from the deployment is a port too, named after what the module does with it (`TrustedOrigins`, not `Env`). Its `layerConfig` lives in the adapter package, and only composition roots use it ([07](07-configuration.md)).
 
-A new adapter package also needs its path in the `effectRules` override and in the `service-id-matches-path` `extraRoots` of `tools/oxlint/lint.config.ts`. Without the first, no Effect rule runs on it.
+A new adapter package needs no lint config change: the Effect rules cover every `packages/*`, its service ids take `boberstack/platform/<package>` from the folder name, and core may import no `@boberstack/*` package but `@boberstack/domain`.
 
 ### structure.stores: a store port in the module, its SQL in a repository
 

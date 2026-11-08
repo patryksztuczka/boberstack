@@ -13,6 +13,11 @@ tester.run("@boberstack/effect/no-domain-adapters", noDomainAdaptersRule, {
     { code: 'export type { Pool } from "pg";', filename: domain },
     { code: 'import { HttpApiBuilder } from "effect/http-api";', filename: domain },
     { code: 'import { TodosApi, TodoId } from "@boberstack/domain";', filename: domain },
+    { code: 'import { TodoId } from "@boberstack/domain/todos/todo";', filename: domain },
+    {
+      code: 'import { Mailer } from "../mail/index.ts";',
+      filename: domain,
+    },
     { code: 'import { format } from "pg-format";', filename: domain },
     { code: 'import { x } from "alchemy-utils";', filename: domain },
     { code: 'import { betterAuthLike } from "better-authority";', filename: domain },
@@ -177,6 +182,11 @@ tester.run("@boberstack/effect/no-domain-adapters", noDomainAdaptersRule, {
     },
     {
       code: 'import { Auth } from "@boberstack/auth";',
+      filename: domain,
+      errors: [{ messageId: "platform" }],
+    },
+    {
+      code: 'import { S3Storage } from "@boberstack/storage";',
       filename: domain,
       errors: [{ messageId: "platform" }],
     },

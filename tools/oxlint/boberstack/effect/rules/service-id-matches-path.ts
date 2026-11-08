@@ -9,10 +9,8 @@ import { ruleOptions } from "../shared/options.ts";
 import { relativeFilename, splitAtRoot, withoutExtension } from "../shared/paths.ts";
 
 const extraRoots = {
-  "packages/auth/src": "boberstack/platform/auth",
-  "packages/database/src": "boberstack/platform/database",
-  "packages/mail/src": "boberstack/platform/mail",
   "packages/domain/src": "boberstack/domain",
+  "packages/*/src": "boberstack/platform/*",
 } satisfies Readonly<Record<string, string>>;
 
 const defaults = {
@@ -27,22 +25,36 @@ const idTail = (rest: string, className: string | undefined, idSource: string): 
     ? path.posix.join(path.posix.dirname(rest), className)
     : withoutExtension(rest);
 
+const prefixFor = (prefix: string, rootGlob: string, root: string): string => {
+  const rootSegments = root.split("/");
+
+  const captured = rootGlob
+    .split("/")
+    .flatMap((segment, index) => (segment === "*" ? [rootSegments[index] ?? "*"] : []));
+
+  return captured.reduce((result, segment) => result.replace("*", segment), prefix);
+};
+
 const expectedId = (
   relative: string,
   className: string | undefined,
   options: typeof defaults,
 ): string | undefined => {
+  const inSource = splitAtRoot(relative, options.sourceRoot);
+
+  if (inSource !== undefined) {
+    return `${options.prefix}/${idTail(inSource.rest, className, options.idSource)}`;
+  }
+
   for (const [rootGlob, prefix] of Object.entries(options.extraRoots)) {
     const split = splitAtRoot(relative, rootGlob);
 
-    if (split !== undefined) return `${prefix}/${idTail(split.rest, className, options.idSource)}`;
+    if (split !== undefined) {
+      return `${prefixFor(prefix, rootGlob, split.root)}/${idTail(split.rest, className, options.idSource)}`;
+    }
   }
 
-  const split = splitAtRoot(relative, options.sourceRoot);
-
-  return split === undefined
-    ? undefined
-    : `${options.prefix}/${idTail(split.rest, className, options.idSource)}`;
+  return undefined;
 };
 
 export const serviceIdMatchesPathRule = defineRule({

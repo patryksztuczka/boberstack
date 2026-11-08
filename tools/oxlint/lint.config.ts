@@ -84,10 +84,8 @@ const effectRules = {
       prefix: "boberstack",
       sourceRoot: "packages/core/src",
       extraRoots: {
-        "packages/auth/src": "boberstack/platform/auth",
-        "packages/database/src": "boberstack/platform/database",
-        "packages/mail/src": "boberstack/platform/mail",
         "packages/domain/src": "boberstack/domain",
+        "packages/*/src": "boberstack/platform/*",
       },
       idSource: "class",
     },
@@ -169,16 +167,7 @@ const lint = {
       },
     },
     {
-      files: [
-        "apps/api/**",
-        "apps/cli/**",
-        "apps/infra/**",
-        "packages/auth/**",
-        "packages/core/**",
-        "packages/database/**",
-        "packages/domain/**",
-        "packages/mail/**",
-      ],
+      files: ["apps/api/**", "apps/cli/**", "apps/infra/**", "packages/**"],
       rules: effectRules,
     },
     {

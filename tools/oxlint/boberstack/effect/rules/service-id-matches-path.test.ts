@@ -27,6 +27,10 @@ tester.run("@boberstack/effect/service-id-matches-path", serviceIdMatchesPathRul
       code: service("CurrentUser", "boberstack/domain/auth/CurrentUser"),
       filename: "packages/domain/src/auth/current-user.ts",
     },
+    {
+      code: service("S3Storage", "boberstack/platform/storage/S3Storage"),
+      filename: "packages/storage/src/s3-storage.ts",
+    },
     { code: service("Anything", "whatever"), filename: "scripts/tool.ts" },
     {
       code: service("TestPostgres", "boberstack/testing/TestPostgres"),
@@ -51,6 +55,12 @@ tester.run("@boberstack/effect/service-id-matches-path", serviceIdMatchesPathRul
       filename: "packages/database/src/todo.repository.ts",
       errors: [{ messageId: "id" }],
       output: service("TodoRepository", "boberstack/platform/database/TodoRepository"),
+    },
+    {
+      code: service("S3Storage", "boberstack/storage/S3Storage"),
+      filename: "packages/storage/src/s3-storage.ts",
+      errors: [{ messageId: "id" }],
+      output: service("S3Storage", "boberstack/platform/storage/S3Storage"),
     },
     {
       code: service("CurrentUser", "boberstack/auth/CurrentUser"),
