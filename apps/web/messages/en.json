@@ -92,6 +92,8 @@
   "auth_consent_scope_email": "See your email address",
   "auth_consent_scope_offline_access": "Keep access when you are not using it",
   "auth_consent_scope_other": "Use the “{scope}” permission",
+  "auth_consent_unavailable_title": "We could not load this request",
+  "auth_consent_retry": "Try again",
   "auth_consent_invalid_title": "This request is no longer valid",
   "auth_consent_invalid_body": "It expired or was already used. Start the connection again from the app that sent you here."
 }

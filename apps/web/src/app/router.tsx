@@ -23,6 +23,10 @@ export const privateRoutes: Array<RouteObject> = [
     path: "todos",
     element: <TodosPage />,
   },
+  {
+    path: "oauth/consent",
+    element: <ConsentPage />,
+  },
 ];
 
 export const routes: Array<RouteObject> = [
@@ -40,7 +44,6 @@ export const routes: Array<RouteObject> = [
           { path: "email-verified", element: <EmailVerifiedPage /> },
           { path: "forgot-password", element: <ForgotPasswordPage /> },
           { path: "reset-password", element: <ResetPasswordPage /> },
-          { path: "oauth/consent", middleware: [requireSession], element: <ConsentPage /> },
           { middleware: [requireSession], element: <SignedInLayout />, children: privateRoutes },
           { path: "*", element: <NotFoundPage /> },
         ],

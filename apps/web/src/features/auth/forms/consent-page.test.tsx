@@ -1,5 +1,12 @@
+import {
+  McpClientDirectoryUnavailableError,
+  McpClientNotFoundError,
+  McpClientProfile,
+} from "@boberstack/client-runtime/identity";
+import type { McpClientDirectoryApi } from "@boberstack/client-runtime/identity";
 import { screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
+import { Effect, Option } from "effect";
 import { describe, expect, it, vi } from "vite-plus/test";
 
 import type { AuthGateway } from "../api/auth-client.ts";
@@ -20,12 +27,15 @@ const CONSENT_PATH = `/oauth/consent?${MCP_CLIENT_REQUEST}`;
 
 const CLIENT_CALLBACK = "http://localhost:33418/callback?code=abc&state=state-1";
 
-const namedClient = (overrides: Partial<AuthGateway> = {}) =>
-  fakeAuthGateway({ mcpClientName: () => Promise.resolve("Claude"), ...overrides });
+const claude: McpClientDirectoryApi["profileOf"] = (clientId) =>
+  Effect.succeed(new McpClientProfile({ clientId, name: Option.some("Claude") }));
+
+const renderConsent = (gateway: AuthGateway = fakeAuthGateway()) =>
+  renderAuthPage(<ConsentPage />, { path: CONSENT_PATH, gateway, mcpClients: claude });
 
 describe("ConsentPage", () => {
   it("names the MCP client and lists what it asks for in plain words", async () => {
-    renderAuthPage(<ConsentPage />, { path: CONSENT_PATH, gateway: namedClient() });
+    renderConsent();
 
     expect(await screen.findByRole("heading", { name: "Connect Claude." })).toBeInTheDocument();
     expect(
@@ -54,10 +64,7 @@ describe("ConsentPage", () => {
 
     const followRedirect = vi.fn<AuthGateway["followRedirect"]>();
 
-    renderAuthPage(<ConsentPage />, {
-      path: CONSENT_PATH,
-      gateway: namedClient({ answerConsent, followRedirect }),
-    });
+    renderConsent(fakeAuthGateway({ answerConsent, followRedirect }));
 
     await userEvent.click(await screen.findByRole("button", { name: "Allow" }));
 
@@ -74,10 +81,7 @@ describe("ConsentPage", () => {
 
     const followRedirect = vi.fn<AuthGateway["followRedirect"]>();
 
-    renderAuthPage(<ConsentPage />, {
-      path: CONSENT_PATH,
-      gateway: namedClient({ answerConsent, followRedirect }),
-    });
+    renderConsent(fakeAuthGateway({ answerConsent, followRedirect }));
 
     await userEvent.click(await screen.findByRole("button", { name: "Deny" }));
 
@@ -88,9 +92,8 @@ describe("ConsentPage", () => {
   it("explains an expired request instead of leaving the User stuck", async () => {
     const followRedirect = vi.fn<AuthGateway["followRedirect"]>();
 
-    renderAuthPage(<ConsentPage />, {
-      path: CONSENT_PATH,
-      gateway: namedClient({
+    renderConsent(
+      fakeAuthGateway({
         answerConsent: () =>
           Promise.resolve({
             ok: false,
@@ -100,7 +103,7 @@ describe("ConsentPage", () => {
           }),
         followRedirect,
       }),
-    });
+    );
 
     await userEvent.click(await screen.findByRole("button", { name: "Allow" }));
 
@@ -111,9 +114,8 @@ describe("ConsentPage", () => {
   });
 
   it("shows why Consent could not be saved and lets the User try again", async () => {
-    renderAuthPage(<ConsentPage />, {
-      path: CONSENT_PATH,
-      gateway: namedClient({
+    renderConsent(
+      fakeAuthGateway({
         answerConsent: () =>
           Promise.resolve({
             ok: false,
@@ -122,7 +124,7 @@ describe("ConsentPage", () => {
             message: "Internal Server Error",
           }),
       }),
-    });
+    );
 
     await userEvent.click(await screen.findByRole("button", { name: "Allow" }));
 
@@ -131,16 +133,44 @@ describe("ConsentPage", () => {
   });
 
   it("refuses a page opened without a signed request from an MCP client", () => {
-    const mcpClientName = vi.fn<AuthGateway["mcpClientName"]>(() => Promise.resolve("Claude"));
+    const profileOf = vi.fn<McpClientDirectoryApi["profileOf"]>(claude);
 
     renderAuthPage(<ConsentPage />, {
       path: "/oauth/consent?client_id=client-123",
-      gateway: fakeAuthGateway({ mcpClientName }),
+      mcpClients: profileOf,
     });
 
     expect(
       screen.getByRole("heading", { name: "This request is no longer valid." }),
     ).toBeInTheDocument();
-    expect(mcpClientName).not.toHaveBeenCalled();
+    expect(profileOf).not.toHaveBeenCalled();
+  });
+
+  it("refuses a request from an MCP client that is not registered", async () => {
+    renderAuthPage(<ConsentPage />, {
+      path: CONSENT_PATH,
+      mcpClients: (clientId) => Effect.fail(new McpClientNotFoundError({ clientId })),
+    });
+
+    expect(
+      await screen.findByRole("heading", { name: "This request is no longer valid." }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Allow" })).not.toBeInTheDocument();
+  });
+
+  it("says why the MCP client could not be loaded and loads it again on retry", async () => {
+    const profileOf = vi
+      .fn<McpClientDirectoryApi["profileOf"]>(claude)
+      .mockReturnValueOnce(
+        Effect.fail(new McpClientDirectoryUnavailableError({ reason: "Network down" })),
+      );
+
+    renderAuthPage(<ConsentPage />, { path: CONSENT_PATH, mcpClients: profileOf });
+
+    expect(await screen.findByText("That did not work: Network down")).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "Try again" }));
+
+    expect(await screen.findByRole("heading", { name: "Connect Claude." })).toBeInTheDocument();
   });
 });

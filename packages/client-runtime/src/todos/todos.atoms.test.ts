@@ -5,7 +5,7 @@ import { DateTime, Effect, Layer, Ref } from "effect";
 import { AsyncResult, Atom, AtomRegistry } from "effect/reactivity";
 
 import { clientLayer } from "../atom-runtime/index.ts";
-import { SignInMethodsClient } from "../identity/index.ts";
+import { McpClientDirectory, SignInMethodsClient } from "../identity/index.ts";
 import { TodosClient } from "./todos-client.ts";
 import { createTodo, removeTodo, todos } from "./todos.atoms.ts";
 
@@ -44,9 +44,10 @@ const todosInMemory = (stored: Ref.Ref<ReadonlyArray<Todo>>) =>
       }),
     ),
     Layer.mock(SignInMethodsClient, {}),
+    Layer.mock(McpClientDirectory, {}),
   );
 
-const registryWith = (layer: Layer.Layer<TodosClient | SignInMethodsClient>) =>
+const registryWith = (layer: Layer.Layer<TodosClient | SignInMethodsClient | McpClientDirectory>) =>
   Effect.acquireRelease(
     Effect.sync(() =>
       AtomRegistry.make({ initialValues: [Atom.initialValue(clientLayer, layer)] }),

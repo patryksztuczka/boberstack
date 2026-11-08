@@ -1,6 +1,10 @@
+import { mcpClientProfile } from "@boberstack/client-runtime/identity";
 import { Button } from "@boberstack/ui/components/button";
+import { useAtomRefresh, useAtomValue } from "@effect/atom-react";
+import { Match } from "effect";
+import { AsyncResult } from "effect/reactivity";
 import { CheckIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSearchParams } from "react-router";
 
 import { m } from "../../../paraglide/messages.js";
@@ -99,33 +103,39 @@ const ConsentForm = ({
   );
 };
 
-const useMcpClientName = (clientId: string) => {
-  const gateway = useAuthGateway();
-  const [name, setName] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    let current = true;
-
-    const show = (found: string | undefined) => {
-      if (current) setName(found ?? clientId);
-    };
-
-    gateway.mcpClientName(clientId).then(show, () => show(undefined));
-
-    return () => {
-      current = false;
-    };
-  }, [gateway, clientId]);
-
-  return name;
-};
+const ProfileUnavailable = ({
+  reason,
+  onRetry,
+}: {
+  readonly reason: string;
+  readonly onRetry: () => void;
+}) => (
+  <AuthPage title={m.auth_consent_unavailable_title()}>
+    <Notice tone="error">{m.auth_failed({ reason })}</Notice>
+    <Button type="button" variant="outline" className={SECONDARY_ACTION} onClick={onRetry}>
+      {m.auth_consent_retry()}
+    </Button>
+  </AuthPage>
+);
 
 const Consent = ({ request }: { readonly request: McpClientRequest }) => {
-  const client = useMcpClientName(request.clientId);
+  const profileAtom = mcpClientProfile(request.clientId);
+  const profile = useAtomValue(profileAtom);
+  const retry = useAtomRefresh(profileAtom);
 
-  if (client === undefined) return undefined;
-
-  return <ConsentForm request={request} client={client} />;
+  return AsyncResult.matchWithError(profile, {
+    onInitial: () => undefined,
+    onSuccess: ({ value }) => <ConsentForm request={request} client={value.displayName} />,
+    onError: (error) =>
+      Match.valueTags(error, {
+        McpClientNotFoundError: () => <InvalidRequest />,
+        UnauthorizedError: () => undefined,
+        McpClientDirectoryUnavailableError: ({ reason }) => (
+          <ProfileUnavailable reason={reason} onRetry={retry} />
+        ),
+      }),
+    onDefect: (defect) => <ProfileUnavailable reason={String(defect)} onRetry={retry} />,
+  });
 };
 
 export const ConsentPage = () => {

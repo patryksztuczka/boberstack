@@ -1,5 +1,7 @@
+import { McpClientId } from "@boberstack/domain/identity/mcp-client";
+
 export interface McpClientRequest {
-  readonly clientId: string;
+  readonly clientId: McpClientId;
   readonly scopes: ReadonlyArray<string>;
   readonly returnsTo: string | undefined;
 }
@@ -16,7 +18,7 @@ export const mcpClientRequest = (params: URLSearchParams): McpClientRequest | un
   if (clientId === null || clientId === "" || !params.has("sig")) return undefined;
 
   return {
-    clientId,
+    clientId: McpClientId.make(clientId),
     scopes: (params.get("scope") ?? "").split(" ").filter((scope) => scope !== ""),
     returnsTo: hostOf(params.get("redirect_uri")),
   };

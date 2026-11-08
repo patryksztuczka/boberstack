@@ -1,11 +1,16 @@
 import { clientLayer } from "@boberstack/client-runtime/atom-runtime";
-import { SignInMethodsClient } from "@boberstack/client-runtime/identity";
+import {
+  McpClientDirectory,
+  McpClientProfile,
+  SignInMethodsClient,
+} from "@boberstack/client-runtime/identity";
+import type { McpClientDirectoryApi } from "@boberstack/client-runtime/identity";
 import { TodosClient } from "@boberstack/client-runtime/todos";
 import { SignInMethods } from "@boberstack/domain/identity/sign-in-methods";
 import type { SocialProvider } from "@boberstack/domain/identity/sign-in-methods";
 import { RegistryProvider } from "@effect/atom-react";
 import { render } from "@testing-library/react";
-import { Effect, Layer } from "effect";
+import { Effect, Layer, Option } from "effect";
 import { Atom } from "effect/reactivity";
 import type { ReactElement } from "react";
 import { createMemoryRouter, RouterProvider } from "react-router";
@@ -25,14 +30,20 @@ export const fakeAuthGateway = (overrides: Partial<AuthGateway> = {}): AuthGatew
   sendVerificationEmail: ok,
   requestPasswordReset: ok,
   resetPassword: ok,
-  mcpClientName: () => Promise.resolve(undefined),
   answerConsent: stay,
   followRedirect: () => undefined,
   ...overrides,
 });
 
-const signInMethodsOffering = (providers: ReadonlyArray<SocialProvider>) =>
+export const unnamedMcpClient: McpClientDirectoryApi["profileOf"] = (clientId) =>
+  Effect.succeed(new McpClientProfile({ clientId, name: Option.none() }));
+
+const clientsFor = (
+  providers: ReadonlyArray<SocialProvider>,
+  profileOf: McpClientDirectoryApi["profileOf"],
+) =>
   Layer.mergeAll(
+    Layer.succeed(McpClientDirectory, McpClientDirectory.of({ profileOf })),
     Layer.succeed(
       SignInMethodsClient,
       SignInMethodsClient.of({
@@ -50,6 +61,7 @@ export const renderAuthPage = (
     readonly path: string;
     readonly gateway?: AuthGateway;
     readonly providers?: ReadonlyArray<SocialProvider>;
+    readonly mcpClients?: McpClientDirectoryApi["profileOf"];
   },
 ) => {
   const router = createMemoryRouter(
@@ -63,7 +75,10 @@ export const renderAuthPage = (
   render(
     <RegistryProvider
       initialValues={[
-        Atom.initialValue(clientLayer, signInMethodsOffering(options.providers ?? [])),
+        Atom.initialValue(
+          clientLayer,
+          clientsFor(options.providers ?? [], options.mcpClients ?? unnamedMcpClient),
+        ),
       ]}
     >
       <AuthGatewayProvider gateway={options.gateway ?? fakeAuthGateway()}>

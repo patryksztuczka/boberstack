@@ -41,7 +41,6 @@ export interface AuthGateway {
   readonly sendVerificationEmail: (email: string, callbackURL: string) => Promise<AuthOutcome>;
   readonly requestPasswordReset: (email: string, redirectTo: string) => Promise<AuthOutcome>;
   readonly resetPassword: (newPassword: string, token: string) => Promise<AuthOutcome>;
-  readonly mcpClientName: (clientId: string) => Promise<string | undefined>;
   readonly answerConsent: (allow: boolean) => Promise<RedirectOutcome>;
   readonly followRedirect: (url: string) => void;
 }
@@ -102,11 +101,6 @@ export const betterAuthGateway: AuthGateway = {
     outcome(await client.requestPasswordReset({ email, redirectTo })),
   resetPassword: async (newPassword, token) =>
     outcome(await client.resetPassword({ newPassword, token })),
-  mcpClientName: async (clientId) => {
-    const result = await client.oauth2.publicClient({ query: { client_id: clientId } });
-
-    return result.data?.client_name ?? undefined;
-  },
   answerConsent: async (allow) => redirectOutcome(await client.oauth2.consent({ accept: allow })),
   followRedirect,
 };

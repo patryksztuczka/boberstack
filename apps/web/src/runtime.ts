@@ -1,7 +1,10 @@
 import { ApiOrigin } from "@boberstack/client-runtime/api-origin";
 import { clientLayer } from "@boberstack/client-runtime/atom-runtime";
 import type { ClientLayer } from "@boberstack/client-runtime/atom-runtime";
-import { SignInMethodsHttpClientLayer } from "@boberstack/client-runtime/identity";
+import {
+  McpClientDirectoryHttpLayer,
+  SignInMethodsHttpClientLayer,
+} from "@boberstack/client-runtime/identity";
 import { TodosHttpClientLayer, TodosRpcClientLayer } from "@boberstack/client-runtime/todos";
 import { Layer } from "effect";
 import { FetchHttpClient } from "effect/http";
@@ -15,6 +18,7 @@ export const TODOS_TRANSPORT: TodosTransport =
 const WebClientLayer: ClientLayer = Layer.mergeAll(
   TODOS_TRANSPORT === "rpc" ? TodosRpcClientLayer : TodosHttpClientLayer,
   SignInMethodsHttpClientLayer,
+  McpClientDirectoryHttpLayer,
 ).pipe(
   Layer.provide(ApiOrigin.layer(globalThis.location.origin)),
   Layer.provide(FetchHttpClient.layer),
