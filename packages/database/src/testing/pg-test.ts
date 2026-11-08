@@ -4,7 +4,7 @@ import { PostgreSqlContainer } from "@testcontainers/postgresql";
 import { Effect, Layer, Redacted } from "effect";
 import { Migrator } from "effect/sql";
 
-import { sqlFileMigrations } from "../platform/database/sql-file-migrations.ts";
+import { sqlFileMigrations } from "../sql-file-migrations.ts";
 
 const POSTGRES_IMAGE = "postgres:17-alpine";
 

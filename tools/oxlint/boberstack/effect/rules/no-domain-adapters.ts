@@ -9,13 +9,16 @@ import { matchesAny, mayReach, relativeFilename } from "../shared/paths.ts";
 import { isAmbientGlobal } from "../shared/scope.ts";
 
 const defaults = {
-  paths: ["apps/*/src/modules/**"],
+  paths: ["packages/core/src/**"],
   allow: ["**/*.test.ts", "**/tests/**", "**/testing/**"],
   vendors: ["better-auth", "@alchemy.run/*", "alchemy", "pg", "@effect/sql-pg", "undici"],
   network: ["http", "https", "http2", "net", "tls", "dns", "dgram"],
-  platform: ["apps/*/src/platform/**"],
-  platformAliases: ["#platform/", "@/platform/"],
+  platform: ["packages/*/**"],
+  platformAliases: ["@boberstack/"],
+  contractPackages: ["@boberstack/domain"],
 };
+
+const workspaceOf = (file: string): string => file.split("/").slice(0, 2).join("/");
 
 const networkGlobals: ReadonlySet<string> = new Set([
   "fetch",
@@ -79,17 +82,17 @@ export const noDomainAdaptersRule = defineRule({
     type: "problem",
     docs: {
       description:
-        "Disallow vendor SDKs, network modules and globals, and platform/ adapters in domain modules.",
+        "Disallow vendor SDKs, network modules and globals, and adapter packages in domain modules.",
     },
     messages: {
       vendor:
-        "`{{source}}` is an adapter's SDK. A domain module cannot import HTTP clients or adapters: declare a port in the module, implement it in platform/, and provide it from the composition root (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
+        "`{{source}}` is an adapter's SDK. A domain module cannot import HTTP clients or adapters: declare a port in the module, implement it in an adapter package, and provide it from the composition root (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
       network:
-        "`{{source}}` reaches the network without a port. Declare a port in the module, implement it in platform/, and provide it from the composition root (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
+        "`{{source}}` reaches the network without a port. Declare a port in the module, implement it in an adapter package, and provide it from the composition root (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
       platform:
-        "`{{source}}` is an adapter in platform/. A domain module depends on its own port, never on an adapter; the composition root chooses the adapter (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
+        "`{{source}}` is an adapter package. A domain module depends on its own port, never on an adapter; the composition root chooses the adapter (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
       global:
-        "`{{name}}` reaches the network without a port. Declare a port in the module, implement it in platform/, and provide it from the composition root (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
+        "`{{name}}` reaches the network without a port. Declare a port in the module, implement it in an adapter package, and provide it from the composition root (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
     },
     schema: [
       {
@@ -101,6 +104,7 @@ export const noDomainAdaptersRule = defineRule({
           network: { type: "array", items: { type: "string" } },
           platform: { type: "array", items: { type: "string" } },
           platformAliases: { type: "array", items: { type: "string" } },
+          contractPackages: { type: "array", items: { type: "string" } },
         },
         additionalProperties: false,
       },
@@ -118,11 +122,17 @@ export const noDomainAdaptersRule = defineRule({
     const intoPlatform = ({ text, partial }: Specifier): boolean => {
       const options = ruleOptions(context, defaults);
 
-      if (options.platformAliases.some((alias) => text.startsWith(alias))) return true;
+      if (options.platformAliases.some((alias) => text.startsWith(alias))) {
+        return !options.contractPackages.some(
+          (name) => text === name || text.startsWith(`${name}/`),
+        );
+      }
 
       if (!text.startsWith("./") && !text.startsWith("../")) return false;
       const importer = relativeFilename(context);
       const target = path.posix.normalize(path.posix.join(path.posix.dirname(importer), text));
+
+      if (workspaceOf(target) === workspaceOf(importer)) return false;
 
       if (partial) return mayReach(target, options.platform);
 

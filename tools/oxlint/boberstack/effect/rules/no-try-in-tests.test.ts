@@ -7,18 +7,18 @@ const tryCatch = "try { await complete(todo); } catch (cause) { refusal = cause;
 
 tester.run("@boberstack/effect/no-try-in-tests", noTryInTestsRule, {
   valid: [
-    { code: tryCatch, filename: "apps/api/src/modules/identity/identity.persistence.ts" },
+    { code: tryCatch, filename: "packages/core/src/identity/identity.persistence.ts" },
     {
       code: tryCatch,
-      filename: "apps/api/src/modules/identity/a.test.ts",
+      filename: "packages/core/src/identity/a.test.ts",
       options: [{ tests: ["**/*.spec.ts"] }],
     },
   ],
   invalid: [
-    { code: tryCatch, filename: "apps/api/src/modules/identity/a.test.ts", errors: [error] },
+    { code: tryCatch, filename: "packages/core/src/identity/a.test.ts", errors: [error] },
     {
       code: tryCatch,
-      filename: "apps/api/src/modules/identity/a.spec.ts",
+      filename: "packages/core/src/identity/a.spec.ts",
       options: [{ tests: ["**/*.spec.ts"] }],
       errors: [error],
     },

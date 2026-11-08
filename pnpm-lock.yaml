@@ -106,49 +106,36 @@ importers:
       '@alchemy.run/sql':
         specifier: 'catalog:'
         version: 2.0.0-beta.84(@effect/sql-pg@4.0.7(effect@4.0.7))(alchemy@2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/vitest@4.0.7(effect@4.0.7)(vitest@5.0.5))(@types/node@26.6.6)(@types/react@19.3.0)(effect@4.0.7)(jiti@2.7.0)(typescript@7.0.2)(ws@8.22.0))(effect@4.0.7)(pg@8.23.1)
+      '@boberstack/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@boberstack/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@boberstack/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@boberstack/domain':
         specifier: workspace:*
         version: link:../../packages/domain
-      '@effect/sql-pg':
-        specifier: 'catalog:'
-        version: 4.0.7(effect@4.0.7)
+      '@boberstack/mail':
+        specifier: workspace:*
+        version: link:../../packages/mail
       alchemy:
         specifier: 'catalog:'
         version: 2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/vitest@4.0.7(effect@4.0.7)(vitest@5.0.5))(@types/node@26.6.6)(@types/react@19.3.0)(effect@4.0.7)(jiti@2.7.0)(typescript@7.0.2)(ws@8.22.0)
-      better-auth:
-        specifier: 'catalog:'
-        version: 1.7.14(pg@8.23.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vitest@5.0.5)
       effect:
         specifier: 'catalog:'
         version: 4.0.7
       pg:
         specifier: 8.23.1
         version: 8.23.1
-    devDependencies:
-      '@effect/platform-node':
-        specifier: 'catalog:'
-        version: 4.0.7(effect@4.0.7)(redis@6.3.1)
-      '@effect/vitest':
-        specifier: 'catalog:'
-        version: 4.0.7(effect@4.0.7)(vitest@5.0.5)
-      '@testcontainers/postgresql':
-        specifier: 12.2.1
-        version: 12.2.1
-      '@types/pg':
-        specifier: 8.23.1
-        version: 8.23.1
-      testcontainers:
-        specifier: 12.2.1
-        version: 12.2.1
-      vite-plus:
-        specifier: 'catalog:'
-        version: 1.4.0(@types/node@26.6.6)(@vitest/ui@5.0.5)(jiti@2.7.0)(jsdom@30.1.3(@noble/hashes@2.4.0))(typescript@7.0.2)(yaml@2.9.1)
 
   apps/cli:
     dependencies:
-      '@boberstack/api':
+      '@boberstack/database':
         specifier: workspace:*
-        version: link:../api
+        version: link:../../packages/database
       '@boberstack/domain':
         specifier: workspace:*
         version: link:../../packages/domain
@@ -265,11 +252,95 @@ importers:
         specifier: 'catalog:'
         version: 1.4.0(@types/node@26.6.6)(@vitest/ui@5.0.5)(jiti@2.7.0)(jsdom@30.1.3(@noble/hashes@2.4.0))(typescript@7.0.2)(yaml@2.9.1)
 
+  packages/auth:
+    dependencies:
+      '@alchemy.run/better-auth':
+        specifier: 'catalog:'
+        version: 2.0.0-beta.84(4d0f96ea13b011d2fd5dd9a3f81e97d5)
+      '@boberstack/core':
+        specifier: workspace:*
+        version: link:../core
+      '@boberstack/domain':
+        specifier: workspace:*
+        version: link:../domain
+      alchemy:
+        specifier: 'catalog:'
+        version: 2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/vitest@4.0.7(effect@4.0.7)(vitest@5.0.5))(@types/node@26.6.6)(@types/react@19.3.0)(effect@4.0.7)(jiti@2.7.0)(typescript@7.0.2)(ws@8.22.0)
+      better-auth:
+        specifier: 'catalog:'
+        version: 1.7.14(pg@8.23.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(vitest@5.0.5)
+      effect:
+        specifier: 'catalog:'
+        version: 4.0.7
+
+  packages/core:
+    dependencies:
+      '@boberstack/domain':
+        specifier: workspace:*
+        version: link:../domain
+      effect:
+        specifier: 'catalog:'
+        version: 4.0.7
+    devDependencies:
+      '@effect/vitest':
+        specifier: 'catalog:'
+        version: 4.0.7(effect@4.0.7)(vitest@5.0.5)
+      vite-plus:
+        specifier: 'catalog:'
+        version: 1.4.0(@types/node@26.6.6)(@vitest/ui@5.0.5)(jiti@2.7.0)(jsdom@30.1.3(@noble/hashes@2.4.0))(typescript@7.0.2)(yaml@2.9.1)
+
+  packages/database:
+    dependencies:
+      '@boberstack/core':
+        specifier: workspace:*
+        version: link:../core
+      '@boberstack/domain':
+        specifier: workspace:*
+        version: link:../domain
+      effect:
+        specifier: 'catalog:'
+        version: 4.0.7
+    devDependencies:
+      '@effect/platform-node':
+        specifier: 'catalog:'
+        version: 4.0.7(effect@4.0.7)(redis@6.3.1)
+      '@effect/sql-pg':
+        specifier: 'catalog:'
+        version: 4.0.7(effect@4.0.7)
+      '@effect/vitest':
+        specifier: 'catalog:'
+        version: 4.0.7(effect@4.0.7)(vitest@5.0.5)
+      '@testcontainers/postgresql':
+        specifier: 12.2.1
+        version: 12.2.1
+      vite-plus:
+        specifier: 'catalog:'
+        version: 1.4.0(@types/node@26.6.6)(@vitest/ui@5.0.5)(jiti@2.7.0)(jsdom@30.1.3(@noble/hashes@2.4.0))(typescript@7.0.2)(yaml@2.9.1)
+
   packages/domain:
     dependencies:
       effect:
         specifier: 'catalog:'
         version: 4.0.7
+
+  packages/mail:
+    dependencies:
+      '@boberstack/core':
+        specifier: workspace:*
+        version: link:../core
+      effect:
+        specifier: 'catalog:'
+        version: 4.0.7
+    devDependencies:
+      '@effect/vitest':
+        specifier: 'catalog:'
+        version: 4.0.7(effect@4.0.7)(vitest@5.0.5)
+      testcontainers:
+        specifier: 12.2.1
+        version: 12.2.1
+      vite-plus:
+        specifier: 'catalog:'
+        version: 1.4.0(@types/node@26.6.6)(@vitest/ui@5.0.5)(jiti@2.7.0)(jsdom@30.1.3(@noble/hashes@2.4.0))(typescript@7.0.2)(yaml@2.9.1)
 
   packages/ui:
     dependencies:
@@ -2972,9 +3043,6 @@ packages:
 
   '@types/node@26.6.6':
     resolution: {integrity: sha512-MzQj+8Kx3XI40OmUAE6Qoh58ZMNstNNMwn2nfd3qWsfe7nDNSqJNzes4njhz6AHwrSHOffSLwXU6yb474Q4aog==}
-
-  '@types/pg@8.23.1':
-    resolution: {integrity: sha512-fKVHpikPdg4GKks3JuLEhvwSyvwzF23hnabPy6DD8ljVbC7+6J5dQzdv4arV6jqq57djnMgs1HKBxX4P8aBI3A==}
 
   '@types/react-dom@19.3.0':
     resolution: {integrity: sha512-ZI7bU42mZXXKHn/qNLEw2IrbiINU7X5+vfgdixBHkCNpYWXjKgfQ/P+uyGb5CjOLB9UcnTeg3rylQtV2hym44Q==}
@@ -7205,12 +7273,6 @@ snapshots:
   '@types/node@26.6.6':
     dependencies:
       undici-types: 8.9.0
-
-  '@types/pg@8.23.1':
-    dependencies:
-      '@types/node': 26.6.6
-      pg-protocol: 1.16.1
-      pg-types: 2.2.0
 
   '@types/react-dom@19.3.0(@types/react@19.3.0)':
     dependencies:

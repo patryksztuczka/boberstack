@@ -5,7 +5,7 @@ import { splitSqlStatements } from "./sql-statements.ts";
 
 const MIGRATION_FILE = /^(\d+)_([^.]+)\.sql$/;
 
-const MIGRATIONS_DIRECTORY = new URL("../../../migrations", import.meta.url);
+const MIGRATIONS_DIRECTORY = new URL("../migrations", import.meta.url);
 
 export const sqlFileMigrations: Migrator.Loader<FileSystem.FileSystem | Path.Path> = Effect.gen(
   function* () {
@@ -43,7 +43,7 @@ export const sqlFileMigrations: Migrator.Loader<FileSystem.FileSystem | Path.Pat
     (cause) =>
       new Migrator.MigrationError({
         kind: "BadState",
-        message: `Cannot read the SQL migrations in apps/api/migrations: ${cause.message}`,
+        message: `Cannot read the SQL migrations in packages/database/migrations: ${cause.message}`,
         cause,
       }),
   ),

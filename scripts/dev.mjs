@@ -25,7 +25,7 @@ const USAGE =
   "  status      prints .dev/state.json when pnpm dev is running\n" +
   "  ports       prints the ports and URLs this worktree uses, without starting anything\n" +
   "  db:up       starts this worktree's Postgres container\n" +
-  "  db:migrate  applies apps/api/migrations to it\n" +
+  "  db:migrate  applies packages/database/migrations to it\n" +
   "  db:down     stops the container and keeps its volume\n" +
   "  cli ...     runs the CLI (apps/cli) with this worktree's DATABASE_URL and api port\n";
 

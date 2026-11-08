@@ -1,8 +1,7 @@
+import { TodosService } from "@boberstack/core/todos";
 import { CurrentUser } from "@boberstack/domain/identity/current-user";
 import { TodosRpcs } from "@boberstack/domain/todos/todos.rpc";
 import { Effect } from "effect";
-
-import { TodosService } from "../modules/todos/index.ts";
 
 export const TodosRpcLayer = TodosRpcs.toLayer(
   Effect.gen(function* () {

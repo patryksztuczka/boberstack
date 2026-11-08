@@ -10,7 +10,7 @@ pnpm dev         # Postgres and Mailpit in Docker, migrations, the api Worker vi
 pnpm dev:doctor  # in a second terminal: checks the stack and creates and verifies demo@example.com / demo12345
 ```
 
-`pnpm dev` prints the URLs. Open the web URL, sign in as the demo user and add a todo. The CLI's `db migrate` command applies `apps/api/migrations/` to the local database on every start.
+`pnpm dev` prints the URLs. Open the web URL, sign in as the demo user and add a todo. The CLI's `db migrate` command applies `packages/database/migrations/` to the local database on every start.
 
 Ports come from a hash of the checkout path, so two worktrees can run `pnpm dev` at once. Each checkout gets its own Compose project, database and Mailpit inbox. [AGENTS.md](../../AGENTS.md#commands) lists where the state and logs live and the variables that override the ports.
 

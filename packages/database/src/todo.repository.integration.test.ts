@@ -1,11 +1,11 @@
+import { TodoStore } from "@boberstack/core/todos";
 import { UserId } from "@boberstack/domain/identity/user";
 import { TodoId, TodoTitle } from "@boberstack/domain/todos/todo";
 import { assert, describe, layer } from "@effect/vitest";
 import { DateTime, Effect, Layer, Option } from "effect";
 import { SqlClient } from "effect/sql";
 
-import { TodoStore } from "../../modules/todos/index.ts";
-import { PgTestLayer } from "../../testing/pg-test.ts";
+import { PgTestLayer } from "./testing/pg-test.ts";
 import { TodoRepositoryLayer } from "./todo.repository.ts";
 
 const alice = UserId.make("user-alice");

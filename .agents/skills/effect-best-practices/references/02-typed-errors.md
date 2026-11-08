@@ -23,7 +23,7 @@ return yield * new TodoNotFoundError({ id });
 
 ### errors.home: an error lives in a `*.errors.ts` file
 
-An error that crosses the wire (an HttpApi endpoint's or an Rpc's `error`) lives in `packages/domain/src/<context>/<x>.errors.ts`, beside the contract that names it. An error only the server sees, such as a store's storage failure, lives in the module's `x.errors.ts` under `apps/api/src/modules/<context>/`. `@boberstack/effect/tagged-error-naming` refuses an error class anywhere else.
+An error that crosses the wire (an HttpApi endpoint's or an Rpc's `error`) lives in `packages/domain/src/<context>/<x>.errors.ts`, beside the contract that names it. An error only the server sees, such as a store's storage failure, lives in the module's `x.errors.ts` under `packages/core/src/<context>/`. `@boberstack/effect/tagged-error-naming` refuses an error class anywhere else.
 
 ### errors.naming: the name ends in `Error` and equals the tag
 
@@ -58,7 +58,7 @@ export class TodoStorageError extends Schema.TaggedError<
   { readonly brand: unique symbol }
 >()("TodoStorageError", { operation: Schema.String, cause: Schema.Defect() }) {}
 
-// platform/database/todo.repository.ts
+// packages/database/src/todo.repository.ts
 insert(row).pipe(Effect.mapError((cause) => new TodoStorageError({ operation: "insert", cause })));
 ```
 

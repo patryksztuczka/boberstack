@@ -1,8 +1,8 @@
+import { RpcAuthenticationLayer } from "@boberstack/auth";
 import { TodosRpcs } from "@boberstack/domain/todos/todos.rpc";
 import { Layer } from "effect";
 import { RpcSerialization, RpcServer } from "effect/rpc";
 
-import { RpcAuthenticationLayer } from "../platform/authentication/authentication.layer.ts";
 import { TodosRpcLayer } from "./todos.rpc.ts";
 
 export const RpcLayer = RpcServer.layerHttp({

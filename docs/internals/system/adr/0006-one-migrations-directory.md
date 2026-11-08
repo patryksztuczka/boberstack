@@ -2,7 +2,7 @@
 
 **Status:** accepted, 2026-10-30.
 
-Every table, ours and better-auth's, is created by plain SQL files in `apps/api/migrations/`, named `NNNN_name.sql` and applied in order. The same files are applied in three places: by Neon at deploy, through the Alchemy `Neon.Project` `migrations` option; locally by `cli db migrate`; and in tests by the Testcontainers Postgres layer before any suite runs. `@alchemy.run/better-auth`'s own deploy-time migration is turned off.
+Every table, ours and better-auth's, is created by plain SQL files in `packages/database/migrations/` (in `apps/api` until root ADR 0009), named `NNNN_name.sql` and applied in order. The same files are applied in three places: by Neon at deploy, through the Alchemy `Neon.Project` `migrations` option; locally by `cli db migrate`; and in tests by the Testcontainers Postgres layer before any suite runs. `@alchemy.run/better-auth`'s own deploy-time migration is turned off.
 
 Two migration mechanisms would let production, local dev and tests disagree about the schema, and the disagreement would surface as a bug in whichever environment ran the other path. With one directory, a schema change is one reviewed SQL file, and the integration tests prove it against the same SQL production runs.
 

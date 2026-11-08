@@ -42,8 +42,8 @@ The starter is a working project. Delete what you will not use on day one. Lint,
 ### The todos example
 
 - [ ] Delete `packages/domain/src/todos/` and its group in `packages/domain/src/api.ts`.
-- [ ] Delete `apps/api/src/modules/todos/`, `apps/api/src/http/todos.http.ts`, `apps/api/src/rpc/todos.rpc.ts`, and their entries in `http.layer.ts`, `rpc.layer.ts` and `app.layer.ts`.
-- [ ] Delete `apps/api/src/platform/database/todo.repository.ts` and its integration test.
+- [ ] Delete `packages/core/src/todos/`, `apps/api/src/http/todos.http.ts`, `apps/api/src/rpc/todos.rpc.ts`, and their entries in `http.layer.ts`, `rpc.layer.ts` and `app.layer.ts`.
+- [ ] Delete `packages/database/src/todo.repository.ts`, its integration test and its export in `packages/database/src/index.ts`.
 - [ ] Add a migration that drops the todos table. Do not delete the old migration if it has ever been applied (root ADR 0006).
 - [ ] Delete `apps/web/src/features/todos/` and its routes in `router.tsx`.
 - [ ] Delete `docs/internals/todos/`, `docs/user/todos.md` and the Todos lines in `CONTEXT-MAP.md`.
@@ -53,7 +53,7 @@ Keep the folders: the next context goes in the same places.
 ### RPC
 
 - [ ] Delete `packages/domain/src/*/*.rpc.ts` and `apps/api/src/rpc/`.
-- [ ] Remove the RPC layer from `app.layer.ts` and the RPC auth middleware from `packages/domain/src/identity/authentication.ts` and `platform/authentication/`.
+- [ ] Remove the RPC layer from `app.layer.ts` and the RPC auth middleware from `packages/domain/src/identity/authentication.ts` and `packages/auth/src/authentication.layer.ts`.
 - [ ] Switch the web app's hooks to the `HttpApi` client.
 - [ ] Update root ADR 0007 with a superseding ADR.
 
@@ -63,7 +63,7 @@ The mirror image of cutting RPC: delete `*.http-api.ts`, `packages/domain/src/ap
 
 ### The CLI
 
-- [ ] Delete `apps/cli/` and its entry in the `run-only-in-entry-points` and `layer-config-only-in-roots` options in `vite.config.ts`.
+- [ ] Delete `apps/cli/` and its entry in the `run-only-in-entry-points` and `layer-config-only-in-roots` options in `tools/oxlint/lint.config.ts`.
 - [ ] Apply local migrations another way, for example with `psql`, in the `migrate` step of `scripts/dev.mjs`, and drop the root `cli` script. Tests are unaffected: `pg-test.ts` applies the files itself.
 
 ### i18n
@@ -72,9 +72,9 @@ The mirror image of cutting RPC: delete `*.http-api.ts`, `packages/domain/src/ap
 
 ### Authentication
 
-- [ ] Delete `apps/api/src/platform/authentication/` and `packages/domain/src/identity/`.
+- [ ] Delete `packages/auth/` and `packages/domain/src/identity/`.
 - [ ] Remove `.middleware(…)` from every `HttpApiGroup` and `RpcGroup`, and stop reading `CurrentUser` in handlers; Todos would then need a new ownership rule (Todos ADR 0001).
-- [ ] Remove `@alchemy.run/better-auth` and `better-auth` from `apps/api/package.json` and the better-auth bindings from `apps/infra/alchemy.run.ts`.
+- [ ] Remove `@boberstack/auth` and `@alchemy.run/better-auth` from `apps/api/package.json`, `packages/auth` from `apps/api/tsconfig.json`, and the better-auth bindings from `apps/infra/alchemy.run.ts`.
 - [ ] Add a migration that drops the better-auth tables.
 - [ ] Delete `apps/web`'s sign-in feature and route guard, `docs/internals/identity/` and `docs/user/sign-in.md`.
 

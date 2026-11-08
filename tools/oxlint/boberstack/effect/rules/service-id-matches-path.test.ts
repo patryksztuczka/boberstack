@@ -4,34 +4,42 @@ import { serviceIdMatchesPathRule } from "./service-id-matches-path.ts";
 const service = (name: string, id: string): string =>
   `import { Context } from "effect"; export class ${name} extends Context.Service<${name}, Api>()(${JSON.stringify(id)}) {}`;
 
-const moduleFile = "apps/api/src/modules/todos/todo.service.ts";
+const moduleFile = "packages/core/src/todos/todo.service.ts";
 
-const fileLayout = { sourceRoot: "apps/*/src", idSource: "file" };
+const fileLayout = { sourceRoot: "packages/*/src", idSource: "file" };
 
 tester.run("@boberstack/effect/service-id-matches-path", serviceIdMatchesPathRule, {
   valid: [
     { code: service("TodosService", "boberstack/todos/TodosService"), filename: moduleFile },
     {
       code: service("TodoStore", "boberstack/todos/TodoStore"),
-      filename: "apps/api/src/modules/todos/todo.store.ts",
+      filename: "packages/core/src/todos/todo.store.ts",
     },
     {
       code: service("TodoRepository", "boberstack/platform/database/TodoRepository"),
-      filename: "apps/api/src/platform/database/todo.repository.ts",
+      filename: "packages/database/src/todo.repository.ts",
+    },
+    {
+      code: service("Auth", "boberstack/platform/auth/Auth"),
+      filename: "packages/auth/src/better-auth.ts",
     },
     {
       code: service("CurrentUser", "boberstack/domain/auth/CurrentUser"),
       filename: "packages/domain/src/auth/current-user.ts",
     },
+    {
+      code: service("S3Storage", "boberstack/platform/storage/S3Storage"),
+      filename: "packages/storage/src/s3-storage.ts",
+    },
     { code: service("Anything", "whatever"), filename: "scripts/tool.ts" },
     {
       code: service("TestPostgres", "boberstack/testing/TestPostgres"),
-      filename: "apps/api/src/testing/pg-test.ts",
-      options: [{ extraRoots: { "apps/*/src/testing": "boberstack/testing" } }],
+      filename: "packages/database/src/testing/pg-test.ts",
+      options: [{ extraRoots: { "packages/database/src/testing": "boberstack/testing" } }],
     },
     {
       code: service("TodoMatcher", "boberstack/todos/matching/TodoMatcher"),
-      filename: "apps/api/src/todos/matching/TodoMatcher.ts",
+      filename: "packages/app/src/todos/matching/TodoMatcher.ts",
       options: [fileLayout],
     },
   ],
@@ -44,9 +52,15 @@ tester.run("@boberstack/effect/service-id-matches-path", serviceIdMatchesPathRul
     },
     {
       code: service("TodoRepository", "boberstack/database/TodoRepository"),
-      filename: "apps/api/src/platform/database/todo.repository.ts",
+      filename: "packages/database/src/todo.repository.ts",
       errors: [{ messageId: "id" }],
       output: service("TodoRepository", "boberstack/platform/database/TodoRepository"),
+    },
+    {
+      code: service("S3Storage", "boberstack/storage/S3Storage"),
+      filename: "packages/storage/src/s3-storage.ts",
+      errors: [{ messageId: "id" }],
+      output: service("S3Storage", "boberstack/platform/storage/S3Storage"),
     },
     {
       code: service("CurrentUser", "boberstack/auth/CurrentUser"),
@@ -56,7 +70,7 @@ tester.run("@boberstack/effect/service-id-matches-path", serviceIdMatchesPathRul
     },
     {
       code: service("Matcher", "boberstack/todos/matching/TodoMatcher"),
-      filename: "apps/api/src/todos/matching/TodoMatcher.ts",
+      filename: "packages/app/src/todos/matching/TodoMatcher.ts",
       options: [fileLayout],
       errors: [{ messageId: "className" }],
     },

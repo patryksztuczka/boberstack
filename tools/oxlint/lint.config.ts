@@ -48,8 +48,8 @@ const effectRules = {
   "@boberstack/effect/module-boundaries": [
     "error",
     {
-      sourceRoot: "apps/*/src/modules",
-      indexOnly: ["apps/*/src/platform/**"],
+      sourceRoot: "packages/core/src",
+      indexOnly: ["packages/*/src/**"],
       rootFiles: ["apps/*/src/*"],
     },
   ],
@@ -82,10 +82,10 @@ const effectRules = {
     "error",
     {
       prefix: "boberstack",
-      sourceRoot: "apps/*/src/modules",
+      sourceRoot: "packages/core/src",
       extraRoots: {
-        "apps/*/src/platform": "boberstack/platform",
         "packages/domain/src": "boberstack/domain",
+        "packages/*/src": "boberstack/platform/*",
       },
       idSource: "class",
     },
@@ -167,7 +167,7 @@ const lint = {
       },
     },
     {
-      files: ["apps/api/**", "apps/cli/**", "apps/infra/**", "packages/domain/**"],
+      files: ["apps/api/**", "apps/cli/**", "apps/infra/**", "packages/**"],
       rules: effectRules,
     },
     {
@@ -175,6 +175,9 @@ const lint = {
         "apps/api/**",
         "apps/cli/**",
         "apps/infra/**",
+        "packages/auth/**",
+        "packages/database/**",
+        "packages/mail/**",
         "scripts/**",
         "tools/**",
         "*.config.ts",

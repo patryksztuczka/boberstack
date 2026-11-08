@@ -13,9 +13,9 @@ When a project starts from this template, rewrite this section on day one. `pnpm
 ## General rules
 
 - Read [CONTEXT-MAP.md](CONTEXT-MAP.md) and the context's `GLOSSARY.md` before naming anything. Code uses the glossary's words.
-- Features are service methods in `apps/api/src/modules/<context>/`; transports stay thin. An HttpApi or RPC handler decodes input, calls one service method and maps its errors, if they are not already wire errors. Pure work (a slug, a label, a calculation) can be a plain function next to the service.
+- Features are service methods in `packages/core/src/<context>/`; apps compose them and transports stay thin (root ADR 0009). An HttpApi or RPC handler decodes input, calls one service method and maps its errors, if they are not already wire errors. Pure work (a slug, a label, a calculation) can be a plain function next to the service.
 - Before writing or reviewing Effect code, load the `effect-best-practices` skill. Before using an Effect, Alchemy or better-auth API you have not seen in this repo, read it at the pinned version: `pnpm sources:fetch` clones the tagged sources into `.repos/` (gitignored). Do not invent APIs.
-- SQL lives only in `apps/api/src/platform/database/`, and a store is tested on real Postgres, never with an in-memory fake (root ADR 0004).
+- SQL lives only in `packages/database/`, and a store is tested on real Postgres, never with an in-memory fake (root ADR 0004).
 - No prose comments in code. A workaround for someone else's bug keeps a `VENDOR:` comment (root ADR 0005).
 - Add a lint rule before cleaning up a pattern by hand, so it cannot come back. When you are corrected for the same thing twice, use the `correct` skill.
 - A new version replaces the old one in the same change: no `V2`, no re-export kept for compatibility (the `principle-no-shims` skill).
@@ -58,21 +58,22 @@ Git hooks come from Vite+: `pre-commit` runs `vp staged`, `commit-msg` checks th
 
 ## Where things go
 
-| You are adding                         | It goes in                                                                                                                                 |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| a record, id or error the client sees  | `packages/domain/src/<context>/`                                                                                                           |
-| an endpoint or an RPC                  | the contract in `packages/domain/src/<context>/*.http-api.ts` / `*.rpc.ts`, the handler in `apps/api/src/http/` / `rpc/`                   |
-| business logic                         | `apps/api/src/modules/<context>/x.service.ts`                                                                                              |
-| a query or a table                     | a store port in the module, SQL in `apps/api/src/platform/database/x.repository.ts`, a new file in `apps/api/migrations/`                  |
-| a call to another system               | a port in the module, an adapter in `apps/api/src/platform/<capability>/`                                                                  |
-| an email                               | a template in `apps/api/src/modules/mail/templates/`, sent through the `Mailer` port (root ADR 0008)                                       |
-| an env var or secret                   | a line in `.env.schema` (`@sensitive` for a secret), read with `Config` in a `layerConfig` in `platform/`; the local value in `.env.local` |
-| a screen                               | `apps/web/src/features/<name>/`; what other features may use is exported from its `index.ts`                                               |
-| a UI primitive                         | `packages/ui`                                                                                                                              |
-| a bounded context                      | `CONTEXT-MAP.md`, `docs/internals/<context>/GLOSSARY.md`, then code (the `domain-modeling` skill)                                          |
-| a decision worth remembering           | an ADR (the `domain-modeling` skill)                                                                                                       |
-| how a user does something              | a section in `docs/user/<feature>.md`, in the product's voice ([docs/README.md](docs/README.md#writing-user-docs))                         |
-| a setup, deploy or debugging procedure | `docs/operations/`                                                                                                                         |
+| You are adding                         | It goes in                                                                                                                                        |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| a record, id or error the client sees  | `packages/domain/src/<context>/`                                                                                                                  |
+| an endpoint or an RPC                  | the contract in `packages/domain/src/<context>/*.http-api.ts` / `*.rpc.ts`, the handler in `apps/api/src/http/` / `rpc/`                          |
+| business logic                         | `packages/core/src/<context>/x.service.ts`                                                                                                        |
+| a query or a table                     | a store port in the core module, SQL in `packages/database/src/x.repository.ts`, a new file in `packages/database/migrations/`                    |
+| a call to another system               | a port in the core module, the adapter in its own package, `packages/<capability>/` (root ADR 0009)                                               |
+| an email                               | a template in `packages/core/src/mail/templates/`, sent through the `Mailer` port (root ADR 0008)                                                 |
+| an entry point that runs services      | a composition root in `apps/<name>/` that provides core with adapter packages, and its own source of identity (root ADR 0009)                     |
+| an env var or secret                   | a line in `.env.schema` (`@sensitive` for a secret), read with `Config` in a `layerConfig` in an adapter package; the local value in `.env.local` |
+| a screen                               | `apps/web/src/features/<name>/`; what other features may use is exported from its `index.ts`                                                      |
+| a UI primitive                         | `packages/ui`                                                                                                                                     |
+| a bounded context                      | `CONTEXT-MAP.md`, `docs/internals/<context>/GLOSSARY.md`, then code (the `domain-modeling` skill)                                                 |
+| a decision worth remembering           | an ADR (the `domain-modeling` skill)                                                                                                              |
+| how a user does something              | a section in `docs/user/<feature>.md`, in the product's voice ([docs/README.md](docs/README.md#writing-user-docs))                                |
+| a setup, deploy or debugging procedure | `docs/operations/`                                                                                                                                |
 
 ## Autonomy
 

@@ -1,7 +1,7 @@
 import { tester } from "../../../rule-tester.ts";
 import { noTestTimeoutOrUnreasonedSkipRule } from "./no-test-timeout-or-unreasoned-skip.ts";
 
-const filename = "apps/api/src/modules/todos/todo.service.test.ts";
+const filename = "packages/core/src/todos/todo.service.test.ts";
 
 const timeout = { messageId: "timeout" };
 
@@ -32,7 +32,7 @@ tester.run(
         code: 'describe("todos", () => {\n  // QUARANTINE: waits for better-auth 1.8, which fixes the session cookie\n  it.todo("signs out everywhere");\n});',
         filename,
       },
-      { code: 'it.skip("x", () => {});', filename: "apps/api/src/modules/todos/todo.service.ts" },
+      { code: 'it.skip("x", () => {});', filename: "packages/core/src/todos/todo.service.ts" },
       { code: 'it("x", () => {}, 5000);', filename: "apps/api/vite.config.ts" },
     ],
     invalid: [
@@ -72,7 +72,7 @@ tester.run(
       },
       {
         code: 'it("x", () => {}, 1000);',
-        filename: "apps/api/src/platform/database/todo.repository.integration.test.ts",
+        filename: "packages/database/src/todo.repository.integration.test.ts",
         errors: [timeout],
       },
     ],

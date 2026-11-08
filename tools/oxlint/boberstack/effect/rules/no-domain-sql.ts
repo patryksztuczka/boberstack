@@ -8,10 +8,17 @@ import { matchesAny, relativeFilename } from "../shared/paths.ts";
 const exceptions: Readonly<Record<string, string>> = {};
 
 const defaults = {
-  paths: ["apps/*/src/modules/**"],
+  paths: ["packages/core/src/**"],
   exceptions,
-  packages: ["drizzle-orm", "pg", "@effect/sql-pg", "effect/sql", "@alchemy.run/sql"],
-  database: ["apps/*/src/platform/database/**", "apps/*/src/testing/pg-test"],
+  packages: [
+    "drizzle-orm",
+    "pg",
+    "@effect/sql-pg",
+    "effect/sql",
+    "@alchemy.run/sql",
+    "@boberstack/database",
+  ],
+  database: ["packages/database/**"],
   repositories: ["**/*.repository.ts"],
 };
 
@@ -27,17 +34,17 @@ export const noDomainSqlRule = defineRule({
     type: "problem",
     docs: {
       description:
-        "Disallow SQL, platform/database/ and *.repository.ts files in domain modules, tests included.",
+        "Disallow SQL, the database package and *.repository.ts files in core, tests included.",
     },
     messages: {
       package:
-        "`{{source}}` talks to the database. A domain module asks a store port (`XStore` in `x.store.ts`) for what it needs, and a repository in apps/api/src/platform/database/ holds the SQL (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
+        "`{{source}}` talks to the database. A domain module asks a store port (`XStore` in `x.store.ts`) for what it needs, and a repository in packages/database/src/ holds the SQL (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
       database:
-        "`{{source}}` is the database side of the app: the connection, a repository or the Postgres test layer. A domain module asks a store port (`XStore` in `x.store.ts`) for what it needs, and its contract runs on Postgres in apps/api/src/platform/database/x.repository.integration.test.ts (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
+        "`{{source}}` is the database side of the app: the connection, a repository or the Postgres test layer. A domain module asks a store port (`XStore` in `x.store.ts`) for what it needs, and its contract runs on Postgres in packages/database/src/x.repository.integration.test.ts (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
       dynamic:
         "This specifier is built at runtime, so the fence cannot tell where it leads: a substitution may climb out of any folder its static head names. Import a static path, or name the file in no-domain-sql's exceptions with its reason (see tools/oxlint/boberstack/effect/README.md).",
       repository:
-        "A repository holds SQL and lives only in apps/api/src/platform/database/. Name the module's port `XStore` in `x.store.ts` and put its logic in `x.service.ts` (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
+        "A repository holds SQL and lives only in packages/database/src/. Name the module's port `XStore` in `x.store.ts` and put its logic in `x.service.ts` (see .agents/skills/effect-best-practices/references/05-project-structure.md).",
     },
     schema: [
       {

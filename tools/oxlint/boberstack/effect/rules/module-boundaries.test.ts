@@ -1,13 +1,13 @@
 import { tester } from "../../../rule-tester.ts";
 import { moduleBoundariesRule } from "./module-boundaries.ts";
 
-const matcher = "apps/api/src/modules/todos/tagging/tag-index.ts";
+const matcher = "packages/core/src/todos/tagging/tag-index.ts";
 
-const adapter = "apps/api/src/platform/mail/smtp-mailer.ts";
+const adapter = "packages/mail/src/smtp-mailer.ts";
 
-const platformOptions = [{ indexOnly: ["apps/*/src/platform/**"] }];
+const platformOptions = [{ indexOnly: ["packages/*/src/**"] }];
 
-const reference = "apps/api/src/modules/todos/sharing/share-link.constants.ts";
+const reference = "packages/core/src/todos/sharing/share-link.constants.ts";
 
 const rootOptions = [{ rootFiles: ["apps/*/src/*"] }];
 
@@ -21,47 +21,47 @@ tester.run("@boberstack/effect/module-boundaries", moduleBoundariesRule, {
     { code: 'import { Effect } from "effect";', filename: matcher },
     {
       code: 'import { TagIndex } from "./tagging";',
-      filename: "apps/api/src/modules/todos/todos.layer.ts",
+      filename: "packages/core/src/todos/todos.layer.ts",
     },
     { code: 'import { x } from "../other/deep/file";', filename: "scripts/tool.ts" },
     {
       code: 'import { ShareLinkStub } from "../sharing/testing";',
-      filename: "apps/api/src/modules/todos/tagging/tag-index.test.ts",
+      filename: "packages/core/src/todos/tagging/tag-index.test.ts",
     },
     {
       code: 'import { ShareLinkStub } from "../sharing/testing/index.ts";',
-      filename: "apps/api/src/modules/todos/tagging/tag-index.test.ts",
+      filename: "packages/core/src/todos/tagging/tag-index.test.ts",
     },
     {
       code: 'import { ShareLinkStub } from "../../sharing/testing/index.ts";',
-      filename: "apps/api/src/modules/todos/tagging/testing/tag-index-suite.ts",
+      filename: "packages/core/src/todos/tagging/testing/tag-index-suite.ts",
     },
     {
       code: 'import { ShareLinkStub } from "../../sharing/testing/index.ts";',
-      filename: "apps/api/src/modules/todos/tagging/tests/tag-world.ts",
+      filename: "packages/core/src/todos/tagging/tests/tag-world.ts",
     },
     {
-      code: 'import { TodoStore } from "../../modules/todos/lists/index.ts";',
+      code: 'import { TodoStore } from "../../core/src/todos/lists/index.ts";',
       filename: adapter,
       options: platformOptions,
     },
     {
-      code: 'import { runConformance } from "../../modules/todos/lists/testing/index.ts";',
-      filename: "apps/api/src/platform/mail/smtp-mailer.integration.test.ts",
+      code: 'import { runConformance } from "../../core/src/todos/lists/testing/index.ts";',
+      filename: "packages/mail/src/smtp-mailer.integration.test.ts",
       options: platformOptions,
     },
     {
-      code: 'import { DatabaseConnection } from "../database/database-connection.ts";',
+      code: 'import { DatabaseConnection } from "../../database/src/database-connection.ts";',
       filename: adapter,
       options: platformOptions,
     },
     {
-      code: 'import { ReminderClock } from "./modules/todos/reminders/reminder-clock.ts";',
+      code: 'import { ReminderClock } from "../../../packages/core/src/todos/reminders/reminder-clock.ts";',
       filename: "apps/api/src/app.layer.ts",
       options: platformOptions,
     },
     {
-      code: 'import { parseQuery } from "../../../http/query.ts";',
+      code: 'import { parseQuery } from "../../../../../apps/api/src/http/query.ts";',
       filename: reference,
       options: rootOptions,
     },
@@ -71,7 +71,7 @@ tester.run("@boberstack/effect/module-boundaries", moduleBoundariesRule, {
       options: rootOptions,
     },
     {
-      code: 'import { NodeEnvironment } from "../../../node-environment.ts";',
+      code: 'import { NodeEnvironment } from "../../../../../apps/api/src/node-environment.ts";',
       filename: reference,
       options: [{ rootFiles: [] }],
     },
@@ -81,92 +81,92 @@ tester.run("@boberstack/effect/module-boundaries", moduleBoundariesRule, {
       options: [{ rootFiles: [] }],
     },
     {
-      code: 'const query = await import("../../../http/" + name);',
+      code: 'const query = await import("../../../../../apps/api/src/http/" + name);',
       filename: reference,
       options: rootOptions,
     },
     {
-      code: "const query = await import(`../../../http/${name}`);",
+      code: "const query = await import(`../../../../../apps/api/src/http/${name}`);",
       filename: reference,
       options: rootOptions,
     },
     {
-      code: 'import { answers } from "../../../http/";',
+      code: 'import { answers } from "../../../../../apps/api/src/http/";',
       filename: reference,
       options: rootOptions,
     },
     {
-      code: 'import { answers } from "../../../http/index.ts";',
+      code: 'import { answers } from "../../../../../apps/api/src/http/index.ts";',
       filename: reference,
       options: rootOptions,
     },
     {
-      code: 'const { layerTestConfig } = require("../../../testing/test-config.ts");',
-      filename: "apps/api/src/modules/todos/sharing/share-link.test.ts",
+      code: 'const { layerTestConfig } = require("../../../../../apps/api/src/testing/test-config.ts");',
+      filename: "packages/core/src/todos/sharing/share-link.test.ts",
       options: rootOptions,
     },
     {
-      code: 'type Env = typeof import("../../../platform/environment/worker-environment.ts");',
-      filename: "apps/api/src/modules/todos/sharing/share-link.test.ts",
+      code: 'type Env = typeof import("../../../../../apps/api/src/platform/environment/worker-environment.ts");',
+      filename: "packages/core/src/todos/sharing/share-link.test.ts",
       options: rootOptions,
     },
     {
-      code: 'import config = require("../../../testing/test-config.ts");',
-      filename: "apps/api/src/modules/todos/sharing/share-link.test.ts",
+      code: 'import config = require("../../../../../apps/api/src/testing/test-config.ts");',
+      filename: "packages/core/src/todos/sharing/share-link.test.ts",
       options: rootOptions,
     },
   ],
   invalid: [
     {
-      code: 'import { NodeEnvironment } from "../../../node-environment.ts";',
+      code: 'import { NodeEnvironment } from "../../../../../apps/api/src/node-environment.ts";',
       filename: reference,
       options: rootOptions,
       errors: [{ messageId: "rootFile" }],
     },
     {
-      code: 'export { CorsPolicy } from "../../origin-policy.ts";',
-      filename: "apps/api/src/modules/accounts/index.ts",
+      code: 'export { CorsPolicy } from "../../../../apps/api/src/origin-policy.ts";',
+      filename: "packages/core/src/accounts/index.ts",
       options: rootOptions,
       errors: [{ messageId: "rootFile" }],
     },
     {
-      code: 'const tracing = await import("../../../tracing.ts");',
+      code: 'const tracing = await import("../../../../../apps/api/src/tracing.ts");',
       filename: reference,
       options: rootOptions,
       errors: [{ messageId: "rootFile" }],
     },
     {
-      code: 'import { AppLayer } from "../../../../app.layer.ts";',
-      filename: "apps/api/src/modules/todos/sharing/tests/share-link.test.ts",
+      code: 'import { AppLayer } from "../../../../../../apps/api/src/app.layer.ts";',
+      filename: "packages/core/src/todos/sharing/tests/share-link.test.ts",
       options: rootOptions,
       errors: [{ messageId: "rootFile" }],
     },
     {
-      code: 'const root = await import("../../../" + "app.layer.ts");',
+      code: 'const root = await import("../../../../../apps/api/src/" + "app.layer.ts");',
       filename: reference,
       options: rootOptions,
       errors: [{ messageId: "rootFile" }],
     },
     {
-      code: 'const root = await import("../../" + "../" + "runtime.ts");',
+      code: 'const root = await import("../../../../../" + "apps/api/src/" + "runtime.ts");',
       filename: reference,
       options: rootOptions,
       errors: [{ messageId: "rootFile" }],
     },
     {
-      code: 'const root = await import("../../../" + name);',
-      filename: reference,
-      options: rootOptions,
-      errors: [{ messageId: "rootFileDynamic" }],
-    },
-    {
-      code: "const root = await import(`../../../${name}.ts`);",
+      code: 'const root = await import("../../../../../apps/api/src/" + name);',
       filename: reference,
       options: rootOptions,
       errors: [{ messageId: "rootFileDynamic" }],
     },
     {
-      code: 'const root = require("../../../app" + suffix);',
+      code: "const root = await import(`../../../../../apps/api/src/${name}.ts`);",
+      filename: reference,
+      options: rootOptions,
+      errors: [{ messageId: "rootFileDynamic" }],
+    },
+    {
+      code: 'const root = require("../../../../../apps/api/src/app" + suffix);',
       filename: reference,
       options: rootOptions,
       errors: [{ messageId: "rootFileDynamic" }],
@@ -178,61 +178,61 @@ tester.run("@boberstack/effect/module-boundaries", moduleBoundariesRule, {
       errors: [{ messageId: "rootFileDynamic" }],
     },
     {
-      code: 'type Runtime = typeof import("../../../runtime.ts");',
+      code: 'type Runtime = typeof import("../../../../../apps/api/src/runtime.ts");',
       filename: reference,
       options: rootOptions,
       errors: [{ messageId: "rootFile" }],
     },
     {
-      code: 'import AppLayer = require("../../../app.layer.ts");',
+      code: 'import AppLayer = require("../../../../../apps/api/src/app.layer.ts");',
       filename: reference,
       options: rootOptions,
       errors: [{ messageId: "rootFile" }],
     },
     {
-      code: 'const { AppLayer } = require("../../../app.layer.ts");',
+      code: 'const { AppLayer } = require("../../../../../apps/api/src/app.layer.ts");',
       filename: reference,
       options: rootOptions,
       errors: [{ messageId: "rootFile" }],
     },
     {
-      code: 'const { AppLayer } = createRequire(import.meta.url)("../../../app.layer.ts");',
+      code: 'const { AppLayer } = createRequire(import.meta.url)("../../../../../apps/api/src/app.layer.ts");',
       filename: reference,
       options: rootOptions,
       errors: [{ messageId: "rootFile" }],
     },
     {
-      code: 'import * as root from "../../..";',
+      code: 'import * as root from "../../../../../apps/api/src";',
       filename: reference,
       options: rootOptions,
       errors: [{ messageId: "rootFile" }],
     },
     {
-      code: 'import * as root from "../../../";',
+      code: 'import * as root from "../../../../../apps/api/src/";',
       filename: reference,
       options: rootOptions,
       errors: [{ messageId: "rootFile" }],
     },
     {
-      code: 'import * as root from "../../../.";',
+      code: 'import * as root from "../../../../../apps/api/src/.";',
       filename: reference,
       options: rootOptions,
       errors: [{ messageId: "rootFile" }],
     },
     {
-      code: 'import * as root from "../../../index.ts";',
+      code: 'import * as root from "../../../../../apps/api/src/index.ts";',
       filename: reference,
       options: rootOptions,
       errors: [{ messageId: "rootFile" }],
     },
     {
-      code: 'import { AppLayer } from "../../../app.layer";',
+      code: 'import { AppLayer } from "../../../../../apps/api/src/app.layer";',
       filename: reference,
       options: rootOptions,
       errors: [{ messageId: "rootFile" }],
     },
     {
-      code: 'import { answers } from "../../../http";',
+      code: 'import { answers } from "../../../../../apps/api/src/http";',
       filename: reference,
       options: rootOptions,
       errors: [{ messageId: "rootFile" }],
@@ -254,7 +254,7 @@ tester.run("@boberstack/effect/module-boundaries", moduleBoundariesRule, {
     },
     {
       code: 'import { TagIndex } from "./tagging/tag-index";',
-      filename: "apps/api/src/modules/todos/todos.layer.ts",
+      filename: "packages/core/src/todos/todos.layer.ts",
       errors: [{ messageId: "module" }],
     },
     {
@@ -274,17 +274,17 @@ tester.run("@boberstack/effect/module-boundaries", moduleBoundariesRule, {
     },
     {
       code: 'import { ShareLinkStub } from "../sharing/testing/share-link-stub.ts";',
-      filename: "apps/api/src/modules/todos/tagging/tag-index.test.ts",
+      filename: "packages/core/src/todos/tagging/tag-index.test.ts",
       errors: [{ messageId: "module" }],
     },
     {
-      code: 'import type { TodoStore } from "../../modules/todos/todo.store.ts";',
+      code: 'import type { TodoStore } from "../../core/src/todos/todo.store.ts";',
       filename: adapter,
       options: platformOptions,
       errors: [{ messageId: "indexOnly" }],
     },
     {
-      code: 'import { runConformance } from "../../modules/todos/lists/testing/index.ts";',
+      code: 'import { runConformance } from "../../core/src/todos/lists/testing/index.ts";',
       filename: adapter,
       options: platformOptions,
       errors: [{ messageId: "testing" }],
