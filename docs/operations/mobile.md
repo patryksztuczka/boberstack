@@ -52,6 +52,14 @@ Screens use Tailwind classes in `className`, which Uniwind turns into React Nati
 
 The mobile app is light only. The dark values in `tokens.css` sit under the web's `.dark` class, which Uniwind does not treat as its dark theme.
 
+## Welcome screen
+
+A signed-out user lands on the welcome screen with the same beaver as the web app. The drawing lives once, as data, in `packages/ui/src/beaver/beaver-art.ts`; the web app renders it as DOM SVG and the mobile app through `react-native-svg`. The web animates it with `beaver.css`, the mobile app with Reanimated, using the keyframes in `apps/mobile/src/features/welcome/motion/keyframes.ts`. Change a keyframe in one and change it in the other.
+
+The eyes follow the phone's tilt through the accelerometer (`expo-sensors`). The simulator has no accelerometer, so there the beaver only glances around. A tap pops the beaver and plays a haptic. With Reduce Motion on, the beaver stands still.
+
+Reading the accelerometer needs no permission on iOS. The `expo-sensors` config plugin still writes `NSMotionUsageDescription` into the Info.plist, because the module links CoreMotion's pedometer and App Store review expects the key with it.
+
 ## How the session works
 
 The better-auth Expo plugin keeps the session cookie in the iOS keychain or the Android keystore through `expo-secure-store`. Every api call the shared clients in `packages/client-runtime` make sends that cookie in a `cookie` header (`apps/mobile/src/runtime.ts`), so the api checks it the same way it checks the browser's cookie. When the api answers 401, the app drops the session and shows the sign-in screen.

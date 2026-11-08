@@ -8,10 +8,16 @@ import {
   useIsSignedOut,
 } from "../features/auth/index.ts";
 import { TodosScreen } from "../features/todos/index.ts";
+import { WelcomeScreen } from "../features/welcome/index.ts";
 import { m } from "../paraglide/messages.js";
 
 const RootStack = createNativeStackNavigator({
   screens: {
+    Welcome: {
+      if: useIsSignedOut,
+      screen: WelcomeScreen,
+      options: { title: m.app_title(), headerShown: false },
+    },
     SignIn: {
       if: useIsSignedOut,
       screen: SignInScreen,

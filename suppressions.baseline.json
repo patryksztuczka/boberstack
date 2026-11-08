@@ -1,3 +1,4 @@
 {
-  "@effect-diagnostics globalRandom": 1
+  "@effect-diagnostics globalRandom": 2,
+  "@effect-diagnostics globalTimers": 1
 }
