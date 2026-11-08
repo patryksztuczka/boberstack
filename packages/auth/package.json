@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@alchemy.run/better-auth": "catalog:",
+    "@better-auth/expo": "1.7.14",
     "@boberstack/core": "workspace:*",
     "@boberstack/domain": "workspace:*",
     "alchemy": "catalog:",

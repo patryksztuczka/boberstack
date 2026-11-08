@@ -1,4 +1,5 @@
 import { BetterAuth } from "@alchemy.run/better-auth";
+import { expo } from "@better-auth/expo";
 import { confirmEmail, Mailer, resetPassword } from "@boberstack/core/mail";
 import type { MailerApi } from "@boberstack/core/mail";
 import { RuntimeContext } from "alchemy";
@@ -29,11 +30,15 @@ const VERIFICATION_LINK_SECONDS = 24 * 60 * 60;
 
 const RESET_LINK_SECONDS = 60 * 60;
 
-const trustedOriginsFrom = (value: string) =>
-  value
+const MOBILE_APP_ORIGINS = ["boberstack://", "boberstack-dev://", "boberstack-preview://"];
+
+const trustedOriginsFrom = (value: string) => [
+  ...MOBILE_APP_ORIGINS,
+  ...value
     .split(",")
     .map((origin) => origin.trim())
-    .filter((origin) => origin !== "");
+    .filter((origin) => origin !== ""),
+];
 
 const makeAuth = Effect.gen(function* () {
   const baseURL = yield* Config.String("AUTH_BASE_URL").pipe(Config.option);
@@ -62,6 +67,7 @@ const makeAuth = Effect.gen(function* () {
     basePath: "/api/auth",
     baseURL: Option.getOrUndefined(baseURL),
     trustedOrigins: trustedOriginsFrom(trustedOrigins),
+    plugins: [expo()],
     emailAndPassword: {
       enabled: true,
       requireEmailVerification: true,
