@@ -6,7 +6,7 @@ Email and password through better-auth, mounted at `/api/auth` in the api Worker
 
 Mail goes through the `Mailer` port; locally it lands in Mailpit, at `urls.mailpit` in `.dev/state.json` (root ADR 0008).
 
-Code: `apps/web/src/features/auth/`, `packages/auth/`, `packages/core/src/mail/` (templates), `packages/mail/`, tables in `packages/database/migrations/0001_auth.sql`.
+Code: `apps/web/src/features/auth/`, `packages/auth/`, `packages/core/src/mail/` (templates), `packages/mail/`, tables created in `packages/database/migrations/0001_auth.sql` and renamed to the plural in `0003_plural_table_names.sql`.
 
 ## How to reach it
 

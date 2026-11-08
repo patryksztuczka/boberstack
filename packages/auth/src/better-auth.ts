@@ -68,6 +68,10 @@ const makeAuth = Effect.gen(function* () {
     baseURL: Option.getOrUndefined(baseURL),
     trustedOrigins: trustedOriginsFrom(trustedOrigins),
     plugins: [expo()],
+    user: { modelName: "users" },
+    session: { modelName: "sessions" },
+    account: { modelName: "accounts" },
+    verification: { modelName: "verifications" },
     emailAndPassword: {
       enabled: true,
       requireEmailVerification: true,

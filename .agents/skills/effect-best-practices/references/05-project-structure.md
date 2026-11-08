@@ -38,7 +38,7 @@ packages/database/                   # adapter: the only SQL (root ADR 0004)
     todo.repository.ts               # provides TodoStore
     todo.repository.integration.test.ts
     testing/pg-test.ts               # Testcontainers Postgres layer (12)
-  migrations/                        # NNNN_name.sql, app and better-auth tables (root ADR 0006)
+  migrations/                        # NNNN_name.sql, app and better-auth tables (root ADR 0014)
 packages/mail/src/                   # adapter: Mailpit provides Mailer
 packages/auth/src/                   # adapter: better-auth, the authentication middleware layers
 packages/client-runtime/src/         # what the apps share: api clients per context, their atoms (x.atoms.ts), clientRuntime, ApiOrigin, SessionExpiry
@@ -46,7 +46,7 @@ packages/client-runtime/src/         # what the apps share: api clients per cont
 apps/api/src/                        # a composition root
   worker.ts                          # entry point (10)
   app.layer.ts                       # routes + core + adapters
-  database.ts                        # the Neon and Hyperdrive resources in Alchemy
+  database.ts                        # the Hyperdrive resource in Alchemy, origin from DATABASE_URL
   http/                              # one handler file per HttpApi group, http.layer.ts
     todos.http.ts
   rpc/                               # RPC handlers, rpc.layer.ts

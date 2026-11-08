@@ -13,7 +13,7 @@ You own the measurement. Tie every fix to a number; do not read the source inste
    - SQL: `EXPLAIN (ANALYZE, BUFFERS)` on a database with realistic row counts;
    - the CLI: `node --cpu-prof`.
 
-   Local numbers come from `alchemy dev` and Docker Postgres, not from Workers and Neon. They rank fixes well, but they do not predict production latency; say so next to any absolute number.
+   Local numbers come from `alchemy dev` and Docker Postgres, not from Workers and the production Postgres. They rank fixes well, but they do not predict production latency; say so next to any absolute number.
 
 2. **Ground the hypotheses** in the profile and the code, not in a guess. Try the fixes in this order and stop at the first that meets the target:
    1. Don't do it: drop work whose result nothing uses.

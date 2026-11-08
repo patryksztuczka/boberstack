@@ -1,6 +1,6 @@
 # One migrations directory for app and auth tables
 
-**Status:** accepted, 2026-10-30.
+**Status:** superseded by root ADR 0014, 2026-11-08.
 
 Every table, ours and better-auth's, is created by plain SQL files in `packages/database/migrations/` (in `apps/api` until root ADR 0009), named `NNNN_name.sql` and applied in order. The same files are applied in three places: by Neon at deploy, through the Alchemy `Neon.Project` `migrations` option; locally by `cli db migrate`; and in tests by the Testcontainers Postgres layer before any suite runs. `@alchemy.run/better-auth`'s own deploy-time migration is turned off.
 

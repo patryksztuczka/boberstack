@@ -1,6 +1,6 @@
 # Cloudflare Workers and Neon, declared with Alchemy
 
-**Status:** accepted, 2026-10-30.
+**Status:** superseded by root ADR 0013, 2026-11-08.
 
 The api runs as one Cloudflare Worker that also serves the built SPA as static assets, so browser and api share an origin and need no CORS. Data lives in Neon Postgres, reached from the Worker through Cloudflare Hyperdrive, which pools connections the Worker cannot keep itself. The whole footprint, the Neon project, the Hyperdrive config, the Worker, its assets, bindings and secrets, is one Effect program in `apps/infra/alchemy.run.ts`, deployed with `alchemy deploy`.
 

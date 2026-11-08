@@ -32,7 +32,7 @@ export const TodoRepositoryLayer = Layer.effect(
       Request: UserId,
       Result: TodoRow,
       execute: (ownerId) => sql`
-        select "id", "title", "completed", "createdAt" from "todo"
+        select "id", "title", "completed", "createdAt" from "todos"
         where "ownerId" = ${ownerId}
         order by "createdAt", "id"
       `,
@@ -42,7 +42,7 @@ export const TodoRepositoryLayer = Layer.effect(
       Request: InsertTodo,
       Result: TodoRow,
       execute: (record) => sql`
-        insert into "todo" ${sql.insert(record)}
+        insert into "todos" ${sql.insert(record)}
         returning "id", "title", "completed", "createdAt"
       `,
     });
@@ -53,11 +53,11 @@ export const TodoRepositoryLayer = Layer.effect(
       execute: ({ ownerId, id, patch }) =>
         Object.keys(patch).length === 0
           ? sql`
-              select "id", "title", "completed", "createdAt" from "todo"
+              select "id", "title", "completed", "createdAt" from "todos"
               where "id" = ${id} and "ownerId" = ${ownerId}
             `
           : sql`
-              update "todo" set ${sql.update(patch)}
+              update "todos" set ${sql.update(patch)}
               where "id" = ${id} and "ownerId" = ${ownerId}
               returning "id", "title", "completed", "createdAt"
             `,
@@ -67,7 +67,7 @@ export const TodoRepositoryLayer = Layer.effect(
       Request: OwnedTodo,
       Result: Schema.Struct({ id: TodoId }),
       execute: ({ ownerId, id }) => sql`
-        delete from "todo" where "id" = ${id} and "ownerId" = ${ownerId} returning "id"
+        delete from "todos" where "id" = ${id} and "ownerId" = ${ownerId} returning "id"
       `,
     });
 
