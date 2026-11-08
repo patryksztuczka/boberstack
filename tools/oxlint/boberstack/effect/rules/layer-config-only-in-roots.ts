@@ -10,6 +10,7 @@ const defaultAllow = [
   "apps/api/src/app.layer.ts",
   "apps/cli/src/main.ts",
   "apps/cli/src/commands/*.ts",
+  "apps/desktop/src/main.ts",
 ];
 
 const isInsideLayerConfigDefinition = (node: ESTree.Node): boolean => {

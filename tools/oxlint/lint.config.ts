@@ -40,6 +40,7 @@ const effectRules = {
         "apps/api/src/app.layer.ts",
         "apps/cli/src/main.ts",
         "apps/cli/src/commands/*.ts",
+        "apps/desktop/src/main.ts",
       ],
     },
   ],
@@ -71,6 +72,7 @@ const effectRules = {
       allow: [
         "apps/api/src/worker.ts",
         "apps/cli/src/main.ts",
+        "apps/desktop/src/main.ts",
         "apps/web/src/runtime.ts",
         "apps/infra/alchemy.run.ts",
         "**/vitest.global-setup.ts",
@@ -167,13 +169,14 @@ const lint = {
       },
     },
     {
-      files: ["apps/api/**", "apps/cli/**", "apps/infra/**", "packages/**"],
+      files: ["apps/api/**", "apps/cli/**", "apps/desktop/**", "apps/infra/**", "packages/**"],
       rules: effectRules,
     },
     {
       files: [
         "apps/api/**",
         "apps/cli/**",
+        "apps/desktop/**",
         "apps/infra/**",
         "packages/auth/**",
         "packages/database/**",
