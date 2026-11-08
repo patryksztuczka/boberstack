@@ -24,6 +24,12 @@ const SOURCES = [
     tag: (version) => `v${version}`,
     read: "packages/better-auth/src, docs/content/docs",
   },
+  {
+    name: "electron",
+    repository: "https://github.com/electron/electron.git",
+    tag: (version) => `v${version}`,
+    read: "docs/api, lib/browser/api",
+  },
 ];
 
 const checkoutName = (source, version) => `${source.name}@${version}`;

@@ -7,6 +7,7 @@ minimumReleaseAge: 1440
 
 allowBuilds:
   agent-browser: false
+  electron: false
   workerd: true
   cpu-features: false
   protobufjs: false
@@ -36,3 +37,4 @@ catalog:
   react-dom: 19.3.1
   "@types/react": 19.3.0
   "@types/react-dom": 19.3.0
+  electron: 45.2.3
