@@ -1,0 +1,32 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "node_modules/.cache/tsc",
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "customConditions": ["react-native"],
+    "lib": ["es2024"],
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "types": ["react-native"],
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src",
+    "messages/*.json",
+    "index.ts",
+    "app.config.ts",
+    "app.config.test.ts",
+    "vite.config.ts",
+    "uniwind-types.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../packages/client-runtime"
+    },
+    {
+      "path": "../../packages/domain"
+    }
+  ]
+}

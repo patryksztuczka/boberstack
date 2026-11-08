@@ -1,17 +1,21 @@
 import { TodosRpcs } from "@boberstack/domain/todos/todos.rpc";
 import { Effect, Layer } from "effect";
-import { FetchHttpClient } from "effect/http";
 import { RpcClient, RpcSerialization } from "effect/rpc";
 
+import { ApiOrigin } from "../api-origin/index.ts";
 import { TodosUnavailableError } from "./todos-client.errors.ts";
 import { TodosClient } from "./todos-client.ts";
 
 const unavailable = (error: { readonly message: string }) =>
   Effect.fail(new TodosUnavailableError({ reason: error.message }));
 
-const RpcProtocolLayer = RpcClient.layerProtocolHttp({
-  url: new URL("/api/rpc", globalThis.location.origin).href,
-}).pipe(Layer.provide([FetchHttpClient.layer, RpcSerialization.layerNdjson]));
+const RpcProtocolLayer = Layer.unwrap(
+  Effect.gen(function* () {
+    const { origin } = yield* ApiOrigin;
+
+    return RpcClient.layerProtocolHttp({ url: new URL("/api/rpc", origin).href });
+  }),
+).pipe(Layer.provide(RpcSerialization.layerNdjson));
 
 export const TodosRpcClientLayer = Layer.effect(
   TodosClient,

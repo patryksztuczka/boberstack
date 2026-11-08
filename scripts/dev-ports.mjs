@@ -14,9 +14,10 @@ export const PORT_VARIABLES = {
   api: "DEV_API_PORT",
   postgres: "DEV_POSTGRES_PORT",
   mailpit: "DEV_MAILPIT_PORT",
+  metro: "DEV_METRO_PORT",
 };
 
-const OFFSETS = { web: 0, api: 1, postgres: 2, mailpit: 3 };
+const OFFSETS = { web: 0, api: 1, postgres: 2, mailpit: 3, metro: 4 };
 
 export const DATABASE_NAME = "app";
 
@@ -80,6 +81,7 @@ export function devEnvironment(root, environment) {
       [PORT_VARIABLES.api]: String(ports.api),
       [PORT_VARIABLES.postgres]: String(ports.postgres),
       [PORT_VARIABLES.mailpit]: String(ports.mailpit),
+      [PORT_VARIABLES.metro]: String(ports.metro),
       COMPOSE_PROJECT_NAME: composeProjectName(root),
       DATABASE_URL: databaseUrl,
       AUTH_BASE_URL: `http://localhost:${String(ports.web)}`,

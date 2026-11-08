@@ -6,6 +6,7 @@
     "prepare": "vp config",
     "dev": "node scripts/dev.mjs",
     "dev:desktop": "node scripts/dev.mjs desktop",
+    "dev:mobile": "node scripts/dev.mjs mobile",
     "db:up": "node scripts/dev.mjs db:up",
     "db:migrate": "node scripts/dev.mjs db:migrate",
     "check": "vp check",

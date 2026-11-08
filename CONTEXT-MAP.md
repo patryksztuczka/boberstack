@@ -14,10 +14,10 @@
 
 Each context keeps its glossary, its ADRs and any module files in its own folder under [docs/internals](./docs/internals). Decisions that belong to no single context live in [docs/internals/system/adr](./docs/internals/system/adr).
 
-| Context            | Docs                                                 | Code                                                                                  | ADRs cited as |
-| ------------------ | ---------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------- |
-| Todos              | [docs/internals/todos](./docs/internals/todos)       | `packages/core/src/todos`, `packages/domain/src/todos`, `apps/web/src/features/todos` | Todos ADR     |
-| Identity           | [docs/internals/identity](./docs/internals/identity) | `packages/auth`, `packages/domain/src/identity`                                       | Identity ADR  |
-| none (system-wide) | [docs/internals/system](./docs/internals/system)     |                                                                                       | root ADR      |
+| Context            | Docs                                                 | Code                                                                                                                                                         | ADRs cited as |
+| ------------------ | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
+| Todos              | [docs/internals/todos](./docs/internals/todos)       | `packages/core/src/todos`, `packages/domain/src/todos`, `packages/client-runtime/src/todos`, `apps/web/src/features/todos`, `apps/mobile/src/features/todos` | Todos ADR     |
+| Identity           | [docs/internals/identity](./docs/internals/identity) | `packages/auth`, `packages/domain/src/identity`, `packages/client-runtime/src/identity`                                                                      | Identity ADR  |
+| none (system-wide) | [docs/internals/system](./docs/internals/system)     |                                                                                                                                                              | root ADR      |
 
 Identity has no folder in `packages/core` yet: better-auth holds its rules, and the adapter in `packages/auth` maps them to the contract. It gets one when Identity grows rules of its own.

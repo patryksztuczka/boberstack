@@ -1,8 +1,8 @@
+import { TodosClient } from "@boberstack/client-runtime/todos";
 import type { NewTodo, TodoId, TodoPatch } from "@boberstack/domain/todos/todo";
 import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { runPromise } from "../../../runtime.ts";
-import { TodosClient } from "./todos-client.ts";
 
 export const todosQuery = queryOptions({
   queryKey: ["todos"],
