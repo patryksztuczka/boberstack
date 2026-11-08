@@ -19,12 +19,13 @@ const READY_TIMEOUT_MS = 180_000;
 const STOP_GRACE_MS = 5_000;
 
 const USAGE =
-  "Usage: node scripts/dev.mjs [up|stop|status|ports|desktop|db:up|db:migrate|db:down]\n" +
+  "Usage: node scripts/dev.mjs [up|stop|status|ports|desktop|mobile|db:up|db:migrate|db:down]\n" +
   "  up          Postgres, migrations, the api Worker and the web app (default)\n" +
   "  stop        stops a pnpm dev started from this worktree\n" +
   "  status      prints .dev/state.json when pnpm dev is running\n" +
   "  ports       prints the ports and URLs this worktree uses, without starting anything\n" +
   "  desktop ... builds apps/desktop and opens it on the running pnpm dev; arguments after -- go to Electron\n" +
+  "  mobile ...  builds apps/mobile for the iOS simulator and runs it on the running pnpm dev; arguments after -- go to expo run:ios\n" +
   "  db:up       starts this worktree's Postgres container\n" +
   "  db:migrate  applies packages/database/migrations to it\n" +
   "  db:down     stops the container and keeps its volume\n" +
@@ -378,6 +379,46 @@ function desktop(root, args) {
   return electron.status ?? 1;
 }
 
+function mobile(root, args) {
+  const state = runningState(root);
+
+  if (state === undefined || state.status !== "ready") {
+    process.stderr.write("dev: the dev stack of this checkout is not ready; run pnpm dev first\n");
+
+    return 1;
+  }
+
+  const { ports } = devEnvironment(root, process.env);
+
+  const variables = {
+    APP_VARIANT: "development",
+    EXPO_PUBLIC_API_URL: state.urls.web,
+    RCT_METRO_PORT: String(ports.metro),
+  };
+
+  process.stdout.write(
+    `dev: mobile app on api ${state.urls.web}, Metro on port ${String(ports.metro)}\n`,
+  );
+
+  const expo = spawnSync(
+    "pnpm",
+    [
+      "--silent",
+      "--filter",
+      "@boberstack/mobile",
+      "exec",
+      "expo",
+      "run:ios",
+      "--port",
+      String(ports.metro),
+      ...args,
+    ],
+    { cwd: root, stdio: "inherit", env: { ...process.env, ...variables } },
+  );
+
+  return expo.status ?? 1;
+}
+
 async function main(argv) {
   const root = repositoryRoot();
   const task = argv[0] ?? "up";
@@ -406,6 +447,13 @@ async function main(argv) {
 
   if (task === "desktop") {
     return desktop(
+      root,
+      argv.slice(1).filter((argument) => argument !== "--"),
+    );
+  }
+
+  if (task === "mobile") {
+    return mobile(
       root,
       argv.slice(1).filter((argument) => argument !== "--"),
     );
