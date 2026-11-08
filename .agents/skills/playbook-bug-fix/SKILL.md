@@ -14,6 +14,7 @@ Open a todo list with the six steps.
 Reproduce on the surface where the bug shows:
 
 - the web app: the `verify-web` skill (`pnpm dev`, `pnpm dev:doctor`, then drive the browser);
+- the mobile app: the `verify-mobile` skill (`pnpm dev:mobile`, then drive the simulator with agent-device);
 - the api: a request to the URL in `.dev/state.json`;
 - the CLI: `pnpm cli <command>`;
 - SQL or a store: an integration test on Postgres (`pnpm test:integration`).

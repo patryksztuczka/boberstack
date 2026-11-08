@@ -64,10 +64,27 @@ Agents drive the app through the accessibility tree, the same one VoiceOver read
 
 The lint rule `@boberstack/frontend/accessible-controls` enforces the table. It skips an element with a spread prop, because it cannot see what the spread holds.
 
-- Name a `testID` after what the control does, in kebab case with the screen first: `sign-in-submit`, `new-todo-title`, `todos-retry`. A row in a list adds what makes it unique: `todo-toggle-${todo.title}`. Tests and agent-device scripts select by these ids, so renaming one is a breaking change for them.
+- Name a `testID` after what the control does, in kebab case with the screen first: `sign-in-submit`, `new-todo-title`, `todos-retry`. A row in a list adds what makes it unique: `todo-toggle-${todo.title}`. Tests, the `verify-mobile` skill and agent-device scripts select by these ids, so renaming one is a breaking change for them.
 - An `accessibilityLabel` reuses the message from `m` that the screen shows next to the control, so it changes language with the screen. A visible label next to an input is not linked to it, so the input still needs its own.
 - A `Pressable` whose children are only `Text` takes its name from that text. Give it an `accessibilityLabel` when the visible text alone is not enough, such as "Remove" on every row (`todo-row.tsx` says which todo).
 - State a screen reader should hear goes in `accessibilityState`, such as `{ checked: todo.completed }` on a todo's checkbox.
+
+## Drive it with agent-device
+
+[agent-device](https://github.com/callstackincubator/agent-device) (a devDependency, run with `pnpm -s device`) drives the iOS simulator and the Android emulator through the accessibility tree: it opens the app, lists the controls with refs, taps, types, and saves screenshots and recordings. The `verify-mobile` skill uses it to check a change in the running app. You need nothing in the app for it.
+
+```sh
+METRO="$(node -p 'require("./.dev/state.json").ports.metro')"
+LAUNCH="exp+boberstack://?__expo_url=http%3A%2F%2Flocalhost%3A$METRO&__expo_disable_fab=1&__expo_disable_onboarding=1"
+
+pnpm -s device open com.boberstack.app.dev --platform ios --device "iPhone 18 Pro" --metro-port "$METRO" --launch-url "$LAUNCH" --relaunch
+pnpm -s device press 'id="welcome-sign-in"' --settle
+pnpm -s device fill 'id="sign-in-email"' "demo@example.com" --settle
+pnpm -s device screenshot "$PWD/.scratch/evidence/sign-in.png"
+pnpm -s device close
+```
+
+Use the simulator `pnpm dev:mobile` opened the app on. `--launch-url` is the link `expo run:ios` opens the development build with. Without it agent-device builds its own link, and the development client then shows its floating menu button over the header's right corner, where it swallows taps on Sign out. `pnpm -s device help` prints the guide for the installed version, and `pnpm -s device help react-native` covers Metro, red boxes and React DevTools.
 
 ## Welcome screen
 

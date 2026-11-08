@@ -17,7 +17,7 @@ Open a todo list with the eight steps.
    - **Shared state**: anything two workers would both write. Give each its own file or slice; serialise only when one writer is a real rule.
    - **Smallest safe split**: if one worker is best, say why.
 4. **Implement through a delegate.** Hand the code to a subagent with a precise scope: the files it may write, the data shape and its structure (the `principle-model-the-domain` skill), the success check. The review separation is the point, so do this even for a small feature. Follow the `effect-best-practices` skill and the "Where things go" table in AGENTS.md.
-5. **Verify on the matching surface** (the `principle-prove-it-works` skill): the `verify-web` skill for anything a user can see or hit, `pnpm test:integration` for SQL, migrations, auth or an endpoint. "Inconclusive" is not a pass.
+5. **Verify on the matching surface** (the `principle-prove-it-works` skill): the `verify-web` skill for anything a user can see or hit, `verify-mobile` when it reaches the mobile app, `pnpm test:integration` for SQL, migrations, auth or an endpoint. "Inconclusive" is not a pass.
 6. **Order the commits.** Small units that each build and pass, scaffold before feature (the `principle-sequence-verifiable-units` skill).
 7. **Challenge a contested design.** When the shape was a close call, run the `code-review` skill on the branch before opening the pull request.
 8. **Open the pull request** with the `file-pr` skill. A user-facing feature also updates `docs/user/<feature>.md`.
