@@ -1,12 +1,12 @@
 import { Effect, Layer } from "effect";
 import { Atom } from "effect/reactivity";
 
-import type { SignInMethodsClient } from "../identity/index.ts";
+import type { McpClientDirectory, SignInMethodsClient } from "../identity/index.ts";
 import { SessionExpiry } from "../session/index.ts";
 import type { TodosClient } from "../todos/index.ts";
 import { ClientLayerMissingError } from "./atom-runtime.errors.ts";
 
-export type ClientServices = TodosClient | SignInMethodsClient;
+export type ClientServices = TodosClient | SignInMethodsClient | McpClientDirectory;
 
 export type ClientLayer = Layer.Layer<ClientServices, never, SessionExpiry>;
 

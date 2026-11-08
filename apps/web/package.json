@@ -10,6 +10,7 @@
     "test": "vp test"
   },
   "dependencies": {
+    "@better-auth/oauth-provider": "1.7.14",
     "@boberstack/client-runtime": "workspace:*",
     "@boberstack/domain": "workspace:*",
     "@boberstack/ui": "workspace:*",

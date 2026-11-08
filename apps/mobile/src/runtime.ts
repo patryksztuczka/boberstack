@@ -1,7 +1,10 @@
 import { ApiOrigin } from "@boberstack/client-runtime/api-origin";
 import { clientLayer } from "@boberstack/client-runtime/atom-runtime";
 import type { ClientLayer } from "@boberstack/client-runtime/atom-runtime";
-import { SignInMethodsHttpClientLayer } from "@boberstack/client-runtime/identity";
+import {
+  McpClientDirectoryHttpLayer,
+  SignInMethodsHttpClientLayer,
+} from "@boberstack/client-runtime/identity";
 import { TodosHttpClientLayer } from "@boberstack/client-runtime/todos";
 import { Effect, Layer } from "effect";
 import { FetchHttpClient } from "effect/http";
@@ -19,6 +22,7 @@ const SessionFetchLayer = Layer.effect(
 const MobileClientLayer: ClientLayer = Layer.mergeAll(
   TodosHttpClientLayer,
   SignInMethodsHttpClientLayer,
+  McpClientDirectoryHttpLayer,
 ).pipe(
   Layer.provide(ApiOrigin.layer(API_ORIGIN)),
   Layer.provide(FetchHttpClient.layer.pipe(Layer.provide(SessionFetchLayer))),
