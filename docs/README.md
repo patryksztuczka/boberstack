@@ -13,7 +13,7 @@ Find what you need by who you are.
 The [README](../README.md) has the quickstart. The runbooks:
 
 - [Local development](operations/development.md): the dev stack, ports, mail, environment variables, social sign-in, the desktop app
-- [Mobile app](operations/mobile.md): run the Expo app on a simulator, variants, EAS builds and updates
+- [Mobile app](operations/mobile.md): run the Expo app on a simulator, test ids, drive it with agent-device, variants, EAS builds and updates
 - [Deploy](operations/deploy.md): Alchemy, Cloudflare, the database and the mail transport
 - [CI](operations/ci.md): the stages and what each one checks
 - [Make it yours](operations/make-it-yours.md): rename the project, then keep or cut each part

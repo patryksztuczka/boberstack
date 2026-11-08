@@ -96,5 +96,6 @@ The mirror image of cutting RPC: delete `*.http-api.ts`, `packages/domain/src/ap
 - [ ] Remove the `mobile` task from `scripts/dev.mjs`, the `metro` port from `scripts/dev-ports.mjs`, the root `dev:mobile` script and the mobile variables in `.env.schema`.
 - [ ] Remove `expo()` and the app schemes from `packages/auth/src/better-auth.ts`, and `@better-auth/expo` from `packages/auth/package.json`.
 - [ ] Delete `docs/operations/mobile.md` and mark root ADR 0011 superseded.
+- [ ] Delete the `verify-mobile` skill (`.agents/skills/verify-mobile/` and its link in `.claude/skills/`), the `agent-device` devDependency and the root `device` script, the `@boberstack/frontend/accessible-controls` rule in `tools/oxlint/`, and the `verify-mobile` lines in `AGENTS.md` and the playbook skills.
 
 To keep it, rename the bundle ids (`com.boberstack.app…`) and the `boberstack-dev` and `boberstack-preview` schemes in `apps/mobile/app.config.ts`, and the same schemes in the trusted origins in `packages/auth/src/better-auth.ts`. `pnpm init:project` renames only the plain `boberstack` name and scheme.

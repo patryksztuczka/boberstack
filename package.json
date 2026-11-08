@@ -31,12 +31,14 @@
     "cli": "node scripts/dev.mjs cli",
     "github:apply": "node scripts/github-apply.mjs",
     "browser": "agent-browser",
-    "pr-evidence": "node .agents/skills/file-pr/scripts/pr-evidence.mjs"
+    "pr-evidence": "node .agents/skills/file-pr/scripts/pr-evidence.mjs",
+    "device": "agent-device"
   },
   "devDependencies": {
     "@effect/tsgo": "catalog:",
     "@types/node": "catalog:",
     "agent-browser": "0.41.0",
+    "agent-device": "0.21.36",
     "knip": "6.44.0",
     "typescript": "catalog:",
     "varlock": "1.24.0",

@@ -14,7 +14,7 @@ Open a todo list with the eight steps.
 3. **Name the target shape**: the module layout, types and call graph you would build today. If it crosses a module boundary, run the `architect` skill.
 4. **Subtract first** (the `principle-subtract-before-you-add` skill): dead code, one-caller wrappers, redundant validators, orphan references.
 5. **Move in small steps**, each keeping the pin green. For an API reshape, move every caller and delete the old API in the same change (the `principle-no-shims` skill). Check every rename against the files, including strings, docs, lint messages and skill links that a type check cannot see.
-6. **Prove nothing changed** on the real thing, not "it compiles": rerun the pin, and for a larger reshape run the comparison script or drive the feature with the `verify-web` skill.
+6. **Prove nothing changed** on the real thing, not "it compiles": rerun the pin, and for a larger reshape run the comparison script or drive the feature with the `verify-web` or `verify-mobile` skill.
 7. **Keep it only if it reads better** (the `principle-minimize-reader-load` skill). If the diff does not cut layers or state somewhere, revert it.
 8. **Order the commits**: the subtraction, then the reshape, then any follow-up, each green on its own. Open the pull request with the `file-pr` skill.
 

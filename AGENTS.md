@@ -21,7 +21,7 @@ When a project starts from this template, rewrite this section on day one. `pnpm
 - A new version replaces the old one in the same change: no `V2`, no re-export kept for compatibility (the `principle-no-shims` skill).
 - Work by task type with the `playbook-*` skills: bug fix, feature, refactoring, investigation, prototype, perf issue, hillclimb.
 - The `principle-*` skills and `benchmark-checklist` do not load on their own. When a playbook, a skill or a review names one, read `.agents/skills/<name>/SKILL.md`.
-- Before Git: the `babysit-git` skill. Before a pull request: the `file-pr` skill. For prose: the `unslop` skill. To see a UI change working: the `verify-web` skill.
+- Before Git: the `babysit-git` skill. Before a pull request: the `file-pr` skill. For prose: the `unslop` skill. To see a UI change working: the `verify-web` skill, and `verify-mobile` for the mobile app.
 
 ## Commands
 
@@ -47,6 +47,7 @@ When a project starts from this template, rewrite this section on day one. `pnpm
 | `pnpm dev:mobile`                                     | builds `apps/mobile` for the iOS simulator and runs it against this checkout's running `pnpm dev`; arguments after `--` go to `expo run:ios` ([mobile](docs/operations/mobile.md)) |
 | `pnpm dev:status`, `pnpm dev:stop`, `pnpm db:down`    | show or stop the dev stack of this checkout; `db:down` also stops its Postgres                                                                                                     |
 | `pnpm cli <command>`                                  | runs `apps/cli` (`db migrate`, `openapi`, `health`) against this checkout's database and api                                                                                       |
+| `pnpm -s device <command>`                            | runs agent-device, which drives the iOS simulator and the Android emulator for the `verify-mobile` skill ([mobile](docs/operations/mobile.md#drive-it-with-agent-device))          |
 | `pnpm pr-evidence <files>`                            | uploads screenshots and recordings to the R2 bucket and prints the Markdown for a pull request ([pr-evidence](docs/operations/pr-evidence.md))                                     |
 | `pnpm sources:fetch`                                  | clones the pinned sources of Effect, Alchemy and better-auth into `.repos/`                                                                                                        |
 | `pnpm run deploy`                                     | `alchemy deploy` of `apps/infra/alchemy.run.ts`. Plain `pnpm deploy` is pnpm's own command                                                                                         |
@@ -54,33 +55,33 @@ When a project starts from this template, rewrite this section on day one. `pnpm
 
 `pnpm dev` derives its ports from a hash of the checkout path, so worktrees run side by side; each also gets its own Compose project, database and Mailpit inbox (local mail, root ADR 0008). `node scripts/dev.mjs ports` prints them, `.dev/state.json` holds the running URLs and pids, `.dev/logs/` the logs, and `DEV_WEB_PORT`, `DEV_API_PORT`, `DEV_POSTGRES_PORT`, `DEV_MAILPIT_PORT` and `DEV_METRO_PORT` (the mobile app's Metro) override them.
 
-Build the change first, then check it once at the end: `pnpm check:changed` for what you touched, then `pnpm verify`, plus `pnpm test:integration` when you touched SQL, migrations, auth or an endpoint, plus the `verify-web` skill when you touched the UI.
+Build the change first, then check it once at the end: `pnpm check:changed` for what you touched, then `pnpm verify`, plus `pnpm test:integration` when you touched SQL, migrations, auth or an endpoint, plus the `verify-web` skill when you touched the web UI and `verify-mobile` when you touched the mobile app.
 
 Git hooks come from Vite+: `pre-commit` runs `vp staged`, `commit-msg` checks the Conventional Commit subject, `pre-push` runs `pnpm verify`.
 
 ## Where things go
 
-| You are adding                         | It goes in                                                                                                                                        |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| a record, id or error the client sees  | `packages/domain/src/<context>/`                                                                                                                  |
-| an endpoint or an RPC                  | the contract in `packages/domain/src/<context>/*.http-api.ts` / `*.rpc.ts`, the handler in `apps/api/src/http/` / `rpc/`                          |
-| an MCP tool                            | a toolkit in `packages/domain/src/<context>/*.mcp.ts`, its handlers in `apps/api/src/mcp/` (root ADR 0015)                                        |
-| business logic                         | `packages/core/src/<context>/x.service.ts`                                                                                                        |
-| a query or a table                     | a store port in the core module, SQL in `packages/database/src/x.repository.ts`, a new file in `packages/database/migrations/`                    |
-| a typed api client the apps share      | a port and its HttpApi or RPC layer in `packages/client-runtime/src/<context>/`; the app provides `HttpClient` and `ApiOrigin`                    |
-| data a screen reads or changes         | an atom in `packages/client-runtime/src/<context>/x.atoms.ts` on `clientRuntime`; the app reads it with `@effect/atom-react` (root ADR 0012)      |
-| a call to another system               | a port in the core module, the adapter in its own package, `packages/<capability>/` (root ADR 0009)                                               |
-| an email                               | a template in `packages/core/src/mail/templates/`, sent through the `Mailer` port (root ADR 0008)                                                 |
-| an entry point that runs services      | a composition root in `apps/<name>/` that provides core with adapter packages, and its own source of identity (root ADR 0009)                     |
-| an env var or secret                   | a line in `.env.schema` (`@sensitive` for a secret), read with `Config` in a `layerConfig` in an adapter package; the local value in `.env.local` |
-| a screen                               | `apps/web/src/features/<name>/`; what other features may use is exported from its `index.ts`                                                      |
-| a mobile screen                        | `apps/mobile/src/features/<name>/`, by the same rules as a web screen                                                                             |
-| a UI primitive                         | `packages/ui`                                                                                                                                     |
-| desktop shell behaviour                | `apps/desktop/src/`: decisions as plain functions with tests, Electron calls only in `main.ts` (root ADR 0010)                                    |
-| a bounded context                      | `CONTEXT-MAP.md`, `docs/internals/<context>/GLOSSARY.md`, then code (the `domain-modeling` skill)                                                 |
-| a decision worth remembering           | an ADR (the `domain-modeling` skill)                                                                                                              |
-| how a user does something              | a section in `docs/user/<feature>.md`, in the product's voice ([docs/README.md](docs/README.md#writing-user-docs))                                |
-| a setup, deploy or debugging procedure | `docs/operations/`                                                                                                                                |
+| You are adding                         | It goes in                                                                                                                                                            |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| a record, id or error the client sees  | `packages/domain/src/<context>/`                                                                                                                                      |
+| an endpoint or an RPC                  | the contract in `packages/domain/src/<context>/*.http-api.ts` / `*.rpc.ts`, the handler in `apps/api/src/http/` / `rpc/`                                              |
+| an MCP tool                            | a toolkit in `packages/domain/src/<context>/*.mcp.ts`, its handlers in `apps/api/src/mcp/` (root ADR 0015)                                                            |
+| business logic                         | `packages/core/src/<context>/x.service.ts`                                                                                                                            |
+| a query or a table                     | a store port in the core module, SQL in `packages/database/src/x.repository.ts`, a new file in `packages/database/migrations/`                                        |
+| a typed api client the apps share      | a port and its HttpApi or RPC layer in `packages/client-runtime/src/<context>/`; the app provides `HttpClient` and `ApiOrigin`                                        |
+| data a screen reads or changes         | an atom in `packages/client-runtime/src/<context>/x.atoms.ts` on `clientRuntime`; the app reads it with `@effect/atom-react` (root ADR 0012)                          |
+| a call to another system               | a port in the core module, the adapter in its own package, `packages/<capability>/` (root ADR 0009)                                                                   |
+| an email                               | a template in `packages/core/src/mail/templates/`, sent through the `Mailer` port (root ADR 0008)                                                                     |
+| an entry point that runs services      | a composition root in `apps/<name>/` that provides core with adapter packages, and its own source of identity (root ADR 0009)                                         |
+| an env var or secret                   | a line in `.env.schema` (`@sensitive` for a secret), read with `Config` in a `layerConfig` in an adapter package; the local value in `.env.local`                     |
+| a screen                               | `apps/web/src/features/<name>/`; what other features may use is exported from its `index.ts`                                                                          |
+| a mobile screen                        | `apps/mobile/src/features/<name>/`, by the same rules as a web screen; every control gets a `testID` ([mobile](docs/operations/mobile.md#accessibility-and-test-ids)) |
+| a UI primitive                         | `packages/ui`                                                                                                                                                         |
+| desktop shell behaviour                | `apps/desktop/src/`: decisions as plain functions with tests, Electron calls only in `main.ts` (root ADR 0010)                                                        |
+| a bounded context                      | `CONTEXT-MAP.md`, `docs/internals/<context>/GLOSSARY.md`, then code (the `domain-modeling` skill)                                                                     |
+| a decision worth remembering           | an ADR (the `domain-modeling` skill)                                                                                                                                  |
+| how a user does something              | a section in `docs/user/<feature>.md`, in the product's voice ([docs/README.md](docs/README.md#writing-user-docs))                                                    |
+| a setup, deploy or debugging procedure | `docs/operations/`                                                                                                                                                    |
 
 ## Autonomy
 

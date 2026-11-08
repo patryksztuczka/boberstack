@@ -181,6 +181,7 @@ const lint = {
             roots: ["apps/mobile/src/runtime.ts"],
           },
         ],
+        "@boberstack/frontend/accessible-controls": "error",
       },
     },
     {

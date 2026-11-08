@@ -82,6 +82,9 @@ importers:
       agent-browser:
         specifier: 0.41.0
         version: 0.41.0
+      agent-device:
+        specifier: 0.21.36
+        version: 0.21.36
       knip:
         specifier: 6.44.0
         version: 6.44.0
@@ -4387,6 +4390,16 @@ packages:
     resolution: {integrity: sha512-d8OWDVdZMgjhLUT9ZPgSv/BdFFF9pVuscC0JdUSz3bjwE15gcp6u/o0/JooM2yyAWC49KThFhXlgTXRa9B7yng==}
     engines: {node: '>=18.18'}
     hasBin: true
+
+  agent-device@0.21.36:
+    resolution: {integrity: sha512-aG88WlEHjFc/OEBQC7AJg+2LfNoVT/ogxnnzIUYUEgafdiTvBaA+X6uQ2wNmpp2ZrHLy8QIXoEOyc3NEZgJCpQ==}
+    engines: {node: '>=22.12'}
+    hasBin: true
+    peerDependencies:
+      ai: ^6.0.0 || ^7.0.0
+    peerDependenciesMeta:
+      ai:
+        optional: true
 
   alchemy@2.0.0-beta.84:
     resolution: {integrity: sha512-GAcfT/fvolC5C4t6yKx2P3e4rYmaM3aXhtnwK2FnGDFUCdv5zIQatiVXtoNuABzFgMn6UIj9jxrCWWweXoWgmA==}
@@ -11171,6 +11184,8 @@ snapshots:
   agent-browser@0.41.0: {}
 
   agent-cli-detector@0.1.7: {}
+
+  agent-device@0.21.36: {}
 
   alchemy@2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/vitest@4.0.7(effect@4.0.7)(vitest@5.0.5))(@types/node@26.6.6)(@types/react@19.3.0)(effect@4.0.7)(jiti@2.7.0)(react-devtools-core@6.1.5)(terser@5.51.2)(typescript@7.0.2)(ws@8.22.0):
     dependencies:

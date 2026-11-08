@@ -10,7 +10,7 @@ Unverified work has unknown correctness. Passing tests, a green typecheck or a s
 
 ## Check the real thing
 
-- **A user-visible change**: run it in the app with the `verify-web` skill. `pnpm dev:doctor` checks that the stack is up before you drive it.
+- **A user-visible change**: run it in the app with the `verify-web` skill, or `verify-mobile` for the mobile app. `pnpm dev:doctor` checks that the stack is up before you drive it.
 - **An endpoint**: send the request to the running Worker and read the response, or run `pnpm cli health`.
 - **SQL or a migration**: `pnpm test:integration`, then read the rows on the local database.
 - **Mail**: open it in this checkout's Mailpit inbox.
