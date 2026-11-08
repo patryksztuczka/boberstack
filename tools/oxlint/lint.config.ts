@@ -2,6 +2,9 @@ import type { OxlintConfig } from "vite-plus/lint";
 
 const skill = ".agents/skills/effect-best-practices/references";
 
+const clientStateMessage =
+  "Client state lives in Effect atoms from @boberstack/client-runtime (root ADR 0012), not React Query.";
+
 const antiSlopRules = {
   "anti-slop/no-array-filter-map": "error",
   "anti-slop/no-chained-type-assertions": "error",
@@ -73,7 +76,6 @@ const effectRules = {
         "apps/api/src/worker.ts",
         "apps/cli/src/main.ts",
         "apps/desktop/src/main.ts",
-        "apps/web/src/runtime.ts",
         "apps/infra/alchemy.run.ts",
         "**/vitest.global-setup.ts",
       ],
@@ -177,6 +179,18 @@ const lint = {
             featuresRoot: "apps/mobile/src/features",
             layers: ["apps/mobile/src/shared", "apps/mobile/src/features", "apps/mobile/src/app"],
             roots: ["apps/mobile/src/runtime.ts"],
+          },
+        ],
+      },
+    },
+    {
+      files: ["apps/**", "packages/**"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            paths: [{ name: "@tanstack/react-query", message: clientStateMessage }],
+            patterns: [{ group: ["@tanstack/react-query/*"], message: clientStateMessage }],
           },
         ],
       },

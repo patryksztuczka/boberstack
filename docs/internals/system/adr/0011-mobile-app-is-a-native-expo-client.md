@@ -1,6 +1,6 @@
 # The mobile app is a native Expo client of the central api
 
-**Status:** accepted, 2026-11-08.
+**Status:** accepted, 2026-11-08; its consequence that React Query hooks stay per app is replaced by root ADR 0012.
 
 We wanted phone apps without a second api. The desktop app could wrap the SPA because a window can take the place of the deployed origin (root ADR 0010). A phone app has no such origin: its pages would come from a custom scheme or from the network, and better-auth's browser client and cookies assume an `http(s)` origin. A WebView shell would also feel like a website in a frame and could not use the keychain or native navigation.
 

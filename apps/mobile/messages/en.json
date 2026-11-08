@@ -14,8 +14,14 @@
   "todos_add": "Add",
   "todos_empty": "Nothing to do. Add your first todo above.",
   "todos_remove": "Remove",
+  "todos_not_found": "This todo no longer exists.",
   "todos_failed": "Could not reach the api: {reason}",
   "todos_retry": "Try again",
   "todos_remaining": "Left to do: {count}",
-  "todos_title_invalid": "A todo needs a title of 1 to 200 characters."
+  "todos_title_invalid": "A todo needs a title of 1 to 200 characters.",
+  "welcome_title": "Mistakes stop at the dam",
+  "welcome_lead": "A starter that helps coding agents write good code and keep your project in shape.",
+  "welcome_open_example": "Open the todo example",
+  "welcome_create_account": "Create an account",
+  "welcome_beaver_label": "Poke the beaver"
 }

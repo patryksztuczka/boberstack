@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "exports": {
+    "./beaver": "./src/beaver/beaver-art.ts",
     "./globals.css": "./src/styles/globals.css",
     "./tokens.css": "./src/styles/tokens.css",
     "./components/*": "./src/components/*.tsx",

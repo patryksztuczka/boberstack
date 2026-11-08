@@ -3,6 +3,7 @@ import { Effect, Layer, Ref } from "effect";
 import { HttpClient, HttpClientError } from "effect/http";
 
 import { ApiOrigin } from "../api-origin/index.ts";
+import { SessionExpiry } from "../session/index.ts";
 import { TodosClient } from "./todos-client.ts";
 import { TodosRpcClientLayer } from "./todos-rpc-client.ts";
 
@@ -36,7 +37,11 @@ describe("TodosRpcClientLayer", () => {
           Effect.flip,
           Effect.provide(
             TodosRpcClientLayer.pipe(
-              Layer.provide([ApiOrigin.layer("http://api.test"), apiUnreachable(urls)]),
+              Layer.provide([
+                ApiOrigin.layer("http://api.test"),
+                apiUnreachable(urls),
+                Layer.succeed(SessionExpiry, { expire: Effect.void }),
+              ]),
             ),
           ),
         );

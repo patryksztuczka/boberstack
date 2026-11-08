@@ -40,4 +40,11 @@ describe("appConfig", () => {
       policy: "fingerprint",
     });
   });
+
+  it("explains motion access through the expo-sensors plugin", () => {
+    expect(appConfig("production", undefined).plugins).toContainEqual([
+      "expo-sensors",
+      { motionPermission: expect.stringContaining("tilt") },
+    ]);
+  });
 });

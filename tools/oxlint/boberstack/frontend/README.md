@@ -18,6 +18,6 @@ apps/web/src/
 
 Each feature exports what others may use from `features/<name>/index.ts`. Everything else in the folder is private. If two features need the same thing, it moves down to `shared/` or into `packages/ui`.
 
-Options (defaults match this starter): `featuresRoot` (`apps/web/src/features`), `layers`, bottom to top (`apps/web/src/shared`, `apps/web/src/features`, `apps/web/src/app`), and `roots`, the composition roots that wire adapters into the runtime (`apps/web/src/runtime.ts`). Going through the index from `runtime.ts` would make a cycle: the feature's queries import `runPromise` from the runtime. Only relative specifiers are checked; package imports such as `@boberstack/ui/...` are never flagged.
+Options (defaults match this starter): `featuresRoot` (`apps/web/src/features`), `layers`, bottom to top (`apps/web/src/shared`, `apps/web/src/features`, `apps/web/src/app`), and `roots`, the composition roots that wire adapters into the runtime (`apps/web/src/runtime.ts`). Going through the index from `runtime.ts` would make a cycle: a feature imports `TODOS_TRANSPORT` from the runtime. Only relative specifiers are checked; package imports such as `@boberstack/ui/...` are never flagged.
 
 This is the frontend counterpart of `@boberstack/effect/module-boundaries`, which fences bounded contexts in `apps/api`. It is a separate rule because a feature's subfolders (`api/`, `components/`, `forms/`) are layers of one feature, not modules with their own index.

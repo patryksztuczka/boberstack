@@ -4,7 +4,7 @@ import { RpcClient, RpcSerialization } from "effect/rpc";
 
 import { ApiOrigin } from "../api-origin/index.ts";
 import { TodosUnavailableError } from "./todos-client.errors.ts";
-import { TodosClient } from "./todos-client.ts";
+import { reportingSessionExpiry, TodosClient } from "./todos-client.ts";
 
 const unavailable = (error: { readonly message: string }) =>
   Effect.fail(new TodosUnavailableError({ reason: error.message }));
@@ -22,7 +22,7 @@ export const TodosRpcClientLayer = Layer.effect(
   Effect.gen(function* () {
     const client = yield* RpcClient.make(TodosRpcs);
 
-    return TodosClient.of({
+    return yield* reportingSessionExpiry({
       list: client.ListTodos().pipe(
         Effect.catchTags({
           RpcClientError: unavailable,

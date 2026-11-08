@@ -3,6 +3,7 @@ import { Effect, Layer, Ref } from "effect";
 import { HttpClient, HttpClientError, HttpClientResponse } from "effect/http";
 
 import { ApiOrigin } from "../api-origin/index.ts";
+import { SessionExpiry } from "../session/index.ts";
 import { TodosClient } from "./todos-client.ts";
 import { TodosHttpClientLayer } from "./todos-http-client.ts";
 
@@ -42,8 +43,13 @@ const apiUnreachable = Layer.succeed(
   ),
 );
 
-const todosClient = (httpClient: Layer.Layer<HttpClient.HttpClient>) =>
-  TodosHttpClientLayer.pipe(Layer.provide([ApiOrigin.layer(origin), httpClient]));
+const sessionExpiry = (expiries: Ref.Ref<number>) =>
+  Layer.succeed(SessionExpiry, { expire: Ref.update(expiries, (count) => count + 1) });
+
+const todosClient = (
+  httpClient: Layer.Layer<HttpClient.HttpClient>,
+  expiry: Layer.Layer<SessionExpiry> = Layer.succeed(SessionExpiry, { expire: Effect.void }),
+) => TodosHttpClientLayer.pipe(Layer.provide([ApiOrigin.layer(origin), httpClient, expiry]));
 
 describe("TodosHttpClientLayer", () => {
   it.effect("lists the todos from the api origin", () =>
@@ -64,18 +70,36 @@ describe("TodosHttpClientLayer", () => {
     }),
   );
 
-  it.effect("passes a refused session through as UnauthorizedError", () =>
+  it.effect("passes a refused session through as UnauthorizedError and reports it", () =>
     Effect.gen(function* () {
       const urls = yield* Ref.make<ReadonlyArray<string>>([]);
+      const expiries = yield* Ref.make(0);
 
       const error = yield* TodosClient.use((client) => client.list).pipe(
         Effect.flip,
         Effect.provide(
-          todosClient(apiAnswering(urls, () => json(401, '{"_tag":"UnauthorizedError"}'))),
+          todosClient(
+            apiAnswering(urls, () => json(401, '{"_tag":"UnauthorizedError"}')),
+            sessionExpiry(expiries),
+          ),
         ),
       );
 
       assert.strictEqual(error._tag, "UnauthorizedError");
+      assert.strictEqual(yield* Ref.get(expiries), 1);
+    }),
+  );
+
+  it.effect("reports nothing when the api cannot be reached", () =>
+    Effect.gen(function* () {
+      const expiries = yield* Ref.make(0);
+
+      yield* TodosClient.use((client) => client.list).pipe(
+        Effect.flip,
+        Effect.provide(todosClient(apiUnreachable, sessionExpiry(expiries))),
+      );
+
+      assert.strictEqual(yield* Ref.get(expiries), 0);
     }),
   );
 

@@ -20,6 +20,7 @@ overrides:
 
 catalog:
   effect: 4.0.7
+  "@effect/atom-react": 4.0.7
   "@effect/platform-node": 4.0.7
   "@effect/sql-pg": 4.0.7
   "@effect/vitest": 4.0.7

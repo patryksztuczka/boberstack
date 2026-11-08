@@ -41,7 +41,7 @@ packages/database/                   # adapter: the only SQL (root ADR 0004)
   migrations/                        # NNNN_name.sql, app and better-auth tables (root ADR 0006)
 packages/mail/src/                   # adapter: Mailpit provides Mailer
 packages/auth/src/                   # adapter: better-auth, the authentication middleware layers
-packages/client-runtime/src/                 # api clients the apps share: ports and HttpApi/RPC layers per context, ApiOrigin
+packages/client-runtime/src/         # what the apps share: api clients per context, their atoms (x.atoms.ts), clientRuntime, ApiOrigin, SessionExpiry
 
 apps/api/src/                        # a composition root
   worker.ts                          # entry point (10)
@@ -183,16 +183,16 @@ The id is `boberstack/<path under the source root>/<Class>` (`@boberstack/effect
 
 ```
 apps/web/src/
-  main.tsx                 # entry: renders the router
-  runtime.ts               # the one ManagedRuntime (10)
-  router.tsx               # React Router data routes
+  main.tsx                 # entry: the root RegistryProvider seeded from runtime.ts, then the router
+  runtime.ts               # the client layer the atoms run on (10)
+  app/router.tsx           # React Router data routes; private routes get their own registry
   features/<name>/
-    api/                   # TanStack Query hooks; each calls runtime.runPromise on a typed client call
+    api/                   # small hooks over shared atoms, when a component needs a derived value
     components/
     forms/                 # React Hook Form + effectTsResolver over a packages/domain Schema
   shared/
 ```
 
-A feature imports the contract from `@boberstack/domain`, the api clients from `@boberstack/client-runtime/<context>` and UI from `@boberstack/ui`, never from `@boberstack/core`, an adapter package or `apps/api`. `runtime.ts` provides the clients with `FetchHttpClient.layer` and `ApiOrigin.layer(globalThis.location.origin)`. Components never build requests; they call the feature's hooks.
+A feature imports the contract from `@boberstack/domain`, the atoms from `@boberstack/client-runtime/<context>` and UI from `@boberstack/ui`, never from `@boberstack/core`, an adapter package or `apps/api`. `runtime.ts` builds the client layer from `FetchHttpClient.layer` and `ApiOrigin.layer(globalThis.location.origin)` and seeds `clientLayer` with it. Components never build requests or run Effects; they read atoms with `useAtomValue`, `useAtom` and `useAtomRefresh` and match on the `AsyncResult` (root ADR 0012).
 
 Source for the id convention: `effect/AGENTS.md` (Context.Service: "include the package name and the subdirectory path"). The rest is house convention.

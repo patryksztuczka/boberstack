@@ -67,6 +67,7 @@ Git hooks come from Vite+: `pre-commit` runs `vp staged`, `commit-msg` checks th
 | business logic                         | `packages/core/src/<context>/x.service.ts`                                                                                                        |
 | a query or a table                     | a store port in the core module, SQL in `packages/database/src/x.repository.ts`, a new file in `packages/database/migrations/`                    |
 | a typed api client the apps share      | a port and its HttpApi or RPC layer in `packages/client-runtime/src/<context>/`; the app provides `HttpClient` and `ApiOrigin`                    |
+| data a screen reads or changes         | an atom in `packages/client-runtime/src/<context>/x.atoms.ts` on `clientRuntime`; the app reads it with `@effect/atom-react` (root ADR 0012)      |
 | a call to another system               | a port in the core module, the adapter in its own package, `packages/<capability>/` (root ADR 0009)                                               |
 | an email                               | a template in `packages/core/src/mail/templates/`, sent through the `Mailer` port (root ADR 0008)                                                 |
 | an entry point that runs services      | a composition root in `apps/<name>/` that provides core with adapter packages, and its own source of identity (root ADR 0009)                     |

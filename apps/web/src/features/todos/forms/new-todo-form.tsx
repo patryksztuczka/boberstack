@@ -11,7 +11,7 @@ import type { NewTodoFormValues } from "./new-todo-form.schema.ts";
 export const NewTodoForm = ({
   onCreate,
 }: {
-  readonly onCreate: (input: NewTodo) => Promise<void>;
+  readonly onCreate: (input: NewTodo) => Promise<boolean>;
 }) => {
   const form = useForm<NewTodoFormValues, unknown, NewTodo>({
     resolver: effectTsResolver(NewTodoFormSchema),
@@ -26,8 +26,7 @@ export const NewTodoForm = ({
       noValidate
       className="grid gap-2"
       onSubmit={form.handleSubmit(async (input) => {
-        await onCreate(input);
-        form.resetField("title");
+        if (await onCreate(input)) form.resetField("title");
       })}
     >
       <div className="flex gap-2">

@@ -38,6 +38,8 @@ export const appVariant = (value: string | undefined): AppVariant => {
 
 const WHITE = "#ffffff";
 
+const MOTION_USAGE = "The beaver on the welcome screen looks around as you tilt your phone.";
+
 export const appConfig = (variant: AppVariant, apiUrl: string | undefined): ExpoConfig => {
   const { name, identifier, scheme } = VARIANTS[variant];
 
@@ -63,6 +65,7 @@ export const appConfig = (variant: AppVariant, apiUrl: string | undefined): Expo
     },
     plugins: [
       "expo-secure-store",
+      ["expo-sensors", { motionPermission: MOTION_USAGE }],
       [
         "expo-splash-screen",
         { image: "./assets/splash-icon.png", imageWidth: 200, backgroundColor: WHITE },

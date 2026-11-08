@@ -9,6 +9,7 @@ All lint config lives in the root `vite.config.ts` (`lint` block); Vite+ ignores
 - Oxlint built-in plugins `typescript`, `oxc`, `import`, `promise`, `vitest`, plus `react` in `apps/web` and `packages/ui`.
 - Type-aware rules through tsgolint.
 - `import/no-cycle`.
+- `no-restricted-imports` in `apps/**` and `packages/**`: `@tanstack/react-query`, because client state lives in Effect atoms (root ADR 0012).
 
 ### `anti-slop` (vendored from dmmulroy/anti-slop, MIT)
 

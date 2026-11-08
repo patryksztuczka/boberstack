@@ -34,6 +34,13 @@ export const useSessionExpired = () => useSyncExternalStore(subscribe, () => exp
 
 export const clearSessionExpired = () => setExpired(false);
 
+export const useShowsWelcome = () => {
+  const signedOut = useIsSignedOut();
+  const expired = useSessionExpired();
+
+  return signedOut && !expired;
+};
+
 export const expireSession = async () => {
   setExpired(true);
   await authClient.signOut();

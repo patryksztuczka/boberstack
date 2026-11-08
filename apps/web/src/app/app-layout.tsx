@@ -5,7 +5,6 @@ import { authClient } from "../features/auth/index.ts";
 import { m } from "../paraglide/messages.js";
 import { REPOSITORY_URL } from "../shared/brand/links.ts";
 import { Wordmark } from "../shared/brand/wordmark.tsx";
-import { queryClient } from "../shared/query-client.ts";
 
 const NAV_BUTTON = "h-9 rounded-lg border-[1.5px] border-foreground px-3.5 font-semibold";
 
@@ -15,7 +14,6 @@ export const AppLayout = () => {
 
   const signOut = async () => {
     await authClient.signOut();
-    queryClient.clear();
     await navigate("/sign-in");
   };
 

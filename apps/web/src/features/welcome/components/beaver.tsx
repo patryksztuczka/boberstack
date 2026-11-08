@@ -1,4 +1,5 @@
 // @effect-diagnostics globalRandom:off -- the glance and blink timing is decorative jitter in a React effect, not Effect code
+import { BEAVER_LOOK_REACH } from "@boberstack/ui/beaver";
 import { useEffect, useRef, useState } from "react";
 
 import { m } from "../../../paraglide/messages.js";
@@ -9,8 +10,6 @@ import "./beaver.css";
 const EYE_CENTER_X = 463 / 983;
 
 const EYE_CENTER_Y = 330 / 1024;
-
-const LOOK_REACH = 9;
 
 const IDLE_GLANCE_MS = 3500;
 
@@ -23,7 +22,7 @@ const lookAt = (svg: SVGSVGElement, x: number, y: number) => {
   const dx = x - (box.left + box.width * EYE_CENTER_X);
   const dy = y - (box.top + box.height * EYE_CENTER_Y);
   const distance = Math.hypot(dx, dy) || 1;
-  const reach = (LOOK_REACH * distance) / (distance + 120);
+  const reach = (BEAVER_LOOK_REACH * distance) / (distance + 120);
 
   svg.style.setProperty("--beaver-look-x", `${String((dx / distance) * reach)}px`);
   svg.style.setProperty("--beaver-look-y", `${String((dy / distance) * reach)}px`);

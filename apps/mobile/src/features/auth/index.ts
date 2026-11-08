@@ -1,4 +1,10 @@
-export { expireSession, useIsSignedIn, useIsSignedOut, useSessionLoading } from "./api/session.ts";
+export {
+  expireSession,
+  useIsSignedIn,
+  useIsSignedOut,
+  useSessionLoading,
+  useShowsWelcome,
+} from "./api/session.ts";
 
 export { SignInScreen } from "./components/sign-in-screen.tsx";
 
