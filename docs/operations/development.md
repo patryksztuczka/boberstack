@@ -49,6 +49,10 @@ Social sign-in opens the provider in the system browser and does not come back t
 
 The window and the Dock show `apps/desktop/resources/icon.png`. Packaging comes later: electron-builder will turn that file into the macOS `.icns` and the Windows `.ico`, and sign the app.
 
+## Mobile app
+
+`apps/mobile` is a native Expo app on the same api (root ADR 0011). With `pnpm dev` running, `pnpm dev:mobile` builds it and opens it in the iOS simulator. [Mobile app](mobile.md) has the setup, the variants and the release steps.
+
 ## Before you push
 
 `pnpm check:changed` checks the files you touched. `pnpm verify` runs what CI runs, and the pre-push hook runs it too. Add `pnpm test:integration` when you touched SQL, migrations, auth or an endpoint.

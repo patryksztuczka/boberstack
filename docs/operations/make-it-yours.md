@@ -45,7 +45,7 @@ The starter is a working project. Delete what you will not use on day one. Lint,
 - [ ] Delete `packages/core/src/todos/`, `apps/api/src/http/todos.http.ts`, `apps/api/src/rpc/todos.rpc.ts`, and their entries in `http.layer.ts`, `rpc.layer.ts` and `app.layer.ts`.
 - [ ] Delete `packages/database/src/todo.repository.ts`, its integration test and its export in `packages/database/src/index.ts`.
 - [ ] Add a migration that drops the todos table. Do not delete the old migration if it has ever been applied (root ADR 0006).
-- [ ] Delete `apps/web/src/features/todos/` and its routes in `router.tsx`.
+- [ ] Delete `apps/web/src/features/todos/` and its routes in `router.tsx`, and `apps/mobile/src/features/todos/` and its screen in `apps/mobile/src/app/navigation.tsx`.
 - [ ] Delete `docs/internals/todos/`, `docs/user/todos.md` and the Todos lines in `CONTEXT-MAP.md`.
 
 Keep the folders: the next context goes in the same places.
@@ -82,3 +82,12 @@ The mirror image of cutting RPC: delete `*.http-api.ts`, `packages/domain/src/ap
 
 - [ ] Delete `apps/web/` and `packages/ui/`, and the Worker's assets configuration in `apps/infra/alchemy.run.ts`.
 - [ ] Remove the `react` plugin scope from the lint config.
+
+### The mobile app
+
+- [ ] Delete `apps/mobile/`, its reference in the root `tsconfig.json`, the `apps/mobile` overrides in `tools/oxlint/lint.config.ts` and `vite.config.ts`, and its lines in `.gitignore`.
+- [ ] Remove the `mobile` task from `scripts/dev.mjs`, the `metro` port from `scripts/dev-ports.mjs`, the root `dev:mobile` script and the mobile variables in `.env.schema`.
+- [ ] Remove `expo()` and the app schemes from `packages/auth/src/better-auth.ts`, and `@better-auth/expo` from `packages/auth/package.json`.
+- [ ] Delete `docs/operations/mobile.md` and mark root ADR 0011 superseded.
+
+To keep it, rename the bundle ids (`com.boberstack.app…`) and the `boberstack-dev` and `boberstack-preview` schemes in `apps/mobile/app.config.ts`, and the same schemes in the trusted origins in `packages/auth/src/better-auth.ts`. `pnpm init:project` renames only the plain `boberstack` name and scheme.
