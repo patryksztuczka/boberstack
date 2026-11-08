@@ -12,6 +12,7 @@ export default defineConfig({
       "tools/oxlint/anti-slop/**",
       "apps/web/src/paraglide/**",
       "apps/mobile/src/paraglide/**",
+      "apps/mobile/uniwind-types.d.ts",
       ".scratch/**",
       "pnpm-lock.yaml",
     ],

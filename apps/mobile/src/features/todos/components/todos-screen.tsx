@@ -2,10 +2,9 @@ import { TodosUnavailableError } from "@boberstack/client-runtime/todos";
 import { useQuery } from "@tanstack/react-query";
 import { Schema } from "effect";
 import { useState } from "react";
-import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, RefreshControl, Text, View } from "react-native";
 
 import { m } from "../../../paraglide/messages.js";
-import { colors, radius, spacing } from "../../../shared/theme.ts";
 import { todosQuery, useCreateTodo } from "../api/todos.queries.ts";
 import { NewTodoForm } from "../forms/new-todo-form.tsx";
 import { TodoRow } from "./todo-row.tsx";
@@ -29,8 +28,8 @@ export const TodosScreen = () => {
 
   return (
     <FlatList
-      style={styles.list}
-      contentContainerStyle={styles.content}
+      className="flex-1 bg-background"
+      contentContainerClassName="p-4"
       contentInsetAdjustmentBehavior="automatic"
       keyboardShouldPersistTaps="handled"
       data={items}
@@ -45,23 +44,25 @@ export const TodosScreen = () => {
             }}
           />
           {todos.error === null ? undefined : (
-            <View style={styles.failure}>
-              <Text style={styles.failureText}>
+            <View className="mb-3 gap-1 rounded-lg bg-muted p-3">
+              <Text className="text-sm text-destructive">
                 {m.todos_failed({ reason: reasonOf(todos.error) })}
               </Text>
               <Pressable onPress={() => void todos.refetch()} accessibilityRole="button">
-                <Text style={styles.retry}>{m.todos_retry()}</Text>
+                <Text className="text-sm font-semibold text-foreground">{m.todos_retry()}</Text>
               </Pressable>
             </View>
           )}
         </View>
       }
       ListEmptyComponent={
-        todos.isSuccess ? <Text style={styles.muted}>{m.todos_empty()}</Text> : undefined
+        todos.isSuccess ? (
+          <Text className="text-sm text-muted-foreground">{m.todos_empty()}</Text>
+        ) : undefined
       }
       ListFooterComponent={
         items.length === 0 ? undefined : (
-          <Text style={[styles.muted, styles.footer]}>
+          <Text className="pt-3 text-sm text-muted-foreground">
             {m.todos_remaining({ count: remaining })}
           </Text>
         )
@@ -69,19 +70,3 @@ export const TodosScreen = () => {
     />
   );
 };
-
-const styles = StyleSheet.create({
-  list: { flex: 1, backgroundColor: colors.background },
-  content: { padding: spacing.lg },
-  failure: {
-    gap: spacing.xs,
-    padding: spacing.md,
-    marginBottom: spacing.md,
-    borderRadius: radius,
-    backgroundColor: colors.muted,
-  },
-  failureText: { color: colors.destructive, fontSize: 14 },
-  retry: { color: colors.foreground, fontSize: 14, fontWeight: "600" },
-  muted: { color: colors.mutedForeground, fontSize: 14 },
-  footer: { paddingTop: spacing.md },
-});

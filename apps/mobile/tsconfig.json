@@ -18,7 +18,8 @@
     "index.ts",
     "app.config.ts",
     "app.config.test.ts",
-    "vite.config.ts"
+    "vite.config.ts",
+    "uniwind-types.d.ts"
   ],
   "references": [
     {

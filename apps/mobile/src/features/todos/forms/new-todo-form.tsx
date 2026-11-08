@@ -1,10 +1,9 @@
 import type { NewTodo } from "@boberstack/domain/todos/todo";
 import { Option } from "effect";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, Text, TextInput, View } from "react-native";
 
 import { m } from "../../../paraglide/messages.js";
-import { colors, radius, spacing } from "../../../shared/theme.ts";
 import { newTodoFrom } from "./new-todo.schema.ts";
 
 export const NewTodoForm = ({
@@ -39,58 +38,35 @@ export const NewTodoForm = ({
   };
 
   return (
-    <View style={styles.form}>
-      <View style={styles.row}>
+    <View className="gap-2 pb-3">
+      <View className="flex-row gap-2">
         <TextInput
-          style={styles.input}
+          className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-[16px] text-foreground"
+          placeholderTextColorClassName="accent-muted-foreground"
           value={title}
           onChangeText={(text) => {
             setTitle(text);
             setInvalid(false);
           }}
           placeholder={m.todos_new_placeholder()}
-          placeholderTextColor={colors.mutedForeground}
           accessibilityLabel={m.todos_new_placeholder()}
           returnKeyType="done"
           onSubmitEditing={() => void submit()}
           testID="new-todo-title"
         />
         <Pressable
-          style={({ pressed }) => [styles.button, (pressed || submitting) && styles.pressed]}
+          className="justify-center rounded-lg bg-primary px-4 active:opacity-60 disabled:opacity-60"
           onPress={() => void submit()}
           disabled={submitting}
           accessibilityRole="button"
           testID="new-todo-add"
         >
-          <Text style={styles.buttonText}>{m.todos_add()}</Text>
+          <Text className="text-base font-semibold text-primary-foreground">{m.todos_add()}</Text>
         </Pressable>
       </View>
-      {invalid ? <Text style={styles.error}>{m.todos_title_invalid()}</Text> : undefined}
+      {invalid ? (
+        <Text className="text-sm text-destructive">{m.todos_title_invalid()}</Text>
+      ) : undefined}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  form: { gap: spacing.sm, paddingBottom: spacing.md },
-  row: { flexDirection: "row", gap: spacing.sm },
-  input: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    fontSize: 16,
-    color: colors.foreground,
-    backgroundColor: colors.background,
-  },
-  button: {
-    justifyContent: "center",
-    borderRadius: radius,
-    paddingHorizontal: spacing.lg,
-    backgroundColor: colors.primary,
-  },
-  pressed: { opacity: 0.6 },
-  buttonText: { color: colors.primaryForeground, fontSize: 16, fontWeight: "600" },
-  error: { color: colors.destructive, fontSize: 14 },
-});

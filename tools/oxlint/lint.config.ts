@@ -212,6 +212,7 @@ const lint = {
     "tools/oxlint/anti-slop/**",
     "apps/web/src/paraglide/**",
     "apps/mobile/src/paraglide/**",
+    "apps/mobile/uniwind-types.d.ts",
     ".agents/**",
     ".claude/**",
     ".scratch/**",

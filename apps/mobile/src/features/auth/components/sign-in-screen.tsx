@@ -1,16 +1,7 @@
 import { useState } from "react";
-import {
-  KeyboardAvoidingView,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 
 import { m } from "../../../paraglide/messages.js";
-import { colors, radius, spacing } from "../../../shared/theme.ts";
 import { authClient } from "../api/auth-client.ts";
 import { clearSessionExpired, useSessionExpired } from "../api/session.ts";
 
@@ -37,19 +28,23 @@ export const SignInScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.screen} behavior="padding">
+    <KeyboardAvoidingView className="flex-1 bg-background" behavior="padding">
       <ScrollView
-        contentContainerStyle={styles.content}
+        contentContainerClassName="gap-4 p-6"
         contentInsetAdjustmentBehavior="automatic"
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={styles.brand}>{m.app_title()}</Text>
-        <Text style={styles.description}>{m.auth_sign_in_description()}</Text>
-        {expired ? <Text style={styles.notice}>{m.auth_session_expired()}</Text> : undefined}
-        <View style={styles.field}>
-          <Text style={styles.label}>{m.auth_email()}</Text>
+        <Text className="text-[32px] font-black text-brand">{m.app_title()}</Text>
+        <Text className="text-base text-muted-foreground">{m.auth_sign_in_description()}</Text>
+        {expired ? (
+          <Text className="overflow-hidden rounded-lg bg-muted p-3 text-foreground">
+            {m.auth_session_expired()}
+          </Text>
+        ) : undefined}
+        <View className="gap-1">
+          <Text className="text-sm font-semibold text-foreground">{m.auth_email()}</Text>
           <TextInput
-            style={styles.input}
+            className="rounded-lg border border-border px-3 py-3 text-[16px] text-foreground"
             value={email}
             onChangeText={setEmail}
             autoCapitalize="none"
@@ -61,10 +56,10 @@ export const SignInScreen = () => {
             testID="sign-in-email"
           />
         </View>
-        <View style={styles.field}>
-          <Text style={styles.label}>{m.auth_password()}</Text>
+        <View className="gap-1">
+          <Text className="text-sm font-semibold text-foreground">{m.auth_password()}</Text>
           <TextInput
-            style={styles.input}
+            className="rounded-lg border border-border px-3 py-3 text-[16px] text-foreground"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
@@ -76,51 +71,21 @@ export const SignInScreen = () => {
             testID="sign-in-password"
           />
         </View>
-        {failure === undefined ? undefined : <Text style={styles.error}>{failure}</Text>}
+        {failure === undefined ? undefined : (
+          <Text className="text-sm text-destructive">{failure}</Text>
+        )}
         <Pressable
-          style={({ pressed }) => [styles.button, (pressed || submitting) && styles.pressed]}
+          className="items-center rounded-lg bg-primary py-3 active:opacity-60 disabled:opacity-60"
           onPress={() => void submit()}
           disabled={submitting}
           accessibilityRole="button"
           testID="sign-in-submit"
         >
-          <Text style={styles.buttonText}>{m.auth_sign_in_submit()}</Text>
+          <Text className="text-base font-semibold text-primary-foreground">
+            {m.auth_sign_in_submit()}
+          </Text>
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.background },
-  content: { gap: spacing.lg, padding: spacing.xl },
-  brand: { color: colors.brand, fontSize: 32, fontWeight: "900" },
-  description: { color: colors.mutedForeground, fontSize: 16 },
-  notice: {
-    padding: spacing.md,
-    borderRadius: radius,
-    color: colors.foreground,
-    backgroundColor: colors.muted,
-    overflow: "hidden",
-  },
-  field: { gap: spacing.xs },
-  label: { color: colors.foreground, fontSize: 14, fontWeight: "600" },
-  input: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    fontSize: 16,
-    color: colors.foreground,
-  },
-  error: { color: colors.destructive, fontSize: 14 },
-  button: {
-    alignItems: "center",
-    borderRadius: radius,
-    paddingVertical: spacing.md,
-    backgroundColor: colors.primary,
-  },
-  pressed: { opacity: 0.6 },
-  buttonText: { color: colors.primaryForeground, fontSize: 16, fontWeight: "600" },
-});

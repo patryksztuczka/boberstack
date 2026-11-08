@@ -44,6 +44,14 @@ APP_VARIANT=development EXPO_PUBLIC_API_URL=http://10.0.2.2:<web port> pnpm exec
 
 `EXPO_PUBLIC_API_URL` is the api origin the app talks to, such as the deployed app's URL. Expo builds it into the app config, so set it before you start Metro or a build. The app stops at launch with a message naming the variable when it is missing.
 
+## Styling
+
+Screens use Tailwind classes in `className`, which Uniwind turns into React Native styles when Metro bundles the app. The colours and radii come from `packages/ui/src/styles/tokens.css`, the same file the web app imports, so `bg-primary` or `text-muted-foreground` is the same colour on both. `apps/mobile/global.css` imports Tailwind, Uniwind and those tokens. Change a token in `tokens.css` and both apps follow; restart Metro with `--clear` if the simulator keeps the old value.
+
+`apps/mobile/uniwind-types.d.ts` adds `className` to the React Native types. `pnpm install` generates it and Metro rewrites it on start; Git ignores it.
+
+The mobile app is light only. The dark values in `tokens.css` sit under the web's `.dark` class, which Uniwind does not treat as its dark theme.
+
 ## How the session works
 
 The better-auth Expo plugin keeps the session cookie in the iOS keychain or the Android keystore through `expo-secure-store`. Every api call the shared clients in `packages/client-runtime` make sends that cookie in a `cookie` header (`apps/mobile/src/runtime.ts`), so the api checks it the same way it checks the browser's cookie. When the api answers 401, the app drops the session and shows the sign-in screen.

@@ -9,13 +9,8 @@ import {
 } from "../features/auth/index.ts";
 import { TodosScreen } from "../features/todos/index.ts";
 import { m } from "../paraglide/messages.js";
-import { colors } from "../shared/theme.ts";
 
 const RootStack = createNativeStackNavigator({
-  screenOptions: {
-    headerTintColor: colors.foreground,
-    contentStyle: { backgroundColor: colors.background },
-  },
   screens: {
     SignIn: {
       if: useIsSignedOut,
