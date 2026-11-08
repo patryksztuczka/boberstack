@@ -41,7 +41,7 @@ export const Database = Effect.gen(function* () {
 
   const branch = yield* Neon.Branch("DatabaseBranch", {
     project,
-    migrations: "../api/migrations",
+    migrations: "../../packages/database/migrations",
   });
 
   return yield* Cloudflare.Hyperdrive.Connection("Database", {

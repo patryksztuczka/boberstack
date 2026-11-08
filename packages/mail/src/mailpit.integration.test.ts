@@ -1,8 +1,8 @@
+import { confirmEmail, Mailer } from "@boberstack/core/mail";
 import { assert, describe, layer } from "@effect/vitest";
 import { Effect } from "effect";
 
-import { confirmEmail, Mailer } from "../../modules/mail/index.ts";
-import { MailpitInbox, MailpitTestLayer } from "../../testing/mailpit-test.ts";
+import { MailpitInbox, MailpitTestLayer } from "./testing/mailpit-test.ts";
 
 const link =
   "https://app.example.com/api/auth/verify-email?token=abc&callbackURL=%2Femail-verified";

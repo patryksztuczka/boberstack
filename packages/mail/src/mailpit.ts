@@ -1,8 +1,7 @@
+import { MailDeliveryError, Mailer } from "@boberstack/core/mail";
+import type { MailMessage } from "@boberstack/core/mail";
 import { Config, Effect, Layer } from "effect";
 import { FetchHttpClient, HttpClient, HttpClientRequest } from "effect/http";
-
-import { MailDeliveryError, Mailer } from "../../modules/mail/index.ts";
-import type { MailMessage } from "../../modules/mail/index.ts";
 
 export interface MailpitOptions {
   readonly url: URL;

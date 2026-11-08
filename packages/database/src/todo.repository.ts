@@ -1,9 +1,8 @@
+import { TodoStore } from "@boberstack/core/todos";
 import { UserId } from "@boberstack/domain/identity/user";
 import { Todo, TodoId, TodoPatch, TodoTitle } from "@boberstack/domain/todos/todo";
 import { Effect, Layer, Option, Schema } from "effect";
 import { SqlClient, SqlSchema } from "effect/sql";
-
-import { TodoStore } from "../../modules/todos/index.ts";
 
 const TodoRow = Schema.Struct({
   id: TodoId,

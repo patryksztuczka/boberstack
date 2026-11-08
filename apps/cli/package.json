@@ -9,7 +9,7 @@
     "start": "node src/main.ts"
   },
   "dependencies": {
-    "@boberstack/api": "workspace:*",
+    "@boberstack/database": "workspace:*",
     "@boberstack/domain": "workspace:*",
     "@effect/platform-node": "catalog:",
     "@effect/sql-pg": "catalog:",

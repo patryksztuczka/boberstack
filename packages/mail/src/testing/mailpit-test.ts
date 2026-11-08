@@ -2,7 +2,7 @@ import { Context, Effect, Layer, Schema } from "effect";
 import { FetchHttpClient, HttpClient, HttpClientResponse } from "effect/http";
 import { GenericContainer, Wait } from "testcontainers";
 
-import { MailpitMailer } from "../platform/mail/index.ts";
+import { MailpitMailer } from "../mailpit.ts";
 
 export const MAILPIT_IMAGE = "axllent/mailpit:v1.32.0";
 
@@ -30,7 +30,7 @@ export interface MailpitInboxApi {
 }
 
 export class MailpitInbox extends Context.Service<MailpitInbox, MailpitInboxApi>()(
-  "boberstack/testing/MailpitInbox",
+  "boberstack/platform/mail/testing/MailpitInbox",
 ) {
   static readonly layer = (url: URL) =>
     Layer.effect(

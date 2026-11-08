@@ -1,4 +1,4 @@
-import { sqlFileMigrations } from "@boberstack/api/migrations";
+import { sqlFileMigrations } from "@boberstack/database";
 import { NodeServices } from "@effect/platform-node";
 import { PgClient } from "@effect/sql-pg";
 import { Config, Console, Effect, Layer, Redacted } from "effect";
@@ -31,7 +31,9 @@ const migrate = Command.make(
     Effect.provide(Layer.mergeAll(DatabaseLayer, NodeServices.layer)),
   ),
 ).pipe(
-  Command.withDescription("Apply apps/api/migrations to DATABASE_URL (local Postgres by default)"),
+  Command.withDescription(
+    "Apply packages/database/migrations to DATABASE_URL (local Postgres by default)",
+  ),
 );
 
 export const DbCommand = Command.make("db").pipe(

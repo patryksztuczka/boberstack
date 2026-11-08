@@ -214,7 +214,7 @@ async function main() {
       .filter((line) => line.trim() !== "")
       .map(Number);
 
-    const expected = migrationIds(readdirSync(join(root, "apps", "api", "migrations")));
+    const expected = migrationIds(readdirSync(join(root, "packages", "database", "migrations")));
     const missing = missingMigrations(expected, applied);
 
     if (missing.length > 0) fail(`not applied: ${missing.join(", ")}; run pnpm db:migrate`);

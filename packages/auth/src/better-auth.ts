@@ -1,10 +1,10 @@
 import { BetterAuth } from "@alchemy.run/better-auth";
+import { confirmEmail, Mailer, resetPassword } from "@boberstack/core/mail";
+import type { MailerApi } from "@boberstack/core/mail";
 import { RuntimeContext } from "alchemy";
 import { Config, Context, Effect, Layer, Option, Redacted } from "effect";
 import type { Headers } from "effect/http";
 
-import { confirmEmail, Mailer, resetPassword } from "../../modules/mail/index.ts";
-import type { MailerApi } from "../../modules/mail/index.ts";
 import { SocialSignIn } from "./social-sign-in.ts";
 import type { OAuthCredentials } from "./social-sign-in.ts";
 
@@ -91,7 +91,7 @@ const makeAuth = Effect.gen(function* () {
 });
 
 export class Auth extends Context.Service<Auth, Effect.Success<typeof makeAuth>>()(
-  "boberstack/platform/authentication/Auth",
+  "boberstack/platform/auth/Auth",
 ) {
   static readonly layer = Layer.effect(this, makeAuth);
 }

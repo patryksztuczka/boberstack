@@ -1,9 +1,8 @@
+import { TodosService } from "@boberstack/core/todos";
 import { Api } from "@boberstack/domain/api";
 import { CurrentUser } from "@boberstack/domain/identity/current-user";
 import { Effect } from "effect";
 import { HttpApiBuilder } from "effect/http-api";
-
-import { TodosService } from "../modules/todos/index.ts";
 
 export const TodosHttpLayer = HttpApiBuilder.group(Api, "todos", (handlers) =>
   Effect.gen(function* () {

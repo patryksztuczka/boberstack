@@ -1,0 +1,20 @@
+{
+  "name": "@boberstack/mail",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test:integration": "vp test"
+  },
+  "dependencies": {
+    "@boberstack/core": "workspace:*",
+    "effect": "catalog:"
+  },
+  "devDependencies": {
+    "@effect/vitest": "catalog:",
+    "testcontainers": "12.2.1",
+    "vite-plus": "catalog:"
+  }
+}

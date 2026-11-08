@@ -1,9 +1,8 @@
+import { enabledProviders, SocialSignIn } from "@boberstack/auth";
 import { Api } from "@boberstack/domain/api";
 import { SignInMethods } from "@boberstack/domain/identity/sign-in-methods";
 import { Effect, Layer } from "effect";
 import { HttpApiBuilder } from "effect/http-api";
-
-import { enabledProviders, SocialSignIn } from "../platform/authentication/social-sign-in.ts";
 
 export const SignInMethodsHttpLayer = Layer.unwrap(
   SocialSignIn.use((social) => {
