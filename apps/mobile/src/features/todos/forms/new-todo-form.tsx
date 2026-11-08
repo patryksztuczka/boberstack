@@ -9,7 +9,7 @@ import { newTodoFrom } from "./new-todo.schema.ts";
 export const NewTodoForm = ({
   onCreate,
 }: {
-  readonly onCreate: (input: NewTodo) => Promise<void>;
+  readonly onCreate: (input: NewTodo) => Promise<boolean>;
 }) => {
   const [title, setTitle] = useState("");
   const [invalid, setInvalid] = useState(false);
@@ -27,10 +27,7 @@ export const NewTodoForm = ({
     setInvalid(false);
     setSubmitting(true);
 
-    const created = await onCreate(input.value).then(
-      () => true,
-      () => false,
-    );
+    const created = await onCreate(input.value);
 
     if (created) setTitle("");
 

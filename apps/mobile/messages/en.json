@@ -14,6 +14,7 @@
   "todos_add": "Add",
   "todos_empty": "Nothing to do. Add your first todo above.",
   "todos_remove": "Remove",
+  "todos_not_found": "This todo no longer exists.",
   "todos_failed": "Could not reach the api: {reason}",
   "todos_retry": "Try again",
   "todos_remaining": "Left to do: {count}",

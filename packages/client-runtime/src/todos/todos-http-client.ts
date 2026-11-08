@@ -4,7 +4,7 @@ import { HttpApiClient } from "effect/http-api";
 
 import { ApiOrigin } from "../api-origin/index.ts";
 import { TodosUnavailableError } from "./todos-client.errors.ts";
-import { TodosClient } from "./todos-client.ts";
+import { reportingSessionExpiry, TodosClient } from "./todos-client.ts";
 
 const unavailable = (error: { readonly message: string }) =>
   Effect.fail(new TodosUnavailableError({ reason: error.message }));
@@ -15,7 +15,7 @@ export const TodosHttpClientLayer = Layer.effect(
     const { origin } = yield* ApiOrigin;
     const client = yield* HttpApiClient.make(Api, { baseUrl: origin });
 
-    return TodosClient.of({
+    return yield* reportingSessionExpiry({
       list: client.todos.list().pipe(
         Effect.catchTags({
           HttpClientError: unavailable,

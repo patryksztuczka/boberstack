@@ -11,16 +11,15 @@ import {
   SignInPage,
   SignUpPage,
 } from "../features/auth/index.ts";
-import { todosQuery, TodosPage } from "../features/todos/index.ts";
+import { TodosPage } from "../features/todos/index.ts";
 import { WelcomePage } from "../features/welcome/index.ts";
-import { queryClient } from "../shared/query-client.ts";
 import { AppLayout } from "./app-layout.tsx";
 import { NotFoundPage, RouteError } from "./route-error.tsx";
+import { SignedInLayout } from "./signed-in-layout.tsx";
 
 export const privateRoutes: Array<RouteObject> = [
   {
     path: "todos",
-    loader: () => queryClient.ensureQueryData(todosQuery),
     element: <TodosPage />,
   },
 ];
@@ -40,7 +39,7 @@ export const routes: Array<RouteObject> = [
           { path: "email-verified", element: <EmailVerifiedPage /> },
           { path: "forgot-password", element: <ForgotPasswordPage /> },
           { path: "reset-password", element: <ResetPasswordPage /> },
-          { middleware: [requireSession], children: privateRoutes },
+          { middleware: [requireSession], element: <SignedInLayout />, children: privateRoutes },
           { path: "*", element: <NotFoundPage /> },
         ],
       },

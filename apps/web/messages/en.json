@@ -24,6 +24,9 @@
   "todos_title_invalid": "A todo needs a title of 1 to 200 characters.",
   "todos_empty": "Nothing to do. Add your first todo above.",
   "todos_remove": "Remove",
+  "todos_failed": "Could not reach the API: {reason}",
+  "todos_retry": "Try again",
+  "todos_not_found": "This todo no longer exists.",
   "todos_remaining": [
     {
       "declarations": ["input count", "local n = count: plural"],
