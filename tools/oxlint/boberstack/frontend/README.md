@@ -1,6 +1,10 @@
 # frontend
 
-Oxlint JS plugin with one rule, `@boberstack/frontend/feature-boundaries`, on for `apps/web`. It keeps the SPA's imports pointing one way, so a feature can be changed or deleted without touching the others.
+Oxlint JS plugin with two rules for the client apps.
+
+## feature-boundaries
+
+`@boberstack/frontend/feature-boundaries`, on for `apps/web` and `apps/mobile`, keeps a client app's imports pointing one way, so a feature can be changed or deleted without touching the others.
 
 ```
 apps/web/src/
@@ -21,3 +25,15 @@ Each feature exports what others may use from `features/<name>/index.ts`. Everyt
 Options (defaults match this starter): `featuresRoot` (`apps/web/src/features`), `layers`, bottom to top (`apps/web/src/shared`, `apps/web/src/features`, `apps/web/src/app`), and `roots`, the composition roots that wire adapters into the runtime (`apps/web/src/runtime.ts`). Going through the index from `runtime.ts` would make a cycle: a feature imports `TODOS_TRANSPORT` from the runtime. Only relative specifiers are checked; package imports such as `@boberstack/ui/...` are never flagged.
 
 This is the frontend counterpart of `@boberstack/effect/module-boundaries`, which fences bounded contexts in `apps/api`. It is a separate rule because a feature's subfolders (`api/`, `components/`, `forms/`) are layers of one feature, not modules with their own index.
+
+## accessible-controls
+
+`@boberstack/frontend/accessible-controls`, on for `apps/mobile/src`, makes every React Native control findable in the accessibility tree, where agent-device and VoiceOver look for it. The table of what each element needs and how to name a `testID` is in [docs/operations/mobile.md](../../../../docs/operations/mobile.md#accessibility-and-test-ids).
+
+| Flags                                                                                | Message id |
+| ------------------------------------------------------------------------------------ | ---------- |
+| a `Pressable`, `Touchable*`, `TextInput`, `Switch` or `Button` without `testID`      | `testID`   |
+| a `Pressable` or `Touchable*` without `accessibilityRole` or `role`                  | `role`     |
+| a `TextInput` or `Switch` without `accessibilityLabel`, `aria-label` or a labelledby | `label`    |
+
+Only elements imported from `react-native` are checked, by name, alias or namespace (`RN.Pressable`). An element with a spread prop is skipped, because the spread may carry the props.

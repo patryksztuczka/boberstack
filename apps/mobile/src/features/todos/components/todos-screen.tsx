@@ -42,7 +42,7 @@ export const TodosScreen = () => {
           {listFailure === undefined ? undefined : (
             <View className="mb-3 gap-1 rounded-lg bg-muted p-3">
               <Text className="text-sm text-destructive">{listFailure}</Text>
-              <Pressable onPress={refresh} accessibilityRole="button">
+              <Pressable onPress={refresh} accessibilityRole="button" testID="todos-retry">
                 <Text className="text-sm font-semibold text-foreground">{m.todos_retry()}</Text>
               </Pressable>
             </View>
