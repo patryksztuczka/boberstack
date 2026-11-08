@@ -39,7 +39,6 @@
   "welcome_lead": "A starter that helps coding agents write good code and keep your project in shape.",
   "welcome_open_example": "Open the todo example",
   "welcome_create_account": "Create an account",
-  "welcome_delete_hint": "This page lives in {path}. Delete it when you build your own.",
   "nav_github": "GitHub",
   "nav_sign_in": "Sign in",
   "auth_password_confirm": "Repeat the password",

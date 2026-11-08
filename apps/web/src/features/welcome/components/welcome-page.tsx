@@ -2,7 +2,6 @@ import { Button } from "@boberstack/ui/components/button";
 import { Link } from "react-router";
 
 import { m } from "../../../paraglide/messages.js";
-import { Wordmark } from "../../../shared/brand/wordmark.tsx";
 import { Beaver } from "./beaver.tsx";
 
 const ACTION = "h-11 rounded-[10px] px-[22px] text-[15px] font-semibold";
@@ -29,12 +28,5 @@ export const WelcomePage = () => (
         </Button>
       </div>
     </section>
-
-    <footer className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <Wordmark className="text-xl" />
-      <p className="font-mono text-xs text-muted-foreground">
-        {m.welcome_delete_hint({ path: "apps/web/src/features/welcome" })}
-      </p>
-    </footer>
   </div>
 );
