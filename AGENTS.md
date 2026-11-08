@@ -107,6 +107,7 @@ These cannot be undone with a revert, or they weaken the checks the after-the-fa
 - Never `--no-verify`, `git commit -n`, `HUSKY=0`, `VP_GIT_HOOKS=0` or another hook bypass. `.claude/hooks/block-no-verify.mjs` blocks them. A failing hook is work: fix the cause.
 - Never weaken a check to make your own change pass: no deleted or skipped test, no raised timeout, no `oxlint-disable` without a reason on the same line, no `@ts-expect-error` without one.
 - Never commit secrets, `.env*` files, generated output or customer data.
+- Never commit screenshots or recordings: a pull request shows them only as links printed by `pnpm -s pr-evidence`, and without that upload they go in the chat.
 - Never force-push, rewrite published history, merge, or deploy unless the user asks.
 
 ### Needs owner sign-off
