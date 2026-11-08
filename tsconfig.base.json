@@ -70,7 +70,7 @@
         },
         "overrides": [
           {
-            "include": ["**/vite.config.ts"],
+            "include": ["**/vite.config.ts", "**/app.config.ts"],
             "options": { "diagnosticSeverity": { "processEnv": "off" } }
           },
           {
