@@ -13,7 +13,7 @@ tester.run("@boberstack/effect/tagged-error-naming", taggedErrorNamingRule, {
       code: 'import { Data } from "effect"; class TitleTooLongError extends Data.TaggedError("TitleTooLongError")<{ n: number }> {}',
       filename: errorsFile,
     },
-    { code: "class Plain extends Base {}", filename: "apps/api/src/modules/todos/todo.service.ts" },
+    { code: "class Plain extends Base {}", filename: "packages/core/src/todos/todo.service.ts" },
     {
       code: schemaError("TodoNotFoundError", "TodoNotFoundError"),
       filename: "todos/TodoErrors.ts",
@@ -38,7 +38,7 @@ tester.run("@boberstack/effect/tagged-error-naming", taggedErrorNamingRule, {
     },
     {
       code: schemaError("TodoNotFoundError", "TodoNotFoundError"),
-      filename: "apps/api/src/modules/todos/todo.service.ts",
+      filename: "packages/core/src/todos/todo.service.ts",
       errors: [{ messageId: "location" }],
     },
     {

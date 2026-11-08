@@ -23,26 +23,26 @@ tester.run("@boberstack/effect/layer-config-only-in-roots", layerConfigOnlyInRoo
     },
     {
       code: 'export const layerConfig = PgClient.layerConfig({ url: Config.Redacted("DATABASE_URL") });',
-      filename: "apps/api/src/platform/database/database.layer.ts",
+      filename: "packages/database/src/database.layer.ts",
     },
     {
       code: 'class A { static readonly layerConfig = Layer.unwrap(Effect.map(Config.Number("X"), (x) => A.layer({ x }))); }',
-      filename: "apps/api/src/modules/todos/todo.service.ts",
+      filename: "packages/core/src/todos/todo.service.ts",
     },
     {
       code: "const x = Database.layer({ url, maxConnections: 2 });",
-      filename: "apps/api/src/modules/todos/todo.service.test.ts",
+      filename: "packages/core/src/todos/todo.service.test.ts",
     },
   ],
   invalid: [
     {
       code: 'layer(TodosService.layer.pipe(Layer.provide(Database.layerConfig)))("x", (it) => {});',
-      filename: "apps/api/src/modules/todos/todo.service.test.ts",
+      filename: "packages/core/src/todos/todo.service.test.ts",
       errors: [error],
     },
     {
       code: "class A { static readonly layer = this.layerNoDeps.pipe(Layer.provide(Database.layerConfig)); }",
-      filename: "apps/api/src/modules/todos/todo.service.ts",
+      filename: "packages/core/src/todos/todo.service.ts",
       errors: [error],
     },
     {

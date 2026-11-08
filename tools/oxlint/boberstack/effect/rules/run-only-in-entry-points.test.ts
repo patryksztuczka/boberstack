@@ -76,7 +76,7 @@ tester.run("@boberstack/effect/run-only-in-entry-points", runOnlyInEntryPointsRu
     },
     {
       code: 'import { Effect } from "effect"; test("matches", async () => { await Effect.runPromise(program); });',
-      filename: "apps/api/src/modules/todos/todo.service.test.ts",
+      filename: "packages/core/src/todos/todo.service.test.ts",
       errors: [{ messageId: "inTests" }],
     },
     {

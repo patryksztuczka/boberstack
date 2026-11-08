@@ -9,13 +9,15 @@ import { ruleOptions } from "../shared/options.ts";
 import { relativeFilename, splitAtRoot, withoutExtension } from "../shared/paths.ts";
 
 const extraRoots = {
-  "apps/*/src/platform": "boberstack/platform",
+  "packages/auth/src": "boberstack/platform/auth",
+  "packages/database/src": "boberstack/platform/database",
+  "packages/mail/src": "boberstack/platform/mail",
   "packages/domain/src": "boberstack/domain",
 } satisfies Readonly<Record<string, string>>;
 
 const defaults = {
   prefix: "boberstack",
-  sourceRoot: "apps/*/src/modules",
+  sourceRoot: "packages/core/src",
   extraRoots,
   idSource: "class",
 };

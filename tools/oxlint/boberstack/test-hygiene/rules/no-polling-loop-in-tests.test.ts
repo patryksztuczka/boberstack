@@ -1,7 +1,7 @@
 import { tester } from "../../../rule-tester.ts";
 import { noPollingLoopInTestsRule } from "./no-polling-loop-in-tests.ts";
 
-const filename = "apps/api/src/modules/todos/todo.service.test.ts";
+const filename = "packages/core/src/todos/todo.service.test.ts";
 
 const polling = { messageId: "polling" };
 
@@ -13,7 +13,7 @@ tester.run("@boberstack/test-hygiene/no-polling-loop-in-tests", noPollingLoopInT
     { code: "await vi.waitFor(() => expect(spy).toHaveBeenCalled());", filename },
     {
       code: "while (!done) { await sleep(10); }",
-      filename: "apps/api/src/modules/todos/todo.service.ts",
+      filename: "packages/core/src/todos/todo.service.ts",
     },
   ],
   invalid: [

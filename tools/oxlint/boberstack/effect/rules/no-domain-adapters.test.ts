@@ -1,9 +1,9 @@
 import { tester } from "../../../rule-tester.ts";
 import { noDomainAdaptersRule } from "./no-domain-adapters.ts";
 
-const domain = "apps/api/src/modules/todos/todo-notifier.ts";
+const domain = "packages/core/src/todos/todo-notifier.ts";
 
-const platform = "apps/api/src/platform/authentication/better-auth.layer.ts";
+const platform = "packages/auth/src/better-auth.ts";
 
 tester.run("@boberstack/effect/no-domain-adapters", noDomainAdaptersRule, {
   valid: [
@@ -23,8 +23,8 @@ tester.run("@boberstack/effect/no-domain-adapters", noDomainAdaptersRule, {
     { code: 'import { betterAuth } from "better-auth";', filename: platform },
     { code: "const response = await fetch(url);", filename: platform },
     {
-      code: 'import { FakeMailer } from "../../platform/mail/fake-mailer.ts";',
-      filename: "apps/api/src/modules/todos/todo.service.test.ts",
+      code: 'import { FakeMailer } from "../../../mail/src/testing/fake-mailer.ts";',
+      filename: "packages/core/src/todos/todo.service.test.ts",
     },
     { code: "const response = await client.fetch(url);", filename: domain },
     { code: "const options = { fetch: fetchWebhook };", filename: domain },
@@ -146,22 +146,22 @@ tester.run("@boberstack/effect/no-domain-adapters", noDomainAdaptersRule, {
       errors: [{ messageId: "vendor" }],
     },
     {
-      code: 'import { createRequire } from "node:module";\nconst adapter = createRequire(import.meta.url)("../../platform/mail/mailer.layer.ts");',
+      code: 'import { createRequire } from "node:module";\nconst adapter = createRequire(import.meta.url)("../../../mail/src/mailpit.ts");',
       filename: domain,
       errors: [{ messageId: "platform" }],
     },
     {
-      code: "const adapter = await import(`../../platform/${name}.ts`);",
+      code: "const adapter = await import(`../../../${name}.ts`);",
       filename: domain,
       errors: [{ messageId: "platform" }],
     },
     {
-      code: "const adapter = await import(`../../plat${name}.ts`);",
+      code: "const adapter = await import(`../../../ma${name}.ts`);",
       filename: domain,
       errors: [{ messageId: "platform" }],
     },
     {
-      code: 'const adapter = await import("../../platform/" + name + ".ts");',
+      code: 'const adapter = await import("../../../mail/src/" + name + ".ts");',
       filename: domain,
       errors: [{ messageId: "platform" }],
     },
@@ -171,12 +171,17 @@ tester.run("@boberstack/effect/no-domain-adapters", noDomainAdaptersRule, {
       errors: [{ messageId: "vendor" }],
     },
     {
-      code: 'import { Mailer } from "#platform/mail/mailer.layer.ts";',
+      code: 'import { MailpitMailer } from "@boberstack/mail";',
       filename: domain,
       errors: [{ messageId: "platform" }],
     },
     {
-      code: 'import { Mailer } from "@/platform/mail/mailer.layer.ts";',
+      code: 'import { Auth } from "@boberstack/auth";',
+      filename: domain,
+      errors: [{ messageId: "platform" }],
+    },
+    {
+      code: 'import { TodoRepositoryLayer } from "@boberstack/database";',
       filename: domain,
       errors: [{ messageId: "platform" }],
     },
@@ -198,7 +203,7 @@ tester.run("@boberstack/effect/no-domain-adapters", noDomainAdaptersRule, {
     },
     {
       code: 'import { betterAuth } from "better-auth";',
-      filename: "apps/api/src/modules/accounts/account.service.ts",
+      filename: "packages/core/src/accounts/account.service.ts",
       errors: [{ messageId: "vendor" }],
     },
     {
@@ -228,17 +233,17 @@ tester.run("@boberstack/effect/no-domain-adapters", noDomainAdaptersRule, {
       errors: [{ messageId: "vendor" }],
     },
     {
-      code: 'import { BetterAuthLive } from "../../platform/authentication/better-auth.layer.ts";',
+      code: 'import { BetterAuthLive } from "../../../auth/src/better-auth.ts";',
       filename: domain,
       errors: [{ messageId: "platform" }],
     },
     {
-      code: 'import type { DatabaseOptions } from "../../platform/database/database.layer.ts";',
+      code: 'import type { DatabaseOptions } from "../../../database/src/database.layer.ts";',
       filename: domain,
       errors: [{ messageId: "platform" }],
     },
     {
-      code: 'export * from "../../platform/mail/mailer.layer.ts";',
+      code: 'export * from "../../../mail/src/mailpit.ts";',
       filename: domain,
       errors: [{ messageId: "platform" }],
     },

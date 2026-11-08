@@ -1,7 +1,7 @@
 import { tester } from "../../../rule-tester.ts";
 import { noRealTimeWaitInTestsRule } from "./no-real-time-wait-in-tests.ts";
 
-const filename = "apps/api/src/modules/todos/todo.service.test.ts";
+const filename = "packages/core/src/todos/todo.service.test.ts";
 
 const realClock = { messageId: "realClock" };
 

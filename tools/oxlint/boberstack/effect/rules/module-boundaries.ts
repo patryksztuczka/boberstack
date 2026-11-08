@@ -9,12 +9,12 @@ import { matchesAny, relativeFilename, splitAtRoot, withoutExtension } from "../
 
 const aliases = { "@/": "<root>/" } satisfies Readonly<Record<string, string>>;
 
-const indexOnly: ReadonlyArray<string> = ["apps/*/src/platform/**"];
+const indexOnly: ReadonlyArray<string> = ["packages/*/src/**"];
 
 const rootFiles: ReadonlyArray<string> = ["apps/*/src/*"];
 
 const defaults = {
-  sourceRoot: "apps/*/src/modules",
+  sourceRoot: "packages/core/src",
   aliases,
   indexOnly,
   rootFiles,

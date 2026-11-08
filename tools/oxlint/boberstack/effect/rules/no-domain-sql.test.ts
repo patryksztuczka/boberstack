@@ -1,15 +1,15 @@
 import { tester } from "../../../rule-tester.ts";
 import { noDomainSqlRule } from "./no-domain-sql.ts";
 
-const domain = "apps/api/src/modules/todos/todo.service.ts";
+const domain = "packages/core/src/todos/todo.service.ts";
 
-const unitTest = "apps/api/src/modules/todos/todo.service.test.ts";
+const unitTest = "packages/core/src/todos/todo.service.test.ts";
 
-const repository = "apps/api/src/platform/database/todo.repository.ts";
+const repository = "packages/database/src/todo.repository.ts";
 
-const suite = "apps/api/src/modules/todos/tests/todos.integration.test.ts";
+const suite = "packages/core/src/todos/tests/todos.integration.test.ts";
 
-const suiteException = { "apps/*/src/modules/**/tests/*.integration.test.ts": "runs on Postgres" };
+const suiteException = { "packages/core/src/**/tests/*.integration.test.ts": "runs on Postgres" };
 
 tester.run("@boberstack/effect/no-domain-sql", noDomainSqlRule, {
   valid: [
@@ -23,7 +23,7 @@ tester.run("@boberstack/effect/no-domain-sql", noDomainSqlRule, {
     { code: 'const names = await import("./todo" + ".names.ts");', filename: domain },
     { code: 'const { Effect } = await import("effect");', filename: domain },
     {
-      code: 'import { PgClient } from "@effect/sql-pg";\nimport { DatabaseConnection } from "../../../../platform/database/database-connection.ts";',
+      code: 'import { PgClient } from "@effect/sql-pg";\nimport { DatabaseConnection } from "../../../../database/src/database-connection.ts";',
       filename: suite,
       options: [{ exceptions: suiteException }],
     },
@@ -34,7 +34,7 @@ tester.run("@boberstack/effect/no-domain-sql", noDomainSqlRule, {
     {
       code: 'import { eq } from "drizzle-orm";',
       filename: domain,
-      options: [{ paths: ["apps/*/src/other/**"] }],
+      options: [{ paths: ["packages/other/src/**"] }],
     },
   ],
   invalid: [
@@ -64,17 +64,22 @@ tester.run("@boberstack/effect/no-domain-sql", noDomainSqlRule, {
       errors: [{ messageId: "package" }],
     },
     {
-      code: 'import { DatabaseConnection } from "../../platform/database";',
+      code: 'import { DatabaseConnection } from "../../../database/src";',
       filename: domain,
       errors: [{ messageId: "database" }],
     },
     {
-      code: 'import { DatabaseConnection } from "../../platform/database/";',
+      code: 'import { DatabaseConnection } from "../../../database/src/";',
       filename: domain,
       errors: [{ messageId: "database" }],
     },
     {
       code: 'import type { SqlError } from "effect/sql/SqlError";',
+      filename: domain,
+      errors: [{ messageId: "package" }],
+    },
+    {
+      code: 'import { TodoRepositoryLayer } from "@boberstack/database";',
       filename: domain,
       errors: [{ messageId: "package" }],
     },
@@ -104,17 +109,17 @@ tester.run("@boberstack/effect/no-domain-sql", noDomainSqlRule, {
       errors: [{ messageId: "package" }],
     },
     {
-      code: "const helper = await import(`../../platform/database/${name}.ts`);",
+      code: "const helper = await import(`../../../database/src/${name}.ts`);",
       filename: domain,
       errors: [{ messageId: "database" }],
     },
     {
-      code: "const helper = await import(`../../platform/data${name}.ts`);",
+      code: "const helper = await import(`../../../data${name}.ts`);",
       filename: unitTest,
       errors: [{ messageId: "database" }],
     },
     {
-      code: 'const { PgTest } = require("../../testing/pg" + suffix);',
+      code: 'const { PgTest } = require("../../../database/src/testing/pg" + suffix);',
       filename: domain,
       errors: [{ messageId: "database" }],
     },
@@ -149,17 +154,17 @@ tester.run("@boberstack/effect/no-domain-sql", noDomainSqlRule, {
       errors: [{ messageId: "package" }],
     },
     {
-      code: 'import { DatabaseConnection } from "../../platform/database/database-connection.ts";',
+      code: 'import { DatabaseConnection } from "../../../database/src/database-connection.ts";',
       filename: domain,
       errors: [{ messageId: "database" }],
     },
     {
-      code: 'import { seedTodos } from "../../platform/database/testing/seed-todos.ts";',
+      code: 'import { seedTodos } from "../../../database/src/testing/seed-todos.ts";',
       filename: unitTest,
       errors: [{ messageId: "database" }],
     },
     {
-      code: 'import { PgTest } from "../../testing/pg-test.ts";',
+      code: 'import { PgTest } from "../../../database/src/testing/pg-test.ts";',
       filename: unitTest,
       errors: [{ messageId: "database" }],
     },
@@ -170,7 +175,7 @@ tester.run("@boberstack/effect/no-domain-sql", noDomainSqlRule, {
     },
     {
       code: "export const store = 1;",
-      filename: "apps/api/src/modules/todos/todo.repository.ts",
+      filename: "packages/core/src/todos/todo.repository.ts",
       errors: [{ messageId: "repository" }],
     },
   ],
