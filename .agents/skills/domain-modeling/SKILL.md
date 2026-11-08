@@ -25,7 +25,7 @@ Build and sharpen the project's domain model while you design. This skill is the
     └── identity/
 ```
 
-A context folder mirrors a context folder in code: `apps/api/src/modules/<context>/` and `packages/domain/src/<context>/`. Create files lazily, only when you have something to write. A context with no `adr/` folder gets one with its first ADR.
+A context folder mirrors a context folder in code: `packages/core/src/<context>/` and `packages/domain/src/<context>/`. Create files lazily, only when you have something to write. A context with no `adr/` folder gets one with its first ADR.
 
 ## During the session
 
@@ -87,7 +87,7 @@ Write a module file whole, covering the module, not a fragment for one rule. Whe
 
 ### Adding a context
 
-A new bounded context gets, in one change: a line in `CONTEXT-MAP.md` with its relationships, `docs/internals/<context>/GLOSSARY.md`, `apps/api/src/modules/<context>/index.ts`, and `packages/domain/src/<context>/` if anything crosses the wire. Its service ids start `boberstack/<context>/` (the `effect-best-practices` skill, `05-project-structure.md`).
+A new bounded context gets, in one change: a line in `CONTEXT-MAP.md` with its relationships, `docs/internals/<context>/GLOSSARY.md`, `packages/core/src/<context>/index.ts`, and `packages/domain/src/<context>/` if anything crosses the wire. Its service ids start `boberstack/<context>/` (the `effect-best-practices` skill, `05-project-structure.md`).
 
 ### Recording a decision
 

@@ -4,7 +4,7 @@
 
 A signed-in user's own list at `/todos`: add, mark done, remove, and a "N todos left" counter. The page talks to the api over HttpApi by default and over RPC when the web app runs with `VITE_TODOS_TRANSPORT=rpc`. The card's subtitle says which one ("Talking to the API over HttpApi.").
 
-Code: `apps/web/src/features/todos/`, contract in `packages/domain/src/todos/`, handlers in `apps/api/src/http/todos.http.ts` and `apps/api/src/rpc/todos.rpc.ts`, SQL in `apps/api/src/platform/database/todo.repository.ts`.
+Code: `apps/web/src/features/todos/`, contract in `packages/domain/src/todos/`, handlers in `apps/api/src/http/todos.http.ts` and `apps/api/src/rpc/todos.rpc.ts`, logic in `packages/core/src/todos/`, SQL in `packages/database/src/todo.repository.ts`.
 
 ## How to reach it
 

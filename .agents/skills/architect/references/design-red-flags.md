@@ -18,7 +18,7 @@ Modules named after when they run (load, validate, transform, save) repeat one r
 
 ## Pass-through method
 
-A method that forwards the same arguments to another method of the same shape. Remove it, or move the work to the module that can finish it. A port in a module with its adapter in `platform/` is not a pass-through: it keeps SQL and network out of the module.
+A method that forwards the same arguments to another method of the same shape. Remove it, or move the work to the module that can finish it. A port in a core module with its adapter in an adapter package is not a pass-through: it keeps SQL and network out of the module.
 
 ## Split ownership
 

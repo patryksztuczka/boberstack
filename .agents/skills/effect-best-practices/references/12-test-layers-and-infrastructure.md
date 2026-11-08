@@ -20,7 +20,7 @@ vi.mock("../todos/todo.store.ts", () => ({/* … */}));
 
 ### tl.postgres: one real Postgres per test run
 
-`apps/api/src/testing/pg-test.ts` starts one `postgres` container per `pnpm test:integration` run, never one per test or per file, and applies every file in `apps/api/migrations/` in order. The tables tests see are the tables production has (root ADR 0006). The container is a scoped resource: `Effect.acquireRelease` starts it and stops it.
+`packages/database/src/testing/pg-test.ts` starts one `postgres` container per `pnpm test:integration` run, never one per test or per file, and applies every file in `packages/database/migrations/` in order. The tables tests see are the tables production has (root ADR 0006). The container is a scoped resource: `Effect.acquireRelease` starts it and stops it.
 
 ```ts
 export class PgTestStartError extends Schema.TaggedError<

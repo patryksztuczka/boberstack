@@ -10,7 +10,7 @@ The rules for writing it are in the `effect-best-practices` skill, and most of t
 
 - Exact pin on `effect` and every `@effect/*` package, at one version: today 4.0.7, because 4.1.0 removed the `effect/Crypto` module Alchemy 2.0.0-beta.84 imports.
 - A contributor new to Effect has more to learn before the first change. The skill, the lint messages and the installed `effect/AGENTS.md` are the path in.
-- A library without Effect bindings is wrapped once, in `platform/`, with `Effect.tryPromise` and a typed error.
+- A library without Effect bindings is wrapped once, in its adapter package, with `Effect.tryPromise` and a typed error.
 
 ## Considered options
 

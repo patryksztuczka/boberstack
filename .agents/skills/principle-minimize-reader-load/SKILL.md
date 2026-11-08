@@ -18,7 +18,7 @@ Line counts and "clean architecture" are proxies. These two are the thing.
 - Inline a wrapper with one caller and an adapter with no second implementation.
 - A layer that repeats the methods and arguments of the one below adds hops and hides nothing. Remove it, or give it a decision to own.
 - Prefer a small interface that hides a real decision over a wide one that makes callers learn the implementation anyway.
-- A port in a module with an adapter in `platform/` is not a pass-through layer. It keeps SQL and network out of the module (`structure.adapters`) and lets the root choose.
+- A port in a core module with its adapter in an adapter package is not a pass-through layer. It keeps SQL and network out of the module (`structure.adapters`) and lets the root choose.
 
 ## Cut state
 

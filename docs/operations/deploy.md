@@ -19,7 +19,7 @@ pnpm build
 pnpm run deploy      # alchemy deploy; plain `pnpm deploy` is a pnpm built-in
 ```
 
-The deploy creates the Neon project, applies `apps/api/migrations/`, creates the Hyperdrive config and uploads the Worker with `apps/web/dist` as its assets. The stack sets secrets such as the better-auth secret. They never go in a committed file.
+The deploy creates the Neon project, applies `packages/database/migrations/`, creates the Hyperdrive config and uploads the Worker with `apps/web/dist` as its assets. The stack sets secrets such as the better-auth secret. They never go in a committed file.
 
 A deploy to a shared stage, `alchemy destroy`, and a deploy whose plan replaces or deletes a resource need the owner's approval before you run them ([AGENTS.md](../../AGENTS.md#ask-first)).
 

@@ -67,43 +67,44 @@ All lint config lives in the root `vite.config.ts` (`lint` block); Vite+ ignores
 
 On `apps/api`, `apps/cli`, `apps/infra` and `packages/domain`.
 
-| Rule                         | Flags                                                                                                                | Guide |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----- |
-| `branded-ids`                | an `*Id` field typed `Schema.String` or `Schema.Number`                                                              | 06    |
-| `config-in-env-schema`       | a `Config` name that is not a literal or not in `.env.schema`; `Config.Redacted` and `@sensitive` that disagree      | 07    |
-| `effect-fn-name`             | `Effect.fn` without a literal `<Service>.<method>` name (autofix)                                                    | 08    |
-| `layer-config-only-in-roots` | `.layerConfig` outside the composition roots                                                                         | 07    |
-| `layer-naming`               | a layer not named `layer` or `layer<Suffix>` (`FooLive`, `Default`)                                                  | 04    |
-| `log-literal-message`        | a non-literal first argument to `Effect.log*`                                                                        | 08    |
-| `module-boundaries`          | a deep import into another module or context; `platform/` past an index; a module importing a root file              | 05    |
-| `no-decode-sync`             | `Schema.decodeUnknownSync`, `decodeSync`, `decodeUnknownPromise` outside scripts and tests                           | 06    |
-| `no-domain-adapters`         | a module importing a vendor SDK, a network built-in, `platform/`, or using `fetch`                                   | 05    |
-| `no-domain-sql`              | a module, tests included, importing SQL packages, `platform/database/` or `pg-test`; a `*.repository.ts` in a module | 05    |
-| `no-error-instanceof`        | `instanceof` a class whose name ends in `Error`                                                                      | 02    |
-| `no-error-subclass`          | `class X extends Error` or another built-in error                                                                    | 02    |
-| `no-new-promise`             | `new Promise(…)`                                                                                                     | 09    |
-| `no-store-fakes`             | `layerTest` or `inMemory` on a `*Store` service                                                                      | 05    |
-| `no-throw-in-effect`         | `throw` inside `Effect.gen` or `Effect.fn`                                                                           | 02    |
-| `no-try-in-tests`            | `try` in a test file                                                                                                 | 11    |
-| `no-untyped-failure`         | `Effect.fail("…")`, `Effect.fail(new Error(…))`                                                                      | 02    |
-| `redacted-secrets`           | a secret-looking key read with `Config.String`                                                                       | 07    |
-| `retry-requires-while`       | `Effect.retry` without `while` or `until`                                                                            | 03    |
-| `run-only-in-entry-points`   | `Effect.run*`, `runMain`, `ManagedRuntime.make` outside the entry points; `run*With` without `// BRIDGE:`            | 10    |
-| `service-explicit-shape`     | `Context.Service<Self>()` without an API type argument                                                               | 04    |
-| `service-id-matches-path`    | a service id that is not `boberstack/<path>/<Class>` (autofix)                                                       | 05    |
-| `tagged-error-naming`        | an error class without the `Error` suffix, with a tag unlike its name, or outside `*.errors.ts`                      | 02    |
-| `try-requires-catch`         | `Effect.try` or `Effect.tryPromise` without `{ try, catch }`                                                         | 02    |
+| Rule                         | Flags                                                                                                              | Guide |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------ | ----- |
+| `branded-ids`                | an `*Id` field typed `Schema.String` or `Schema.Number`                                                            | 06    |
+| `config-in-env-schema`       | a `Config` name that is not a literal or not in `.env.schema`; `Config.Redacted` and `@sensitive` that disagree    | 07    |
+| `effect-fn-name`             | `Effect.fn` without a literal `<Service>.<method>` name (autofix)                                                  | 08    |
+| `layer-config-only-in-roots` | `.layerConfig` outside the composition roots                                                                       | 07    |
+| `layer-naming`               | a layer not named `layer` or `layer<Suffix>` (`FooLive`, `Default`)                                                | 04    |
+| `log-literal-message`        | a non-literal first argument to `Effect.log*`                                                                      | 08    |
+| `module-boundaries`          | a deep import into another core module or context, from inside core or from a relative path; a root file from core | 05    |
+| `no-decode-sync`             | `Schema.decodeUnknownSync`, `decodeSync`, `decodeUnknownPromise` outside scripts and tests                         | 06    |
+| `no-domain-adapters`         | a core module importing a vendor SDK, a network built-in, an adapter package, or using `fetch`                     | 05    |
+| `no-domain-sql`              | a core module, tests included, importing SQL packages or `@boberstack/database`; a `*.repository.ts` in core       | 05    |
+| `no-error-instanceof`        | `instanceof` a class whose name ends in `Error`                                                                    | 02    |
+| `no-error-subclass`          | `class X extends Error` or another built-in error                                                                  | 02    |
+| `no-new-promise`             | `new Promise(…)`                                                                                                   | 09    |
+| `no-store-fakes`             | `layerTest` or `inMemory` on a `*Store` service                                                                    | 05    |
+| `no-throw-in-effect`         | `throw` inside `Effect.gen` or `Effect.fn`                                                                         | 02    |
+| `no-try-in-tests`            | `try` in a test file                                                                                               | 11    |
+| `no-untyped-failure`         | `Effect.fail("…")`, `Effect.fail(new Error(…))`                                                                    | 02    |
+| `redacted-secrets`           | a secret-looking key read with `Config.String`                                                                     | 07    |
+| `retry-requires-while`       | `Effect.retry` without `while` or `until`                                                                          | 03    |
+| `run-only-in-entry-points`   | `Effect.run*`, `runMain`, `ManagedRuntime.make` outside the entry points; `run*With` without `// BRIDGE:`          | 10    |
+| `service-explicit-shape`     | `Context.Service<Self>()` without an API type argument                                                             | 04    |
+| `service-id-matches-path`    | a service id that is not `boberstack/<path>/<Class>` (autofix)                                                     | 05    |
+| `tagged-error-naming`        | an error class without the `Error` suffix, with a tag unlike its name, or outside `*.errors.ts`                    | 02    |
+| `try-requires-catch`         | `Effect.try` or `Effect.tryPromise` without `{ try, catch }`                                                       | 02    |
 
 Not ported from the upstream Effect plugin: `bounded-concurrency`, `fork-detach-reason` and `no-throw`. Their rules ([09](09-concurrency-and-resources.md), [02](02-typed-errors.md)) are checked in review.
 
 ## Configured paths
 
-| Option                             | Value                                                                                                                                                                            |
-| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `run-only-in-entry-points` `allow` | `apps/api/src/worker.ts`, `apps/cli/src/main.ts`, `apps/web/src/runtime.ts`, `apps/infra/alchemy.run.ts`                                                                         |
-| `layer-config-only-in-roots` roots | `apps/api/src/worker.ts`, `apps/api/src/app.layer.ts`, `apps/cli/src/main.ts`, `apps/cli/src/commands/*.ts`                                                                      |
-| `module-boundaries`                | `sourceRoot: apps/*/src/modules`, `indexOnly: apps/*/src/platform/**`, `rootFiles: apps/*/src/*`                                                                                 |
-| `service-id-matches-path`          | prefix `boberstack`, `sourceRoot: apps/*/src/modules`, extra roots `apps/*/src/platform` → `boberstack/platform`, `packages/domain/src` → `boberstack/domain`, `idSource: class` |
-| `tagged-error-naming`              | `filePattern: \.errors\.ts$`                                                                                                                                                     |
+| Option                             | Value                                                                                                                                                                                                                          |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `run-only-in-entry-points` `allow` | `apps/api/src/worker.ts`, `apps/cli/src/main.ts`, `apps/web/src/runtime.ts`, `apps/infra/alchemy.run.ts`                                                                                                                       |
+| `layer-config-only-in-roots` roots | `apps/api/src/worker.ts`, `apps/api/src/app.layer.ts`, `apps/cli/src/main.ts`, `apps/cli/src/commands/*.ts`                                                                                                                    |
+| `module-boundaries`                | `sourceRoot: packages/core/src`, `indexOnly: apps/*/src/**`, `packages/*/src/**`, `rootFiles: apps/*/src/*`                                                                                                                    |
+| `service-id-matches-path`          | prefix `boberstack`, `sourceRoot: packages/core/src`, extra roots `packages/<adapter>/src` → `boberstack/platform/<adapter>` for `auth`, `database` and `mail`, `packages/domain/src` → `boberstack/domain`, `idSource: class` |
+| `effectRules` override `files`     | `apps/api`, `apps/cli`, `apps/infra`, `packages/auth`, `packages/core`, `packages/database`, `packages/domain`, `packages/mail`                                                                                                |
+| `tagged-error-naming`              | `filePattern: \.errors\.ts$`                                                                                                                                                                                                   |
 
 Changing any of these, or turning a rule off, needs owner sign-off ([AGENTS.md](../../../../AGENTS.md)). A targeted `// oxlint-disable-next-line <rule> -- <reason>` is the escape hatch for one real boundary.

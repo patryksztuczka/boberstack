@@ -35,7 +35,7 @@ pnpm dev    # runs until stopped, so start it as a background task
 pnpm dev:doctor
 ```
 
-It checks the launcher and its children, Postgres, that every file in `apps/api/migrations` is applied, `/api/health` on the api and through the web proxy, the HTML shell, the demo user, and an authenticated `GET /api/todos`. It creates the demo user when it is missing:
+It checks the launcher and its children, Postgres, that every file in `packages/database/migrations` is applied, `/api/health` on the api and through the web proxy, the HTML shell, the demo user, and an authenticated `GET /api/todos`. It creates the demo user when it is missing:
 
 ```
 demo@example.com / demo12345

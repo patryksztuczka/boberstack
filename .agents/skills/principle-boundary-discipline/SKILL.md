@@ -13,9 +13,9 @@ Validate where data enters the system. Inside, trust the types. Validation scatt
 | Edge               | Where it is parsed                                                                       |
 | ------------------ | ---------------------------------------------------------------------------------------- |
 | HTTP and RPC input | the `HttpApi` / `RpcGroup` schemas in `packages/domain`, decoded before the handler runs |
-| config and secrets | `Config` in a `layerConfig` in `platform/` (`config.pair`)                               |
+| config and secrets | `Config` in a `layerConfig` in an adapter package (`config.pair`)                        |
 | database rows      | the repository decodes rows into domain records (`schema.decode`)                        |
-| other systems      | the adapter in `platform/<capability>/` turns their response into a domain type          |
+| other systems      | the adapter in `packages/<capability>/` turns their response into a domain type          |
 | form input         | the contract's schema through `effectTsResolver` (`schema.forms`)                        |
 
 ## Rules

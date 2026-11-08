@@ -12,14 +12,14 @@
 There is no global config object. A value a module needs from the deployment is a service named after what the module does with it, so the module never sees a variable name.
 
 ```ts
-// apps/api/src/platform/authentication/auth-settings.ts
+// packages/auth/src/auth-settings.ts
 export interface AuthSettingsApi {
   readonly secret: Redacted.Redacted;
   readonly baseUrl: URL;
 }
 
 export class AuthSettings extends Context.Service<AuthSettings, AuthSettingsApi>()(
-  "boberstack/platform/authentication/AuthSettings",
+  "boberstack/platform/auth/AuthSettings",
 ) {
   static readonly layer = (settings: AuthSettingsApi) => Layer.succeed(AuthSettings, settings);
 

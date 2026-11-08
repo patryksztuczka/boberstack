@@ -26,67 +26,67 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 
 ## Rule index
 
-| Id                    | Rule                                                                                 | Ref |
-| --------------------- | ------------------------------------------------------------------------------------ | --- |
-| `defaults.time`       | time comes from `DateTime.now` and `Clock`, never `Date.now`                         | 01  |
-| `defaults.random`     | ids and tokens come from `Crypto`; `Random` only for non-secret randomness           | 01  |
-| `defaults.globals`    | no `console`, timers, `process.env` or Worker `env` in Effect code                   | 01  |
-| `defaults.tests`      | tests drive `TestClock` and pin `Random.withSeed`                                    | 01  |
-| `errors.base`         | errors are branded `Schema.TaggedError`; nothing extends `Error`                     | 02  |
-| `errors.home`         | wire errors in `packages/domain`, server-only errors in the module's `*.errors.ts`   | 02  |
-| `errors.naming`       | the class ends in `Error` and the tag equals the class name                          | 02  |
-| `errors.granularity`  | one class per failure, one union per module                                          | 02  |
-| `errors.context`      | name the failure, keep its source, say how to fix it                                 | 02  |
-| `errors.http`         | `httpApiStatus` on the error, not a hand-built response                              | 02  |
-| `errors.defects`      | failures are typed, bugs are defects; `try` always has `catch`                       | 02  |
-| `errors.values`       | a pure function that can refuse returns a `Result`                                   | 02  |
-| `retry.while`         | retry inline, only the errors you name as transient                                  | 03  |
-| `retry.timeout`       | every external call has a timeout                                                    | 03  |
-| `jobs.where`          | recurring work on Workers is a Cron Trigger, not a loop                              | 03  |
-| `jobs.idempotency`    | a job claims `<job>/<period>` before working                                         | 03  |
-| `services.define`     | `Context.Service<Self, Api>()(id, { make })` + `static layer`                        | 04  |
-| `services.placement`  | features are service methods; handlers decode, call one method, map errors           | 04  |
-| `services.layerNames` | `layer`, `layerNoDeps`, `layerConfig`, `layerTest`; never `Live`                     | 04  |
-| `services.wiring`     | `layer` wires services; the root provides infrastructure once                        | 04  |
-| `services.platform`   | modules reach the machine and the network only through services                      | 04  |
-| `structure.tree`      | contexts under `modules/`, adapters under `platform/`, contract in `packages/domain` | 05  |
-| `structure.files`     | kebab-case, one role suffix per file                                                 | 05  |
-| `structure.imports`   | modules talk through `index.ts`; no SQL, adapters or root files in modules           | 05  |
-| `structure.adapters`  | the port in the module, the adapter in `platform/`, the root chooses                 | 05  |
-| `structure.stores`    | `XStore` port, `XRepository` SQL, no in-memory fake                                  | 05  |
-| `structure.ids`       | service id `boberstack/<path>/<Class>`                                               | 05  |
-| `structure.web`       | `features/<name>/{api,components,forms}`, contract from `@boberstack/domain`         | 05  |
-| `schema.records`      | domain records are branded `Schema.Class`                                            | 06  |
-| `schema.construction` | decode at the boundary; `make` only where failure is a defect                        | 06  |
-| `schema.unions`       | several cases are a `Schema.TaggedUnion` with `match`                                | 06  |
-| `schema.ids`          | every identifier is branded                                                          | 06  |
-| `schema.decode`       | decode once with `decodeUnknownEffect`; no `as`, no `decodeSync`                     | 06  |
-| `schema.sharing`      | what crosses an app boundary lives in `packages/domain`                              | 06  |
-| `schema.forms`        | forms validate with the contract's schema via `effectTsResolver`                     | 06  |
-| `config.pair`         | `layer(options)` for tests, `layerConfig` only in roots                              | 07  |
-| `config.secrets`      | secrets are `Config.Redacted`                                                        | 07  |
-| `config.where`        | where each runtime's config comes from                                               | 07  |
-| `obs.spans`           | service methods are `Effect.fn`                                                      | 08  |
-| `obs.names`           | span name `<Service>.<method>`, a literal                                            | 08  |
-| `obs.logs`            | constant message, structured fields                                                  | 08  |
-| `obs.errors`          | report once, at the boundary                                                         | 08  |
-| `conc.parallel`       | concurrency is a named, small number                                                 | 09  |
-| `conc.background`     | background fibers belong to a scope; avoid `forkDetach`                              | 09  |
-| `conc.resources`      | `acquireRelease` inside a layer                                                      | 09  |
-| `conc.callbacks`      | `Effect.callback`, never `new Promise`                                               | 09  |
-| `runtime.allowlist`   | only the four entry points start runtimes                                            | 10  |
-| `runtime.worker`      | one Worker, one composition root, SPA assets on the same origin                      | 10  |
-| `runtime.cli`         | `NodeRuntime.runMain`                                                                | 10  |
-| `runtime.web`         | one `ManagedRuntime`; React enters through it                                        | 10  |
-| `runtime.bridge`      | `run*With` + `BRIDGE:` for Promise callbacks                                         | 10  |
-| `test.harness`        | `@effect/vitest`, one `layer(…)` suite per scenario                                  | 11  |
-| `test.seams`          | test services, stores, errors, endpoints, layers, pure functions                     | 11  |
-| `test.errors`         | `Effect.flip`, assert on the tag                                                     | 11  |
-| `test.noTry`          | no `try` in tests                                                                    | 11  |
-| `tl.mocks`            | `Layer.mock` scenarios in the test file                                              | 12  |
-| `tl.postgres`         | one Testcontainers Postgres per run, migrated from `apps/api/migrations`             | 12  |
-| `tl.isolation`        | one database per test file                                                           | 12  |
-| `tl.safety`           | a test cannot reach a real database                                                  | 12  |
+| Id                    | Rule                                                                                | Ref |
+| --------------------- | ----------------------------------------------------------------------------------- | --- |
+| `defaults.time`       | time comes from `DateTime.now` and `Clock`, never `Date.now`                        | 01  |
+| `defaults.random`     | ids and tokens come from `Crypto`; `Random` only for non-secret randomness          | 01  |
+| `defaults.globals`    | no `console`, timers, `process.env` or Worker `env` in Effect code                  | 01  |
+| `defaults.tests`      | tests drive `TestClock` and pin `Random.withSeed`                                   | 01  |
+| `errors.base`         | errors are branded `Schema.TaggedError`; nothing extends `Error`                    | 02  |
+| `errors.home`         | wire errors in `packages/domain`, server-only errors in the module's `*.errors.ts`  | 02  |
+| `errors.naming`       | the class ends in `Error` and the tag equals the class name                         | 02  |
+| `errors.granularity`  | one class per failure, one union per module                                         | 02  |
+| `errors.context`      | name the failure, keep its source, say how to fix it                                | 02  |
+| `errors.http`         | `httpApiStatus` on the error, not a hand-built response                             | 02  |
+| `errors.defects`      | failures are typed, bugs are defects; `try` always has `catch`                      | 02  |
+| `errors.values`       | a pure function that can refuse returns a `Result`                                  | 02  |
+| `retry.while`         | retry inline, only the errors you name as transient                                 | 03  |
+| `retry.timeout`       | every external call has a timeout                                                   | 03  |
+| `jobs.where`          | recurring work on Workers is a Cron Trigger, not a loop                             | 03  |
+| `jobs.idempotency`    | a job claims `<job>/<period>` before working                                        | 03  |
+| `services.define`     | `Context.Service<Self, Api>()(id, { make })` + `static layer`                       | 04  |
+| `services.placement`  | features are service methods; handlers decode, call one method, map errors          | 04  |
+| `services.layerNames` | `layer`, `layerNoDeps`, `layerConfig`, `layerTest`; never `Live`                    | 04  |
+| `services.wiring`     | `layer` wires services; the root provides infrastructure once                       | 04  |
+| `services.platform`   | modules reach the machine and the network only through services                     | 04  |
+| `structure.tree`      | contexts in `packages/core`, one package per adapter, contract in `packages/domain` | 05  |
+| `structure.files`     | kebab-case, one role suffix per file                                                | 05  |
+| `structure.imports`   | modules talk through `index.ts`; no SQL, adapters or root files in modules          | 05  |
+| `structure.adapters`  | the port in core, the adapter in its own package, the root chooses                  | 05  |
+| `structure.stores`    | `XStore` port, `XRepository` SQL, no in-memory fake                                 | 05  |
+| `structure.ids`       | service id `boberstack/<path>/<Class>`                                              | 05  |
+| `structure.web`       | `features/<name>/{api,components,forms}`, contract from `@boberstack/domain`        | 05  |
+| `schema.records`      | domain records are branded `Schema.Class`                                           | 06  |
+| `schema.construction` | decode at the boundary; `make` only where failure is a defect                       | 06  |
+| `schema.unions`       | several cases are a `Schema.TaggedUnion` with `match`                               | 06  |
+| `schema.ids`          | every identifier is branded                                                         | 06  |
+| `schema.decode`       | decode once with `decodeUnknownEffect`; no `as`, no `decodeSync`                    | 06  |
+| `schema.sharing`      | what crosses an app boundary lives in `packages/domain`                             | 06  |
+| `schema.forms`        | forms validate with the contract's schema via `effectTsResolver`                    | 06  |
+| `config.pair`         | `layer(options)` for tests, `layerConfig` only in roots                             | 07  |
+| `config.secrets`      | secrets are `Config.Redacted`                                                       | 07  |
+| `config.where`        | where each runtime's config comes from                                              | 07  |
+| `obs.spans`           | service methods are `Effect.fn`                                                     | 08  |
+| `obs.names`           | span name `<Service>.<method>`, a literal                                           | 08  |
+| `obs.logs`            | constant message, structured fields                                                 | 08  |
+| `obs.errors`          | report once, at the boundary                                                        | 08  |
+| `conc.parallel`       | concurrency is a named, small number                                                | 09  |
+| `conc.background`     | background fibers belong to a scope; avoid `forkDetach`                             | 09  |
+| `conc.resources`      | `acquireRelease` inside a layer                                                     | 09  |
+| `conc.callbacks`      | `Effect.callback`, never `new Promise`                                              | 09  |
+| `runtime.allowlist`   | only the four entry points start runtimes                                           | 10  |
+| `runtime.worker`      | one Worker, one composition root, SPA assets on the same origin                     | 10  |
+| `runtime.cli`         | `NodeRuntime.runMain`                                                               | 10  |
+| `runtime.web`         | one `ManagedRuntime`; React enters through it                                       | 10  |
+| `runtime.bridge`      | `run*With` + `BRIDGE:` for Promise callbacks                                        | 10  |
+| `test.harness`        | `@effect/vitest`, one `layer(…)` suite per scenario                                 | 11  |
+| `test.seams`          | test services, stores, errors, endpoints, layers, pure functions                    | 11  |
+| `test.errors`         | `Effect.flip`, assert on the tag                                                    | 11  |
+| `test.noTry`          | no `try` in tests                                                                   | 11  |
+| `tl.mocks`            | `Layer.mock` scenarios in the test file                                             | 12  |
+| `tl.postgres`         | one Testcontainers Postgres per run, migrated from `packages/database/migrations`   | 12  |
+| `tl.isolation`        | one database per test file                                                          | 12  |
+| `tl.safety`           | a test cannot reach a real database                                                 | 12  |
 
 ## v3 names you will not see here
 
@@ -115,4 +115,4 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 - **Lifecycles:** rat-stack puts finite lifecycles in XState machines. The starter has none; add XState when a real lifecycle appears.
 - **Tests:** rat-stack prefers property and model tests. We do too for pure functions, but a store's contract runs on real Postgres with no in-memory fake (root ADR 0004), which rat-stack does not require.
 - **Comments:** both ban prose comments. We keep `VENDOR:` notes and refuse an autofix that deletes them (root ADR 0005).
-- **Structure:** role-suffixed files (`x.store.ts`, `x.repository.ts`) and the `platform/` adapter folder, enforced by lint, over rat-stack's package-per-cartridge layout.
+- **Structure:** taken from rat-stack: services and ports in `packages/core`, each adapter in its own package, apps as composition roots (root ADR 0009). Kept our own: the contract in a separate `packages/domain` instead of inside core, a folder per bounded context in core, and role-suffixed files (`x.store.ts`, `x.repository.ts`).
