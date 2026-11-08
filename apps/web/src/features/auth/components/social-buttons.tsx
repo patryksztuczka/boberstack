@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { m } from "../../../paraglide/messages.js";
 import { useAuthGateway } from "../api/auth-gateway-context.tsx";
-import { useSocialProviders } from "../api/sign-in-methods.queries.ts";
+import { useSocialProviders } from "../api/sign-in-methods.ts";
 import { absoluteUrl } from "../redirect-to.ts";
 import { Divider, Notice, SECONDARY_ACTION } from "./auth-page.tsx";
 

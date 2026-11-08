@@ -5,8 +5,8 @@ import { describe, expect, it, vi } from "vite-plus/test";
 
 import { NewTodoForm } from "./new-todo-form.tsx";
 
-const renderForm = () => {
-  const onCreate = vi.fn<(input: NewTodo) => Promise<void>>(() => Promise.resolve());
+const renderForm = (created = true) => {
+  const onCreate = vi.fn<(input: NewTodo) => Promise<boolean>>(() => Promise.resolve(created));
 
   render(<NewTodoForm onCreate={onCreate} />);
 
@@ -32,6 +32,15 @@ describe("NewTodoForm", () => {
     await userEvent.click(submit);
 
     expect(onCreate).toHaveBeenNthCalledWith(2, { title: "Second" });
+  });
+
+  it("keeps the title when the todo could not be created", async () => {
+    const { input, submit } = renderForm(false);
+
+    await userEvent.type(input, "Write the starter");
+    await userEvent.click(submit);
+
+    expect(input).toHaveValue("Write the starter");
   });
 
   it("refuses a blank title and explains why", async () => {

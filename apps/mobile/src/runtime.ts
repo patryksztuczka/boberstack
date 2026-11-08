@@ -1,8 +1,11 @@
 import { ApiOrigin } from "@boberstack/client-runtime/api-origin";
+import { clientLayer } from "@boberstack/client-runtime/atom-runtime";
+import type { ClientLayer } from "@boberstack/client-runtime/atom-runtime";
+import { SignInMethodsHttpClientLayer } from "@boberstack/client-runtime/identity";
 import { TodosHttpClientLayer } from "@boberstack/client-runtime/todos";
-import type { TodosClient } from "@boberstack/client-runtime/todos";
-import { Cause, Effect, Exit, Layer, ManagedRuntime } from "effect";
+import { Effect, Layer } from "effect";
 import { FetchHttpClient } from "effect/http";
+import { Atom } from "effect/reactivity";
 
 import { sessionCookie } from "./features/auth/api/auth-client.ts";
 import { withSessionCookie } from "./features/auth/api/session-fetch.ts";
@@ -13,17 +16,12 @@ const SessionFetchLayer = Layer.effect(
   Effect.map(FetchHttpClient.Fetch, (fetch) => withSessionCookie(fetch, sessionCookie)),
 );
 
-const runtime = ManagedRuntime.make(
-  TodosHttpClientLayer.pipe(
-    Layer.provide(ApiOrigin.layer(API_ORIGIN)),
-    Layer.provide(FetchHttpClient.layer.pipe(Layer.provide(SessionFetchLayer))),
-  ),
+const MobileClientLayer: ClientLayer = Layer.mergeAll(
+  TodosHttpClientLayer,
+  SignInMethodsHttpClientLayer,
+).pipe(
+  Layer.provide(ApiOrigin.layer(API_ORIGIN)),
+  Layer.provide(FetchHttpClient.layer.pipe(Layer.provide(SessionFetchLayer))),
 );
 
-export const runPromise = <A, E>(
-  effect: Effect.Effect<A, E, TodosClient>,
-  signal?: AbortSignal,
-): Promise<A> =>
-  runtime
-    .runPromiseExit(effect, signal === undefined ? {} : { signal })
-    .then((exit) => (Exit.isSuccess(exit) ? exit.value : Promise.reject(Cause.squash(exit.cause))));
+export const clientAtoms = [Atom.initialValue(clientLayer, MobileClientLayer)];

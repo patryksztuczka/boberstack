@@ -26,7 +26,7 @@ Then the [Context Map](../CONTEXT-MAP.md): it names the bounded contexts, how th
 
 - [Todos](internals/todos/GLOSSARY.md) and its [ADRs](internals/todos/adr)
 - [Identity](internals/identity/GLOSSARY.md) and its [ADRs](internals/identity/adr)
-- [System-wide ADRs](internals/system/adr): the monorepo, Effect, Cloudflare and Neon, SQL and tests, comments, migrations, the shared contract, mail, packages, the desktop app, the mobile app
+- [System-wide ADRs](internals/system/adr): the monorepo, Effect, Cloudflare and Neon, SQL and tests, comments, migrations, the shared contract, mail, packages, the desktop app, the mobile app, client state in Effect atoms
 - [ADR template](internals/adr-template.md)
 
 How Effect code is written is in the [`effect-best-practices` skill](../.agents/skills/effect-best-practices/SKILL.md). Code carries no comments except `VENDOR:` notes about defects in software we do not own ([root ADR 0005](internals/system/adr/0005-keep-only-comments-about-other-peoples-defects.md)).

@@ -21,7 +21,7 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 | reading an env var or a secret                   | [07](references/07-configuration.md)                                                                                                        |
 | touching `worker.ts`, `main.ts`, `runtime.ts`    | [10](references/10-runtimes-and-entry-points.md)                                                                                            |
 | writing a test                                   | [11](references/11-testing.md), [12](references/12-test-layers-and-infrastructure.md)                                                       |
-| writing a form or a query hook in `apps/web`     | [06](references/06-schema.md) `schema.forms`, [10](references/10-runtimes-and-entry-points.md) `runtime.web`                                |
+| writing a form or reading data in an app         | [06](references/06-schema.md) `schema.forms`, [10](references/10-runtimes-and-entry-points.md) `runtime.web`                                |
 | fixing a lint error                              | the reference the message links to; [13](references/13-lint-rules.md) for the full list                                                     |
 
 ## Rule index
@@ -77,7 +77,7 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 | `runtime.allowlist`   | only the listed entry points start runtimes                                         | 10  |
 | `runtime.worker`      | one Worker, one composition root, SPA assets on the same origin                     | 10  |
 | `runtime.cli`         | `NodeRuntime.runMain`                                                               | 10  |
-| `runtime.web`         | one `ManagedRuntime`; React enters through it                                       | 10  |
+| `runtime.web`         | React reads atoms from `packages/client-runtime`; it never runs an Effect           | 10  |
 | `runtime.bridge`      | `run*With` + `BRIDGE:` for Promise callbacks                                        | 10  |
 | `test.harness`        | `@effect/vitest`, one `layer(…)` suite per scenario                                 | 11  |
 | `test.seams`          | test services, stores, errors, endpoints, layers, pure functions                    | 11  |
