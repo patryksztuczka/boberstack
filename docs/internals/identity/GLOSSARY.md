@@ -39,3 +39,11 @@ _Avoid_: Token, cookie, login
 **Current User**:
 The User a request acts for, known only after Identity has checked the Session. A request without one is refused before any other context sees it.
 _Avoid_: Viewer, me, principal
+
+**MCP client**:
+An AI assistant or tool that calls the MCP endpoint for a User, such as Claude or Cursor. It registers itself with Identity, and acts only for a User who gave it Consent.
+_Avoid_: Agent, integration, connected app, OAuth client (outside the auth package)
+
+**Consent**:
+A User's permission for one MCP client to act for them. The User gives it once on the consent screen, after Sign-in; the MCP client then holds an access token bound to the MCP endpoint.
+_Avoid_: Authorization, grant, approval

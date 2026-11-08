@@ -1,11 +1,22 @@
 import { BetterAuth } from "@alchemy.run/better-auth";
 import { expo } from "@better-auth/expo";
+import { mcp } from "@better-auth/mcp";
 import { confirmEmail, Mailer, resetPassword } from "@boberstack/core/mail";
 import type { MailerApi } from "@boberstack/core/mail";
+import { User, UserId } from "@boberstack/domain/identity/user";
 import { RuntimeContext } from "alchemy";
-import { Config, Context, Effect, Layer, Option, Redacted } from "effect";
+import { getDpopJktFromPayload, verifyJwsAccessToken } from "better-auth/oauth2";
+import { jwt } from "better-auth/plugins";
+import { Config, Context, Effect, Layer, Option, Redacted, Schema } from "effect";
 import type { Headers } from "effect/http";
 
+import {
+  AccessTokenUserNotFoundError,
+  AccessTokenVerificationUnavailableError,
+  InvalidAccessTokenError,
+  SenderConstrainedAccessTokenError,
+} from "./access-token.errors.ts";
+import type { AccessTokenError } from "./access-token.errors.ts";
 import { SocialSignIn } from "./social-sign-in.ts";
 import type { OAuthCredentials } from "./social-sign-in.ts";
 
@@ -40,6 +51,36 @@ const trustedOriginsFrom = (value: string) => [
     .filter((origin) => origin !== ""),
 ];
 
+const MCP_PATH = "/api/mcp";
+
+const mcpPlugins = (resource: string) => [
+  jwt({ schema: { jwks: { modelName: "jwks" } } }),
+  mcp({
+    loginPage: "/sign-in",
+    consentPage: "/oauth/consent",
+    resource,
+    allowDynamicClientRegistration: true,
+    allowUnauthenticatedClientRegistration: true,
+    clientRegistrationDefaultApplicationType: "infer",
+    schema: {
+      oauthClient: { modelName: "oauthClients" },
+      oauthResource: { modelName: "oauthResources" },
+      oauthClientResource: { modelName: "oauthClientResources" },
+      oauthRefreshToken: { modelName: "oauthRefreshTokens" },
+      oauthAccessToken: { modelName: "oauthAccessTokens" },
+      oauthConsent: { modelName: "oauthConsents" },
+      oauthClientAssertion: { modelName: "oauthClientAssertions" },
+    },
+  }),
+];
+
+const AccessTokenSubject = Schema.Struct({ sub: Schema.String });
+
+export interface McpResourceServerApi {
+  readonly resource: string;
+  readonly accessTokenUserOf: (token: string) => Effect.Effect<User, AccessTokenError>;
+}
+
 const makeAuth = Effect.gen(function* () {
   const baseURL = yield* Config.String("AUTH_BASE_URL").pipe(Config.option);
   const trustedOrigins = yield* Config.String("AUTH_TRUSTED_ORIGINS").pipe(Config.withDefault(""));
@@ -63,11 +104,14 @@ const makeAuth = Effect.gen(function* () {
     return Effect.runPromiseWith(context)(sending);
   };
 
+  const mcpResource = Option.map(baseURL, (origin) => new URL(MCP_PATH, origin).href);
+
   const betterAuth = yield* BetterAuth({
     basePath: "/api/auth",
     baseURL: Option.getOrUndefined(baseURL),
     trustedOrigins: trustedOriginsFrom(trustedOrigins),
-    plugins: [expo()],
+    disabledPaths: ["/token"],
+    plugins: [expo(), ...Option.match(mcpResource, { onNone: () => [], onSome: mcpPlugins })],
     user: { modelName: "users" },
     session: { modelName: "sessions" },
     account: { modelName: "accounts" },
@@ -91,8 +135,67 @@ const makeAuth = Effect.gen(function* () {
     },
   });
 
+  const accessTokenUserOf = (resource: string) =>
+    Effect.fn("Auth.accessTokenUserOf")(function* (token: string) {
+      const instance = yield* betterAuth.auth;
+
+      const context = yield* Effect.tryPromise({
+        try: () => instance.$context,
+        catch: (cause) =>
+          new AccessTokenVerificationUnavailableError({ operation: "readIssuer", cause }),
+      });
+
+      const keys = yield* betterAuth.api
+        .getJwks()
+        .pipe(
+          Effect.mapError(
+            (cause) =>
+              new AccessTokenVerificationUnavailableError({ operation: "readKeys", cause }),
+          ),
+        );
+
+      const claims = yield* Effect.tryPromise({
+        try: () =>
+          verifyJwsAccessToken(token, {
+            jwksFetch: () => Promise.resolve(keys),
+            verifyOptions: {
+              issuer: context.baseURL,
+              audience: resource,
+              requiredClaims: ["azp"],
+            },
+          }),
+        catch: (cause) => new InvalidAccessTokenError({ cause }),
+      });
+
+      if (getDpopJktFromPayload(claims) !== undefined) {
+        return yield* new SenderConstrainedAccessTokenError();
+      }
+
+      const { sub } = yield* Schema.decodeUnknownEffect(AccessTokenSubject)(claims).pipe(
+        Effect.mapError((cause) => new InvalidAccessTokenError({ cause })),
+      );
+
+      const user = yield* Effect.tryPromise({
+        try: () => context.internalAdapter.findUserById(sub),
+        catch: (cause) =>
+          new AccessTokenVerificationUnavailableError({ operation: "findUser", cause }),
+      });
+
+      if (user === null) {
+        return yield* new AccessTokenUserNotFoundError({ userId: UserId.make(sub) });
+      }
+
+      return new User({ id: UserId.make(user.id), name: user.name, email: user.email });
+    }, Effect.provide(RuntimeContext.phantom));
+
+  const mcpResourceServer = Option.map(mcpResource, (resource): McpResourceServerApi => ({
+    resource,
+    accessTokenUserOf: accessTokenUserOf(resource),
+  }));
+
   return {
     handle: betterAuth.fetch.pipe(Effect.provide(RuntimeContext.phantom)),
+    mcpResourceServer,
     sessionOf: (headers: Headers.Headers) =>
       betterAuth
         .getSession(new globalThis.Headers(Object.entries(headers)))
