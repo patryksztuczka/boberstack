@@ -3,6 +3,7 @@ import type { RouteObject } from "react-router";
 
 import {
   CheckEmailPage,
+  ConsentPage,
   EmailVerifiedPage,
   ForgotPasswordPage,
   redirectSignedIn,
@@ -39,6 +40,7 @@ export const routes: Array<RouteObject> = [
           { path: "email-verified", element: <EmailVerifiedPage /> },
           { path: "forgot-password", element: <ForgotPasswordPage /> },
           { path: "reset-password", element: <ResetPasswordPage /> },
+          { path: "oauth/consent", middleware: [requireSession], element: <ConsentPage /> },
           { middleware: [requireSession], element: <SignedInLayout />, children: privateRoutes },
           { path: "*", element: <NotFoundPage /> },
         ],

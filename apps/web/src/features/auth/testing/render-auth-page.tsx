@@ -10,19 +10,24 @@ import { Atom } from "effect/reactivity";
 import type { ReactElement } from "react";
 import { createMemoryRouter, RouterProvider } from "react-router";
 
-import type { AuthGateway, AuthOutcome } from "../api/auth-client.ts";
+import type { AuthGateway, AuthOutcome, RedirectOutcome } from "../api/auth-client.ts";
 import { AuthGatewayProvider } from "../api/auth-gateway-context.tsx";
 
 const ok = (): Promise<AuthOutcome> => Promise.resolve({ ok: true });
 
+const stay = (): Promise<RedirectOutcome> => Promise.resolve({ ok: true, url: undefined });
+
 export const fakeAuthGateway = (overrides: Partial<AuthGateway> = {}): AuthGateway => ({
   isSignedIn: () => Promise.resolve(false),
-  signInEmail: ok,
+  signInEmail: stay,
   signUpEmail: ok,
-  signInSocial: ok,
+  signInSocial: stay,
   sendVerificationEmail: ok,
   requestPasswordReset: ok,
   resetPassword: ok,
+  mcpClientName: () => Promise.resolve(undefined),
+  answerConsent: stay,
+  followRedirect: () => undefined,
   ...overrides,
 });
 

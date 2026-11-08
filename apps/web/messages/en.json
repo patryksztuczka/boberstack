@@ -80,5 +80,18 @@
   "error_body": "Something broke on our side. Reload the page and try again.",
   "not_found_title": "Nothing built here yet",
   "not_found_body": "This page does not exist, or it moved somewhere else.",
-  "error_reload": "Reload page"
+  "error_reload": "Reload page",
+  "auth_mcp_request_expired": "This connection request expired. Start it again from the app that sent you here.",
+  "auth_consent_title": "Connect {client}",
+  "auth_consent_description": "{client} is asking to act for you. If you allow it, it can:",
+  "auth_consent_returns_to": "Either way, you go back to {host}.",
+  "auth_consent_allow": "Allow",
+  "auth_consent_deny": "Deny",
+  "auth_consent_scope_openid": "Confirm who you are",
+  "auth_consent_scope_profile": "See your name and profile picture",
+  "auth_consent_scope_email": "See your email address",
+  "auth_consent_scope_offline_access": "Keep access when you are not using it",
+  "auth_consent_scope_other": "Use the “{scope}” permission",
+  "auth_consent_invalid_title": "This request is no longer valid",
+  "auth_consent_invalid_body": "It expired or was already used. Start the connection again from the app that sent you here."
 }
