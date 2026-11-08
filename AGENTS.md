@@ -25,30 +25,31 @@ When a project starts from this template, rewrite this section on day one. `pnpm
 
 ## Commands
 
-| Command                                               | Does                                                                                                                                             |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `pnpm install`                                        | installs; `prepare` runs `vp config`, which installs the Git hooks                                                                               |
-| `pnpm db:up`                                          | starts local Postgres in Docker                                                                                                                  |
-| `pnpm dev`                                            | local Postgres, `alchemy dev` for the api Worker, and `vp dev` for the web app with `/api` proxied to the Worker. Ports are per checkout (below) |
-| `pnpm check`                                          | `vp check`: oxfmt and oxlint, type-aware                                                                                                         |
-| `pnpm typecheck`                                      | TypeScript 7 with Effect diagnostics                                                                                                             |
-| `pnpm test`                                           | unit tests in every package                                                                                                                      |
-| `pnpm test:integration`                               | Testcontainers suites; needs Docker                                                                                                              |
-| `pnpm build`                                          | builds every package                                                                                                                             |
-| `pnpm verify`                                         | check, `env:check`, typecheck, test and build: the same steps as CI. The pre-push hook runs it                                                   |
-| `pnpm check:deps`                                     | fails on a dependency that is not an exact version                                                                                               |
-| `pnpm check:doc-pins`                                 | fails when a document names a version the workspace does not install                                                                             |
-| `pnpm check:knip`                                     | fails on unused files, exports and dependencies                                                                                                  |
-| `pnpm env:check`                                      | `varlock load`: validates the environment, `.env.local` included, against `.env.schema`                                                          |
-| `pnpm check:suppressions`                             | counts lint and type-check suppressions against `suppressions.baseline.json`; reports growth, never fails                                        |
-| `pnpm check:changed`                                  | format, lint, typecheck and unit tests for the files changed since `master`                                                                      |
-| `pnpm dev:doctor`                                     | checks the running dev stack and Mailpit, and creates and verifies the demo user `demo@example.com` / `demo12345` through the mail               |
-| `pnpm dev:status`, `pnpm dev:stop`, `pnpm db:down`    | show or stop the dev stack of this checkout; `db:down` also stops its Postgres                                                                   |
-| `pnpm cli <command>`                                  | runs `apps/cli` (`db migrate`, `openapi`, `health`) against this checkout's database and api                                                     |
-| `pnpm pr-evidence <files>`                            | uploads screenshots and recordings to the R2 bucket and prints the Markdown for a pull request ([pr-evidence](docs/operations/pr-evidence.md))   |
-| `pnpm sources:fetch`                                  | clones the pinned sources of Effect, Alchemy and better-auth into `.repos/`                                                                      |
-| `pnpm run deploy`                                     | `alchemy deploy` of `apps/infra/alchemy.run.ts`. Plain `pnpm deploy` is pnpm's own command                                                       |
-| `pnpm init:project -- --name <name> --scope <@scope>` | renames the project, the package scope and the service-id prefix                                                                                 |
+| Command                                               | Does                                                                                                                                                    |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm install`                                        | installs; `prepare` runs `vp config`, which installs the Git hooks                                                                                      |
+| `pnpm db:up`                                          | starts local Postgres in Docker                                                                                                                         |
+| `pnpm dev`                                            | local Postgres, `alchemy dev` for the api Worker, and `vp dev` for the web app with `/api` proxied to the Worker. Ports are per checkout (below)        |
+| `pnpm check`                                          | `vp check`: oxfmt and oxlint, type-aware                                                                                                                |
+| `pnpm typecheck`                                      | TypeScript 7 with Effect diagnostics                                                                                                                    |
+| `pnpm test`                                           | unit tests in every package                                                                                                                             |
+| `pnpm test:integration`                               | Testcontainers suites; needs Docker                                                                                                                     |
+| `pnpm build`                                          | builds every package                                                                                                                                    |
+| `pnpm verify`                                         | check, `env:check`, typecheck, test and build: the same steps as CI. The pre-push hook runs it                                                          |
+| `pnpm check:deps`                                     | fails on a dependency that is not an exact version                                                                                                      |
+| `pnpm check:doc-pins`                                 | fails when a document names a version the workspace does not install                                                                                    |
+| `pnpm check:knip`                                     | fails on unused files, exports and dependencies                                                                                                         |
+| `pnpm env:check`                                      | `varlock load`: validates the environment, `.env.local` included, against `.env.schema`                                                                 |
+| `pnpm check:suppressions`                             | counts lint and type-check suppressions against `suppressions.baseline.json`; reports growth, never fails                                               |
+| `pnpm check:changed`                                  | format, lint, typecheck and unit tests for the files changed since `master`                                                                             |
+| `pnpm dev:doctor`                                     | checks the running dev stack and Mailpit, and creates and verifies the demo user `demo@example.com` / `demo12345` through the mail                      |
+| `pnpm dev:desktop`                                    | builds `apps/desktop` and opens it on this checkout's running `pnpm dev`, with its own user data in `.dev/desktop`; arguments after `--` go to Electron |
+| `pnpm dev:status`, `pnpm dev:stop`, `pnpm db:down`    | show or stop the dev stack of this checkout; `db:down` also stops its Postgres                                                                          |
+| `pnpm cli <command>`                                  | runs `apps/cli` (`db migrate`, `openapi`, `health`) against this checkout's database and api                                                            |
+| `pnpm pr-evidence <files>`                            | uploads screenshots and recordings to the R2 bucket and prints the Markdown for a pull request ([pr-evidence](docs/operations/pr-evidence.md))          |
+| `pnpm sources:fetch`                                  | clones the pinned sources of Effect, Alchemy and better-auth into `.repos/`                                                                             |
+| `pnpm run deploy`                                     | `alchemy deploy` of `apps/infra/alchemy.run.ts`. Plain `pnpm deploy` is pnpm's own command                                                              |
+| `pnpm init:project -- --name <name> --scope <@scope>` | renames the project, the package scope and the service-id prefix                                                                                        |
 
 `pnpm dev` derives its ports from a hash of the checkout path, so worktrees run side by side; each also gets its own Compose project, database and Mailpit inbox (local mail, root ADR 0008). `node scripts/dev.mjs ports` prints them, `.dev/state.json` holds the running URLs and pids, `.dev/logs/` the logs, and `DEV_WEB_PORT`, `DEV_API_PORT`, `DEV_POSTGRES_PORT` and `DEV_MAILPIT_PORT` override them.
 
@@ -70,6 +71,7 @@ Git hooks come from Vite+: `pre-commit` runs `vp staged`, `commit-msg` checks th
 | an env var or secret                   | a line in `.env.schema` (`@sensitive` for a secret), read with `Config` in a `layerConfig` in an adapter package; the local value in `.env.local` |
 | a screen                               | `apps/web/src/features/<name>/`; what other features may use is exported from its `index.ts`                                                      |
 | a UI primitive                         | `packages/ui`                                                                                                                                     |
+| desktop shell behaviour                | `apps/desktop/src/`: decisions as plain functions with tests, Electron calls only in `main.ts` (root ADR 0010)                                    |
 | a bounded context                      | `CONTEXT-MAP.md`, `docs/internals/<context>/GLOSSARY.md`, then code (the `domain-modeling` skill)                                                 |
 | a decision worth remembering           | an ADR (the `domain-modeling` skill)                                                                                                              |
 | how a user does something              | a section in `docs/user/<feature>.md`, in the product's voice ([docs/README.md](docs/README.md#writing-user-docs))                                |

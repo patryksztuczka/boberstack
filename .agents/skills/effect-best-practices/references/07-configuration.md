@@ -7,7 +7,7 @@
 ### config.pair: every configurable layer has `layer(options)` and `layerConfig`
 
 - `layer(options)` takes plain values. Tests use it.
-- `layerConfig` reads `Config.*` and calls `layer(options)`. Only composition roots use it (`@boberstack/effect/layer-config-only-in-roots`): `apps/api/src/worker.ts`, `apps/api/src/app.layer.ts`, `apps/cli/src/main.ts`, `apps/cli/src/commands/*.ts`.
+- `layerConfig` reads `Config.*` and calls `layer(options)`. Only composition roots use it (`@boberstack/effect/layer-config-only-in-roots`): `apps/api/src/worker.ts`, `apps/api/src/app.layer.ts`, `apps/cli/src/main.ts`, `apps/cli/src/commands/*.ts`, `apps/desktop/src/main.ts`.
 
 There is no global config object. A value a module needs from the deployment is a service named after what the module does with it, so the module never sees a variable name.
 

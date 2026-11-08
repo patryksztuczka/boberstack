@@ -74,7 +74,7 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 | `conc.background`     | background fibers belong to a scope; avoid `forkDetach`                             | 09  |
 | `conc.resources`      | `acquireRelease` inside a layer                                                     | 09  |
 | `conc.callbacks`      | `Effect.callback`, never `new Promise`                                              | 09  |
-| `runtime.allowlist`   | only the four entry points start runtimes                                           | 10  |
+| `runtime.allowlist`   | only the listed entry points start runtimes                                         | 10  |
 | `runtime.worker`      | one Worker, one composition root, SPA assets on the same origin                     | 10  |
 | `runtime.cli`         | `NodeRuntime.runMain`                                                               | 10  |
 | `runtime.web`         | one `ManagedRuntime`; React enters through it                                       | 10  |
