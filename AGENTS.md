@@ -64,6 +64,7 @@ Git hooks come from Vite+: `pre-commit` runs `vp staged`, `commit-msg` checks th
 | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | a record, id or error the client sees  | `packages/domain/src/<context>/`                                                                                                                  |
 | an endpoint or an RPC                  | the contract in `packages/domain/src/<context>/*.http-api.ts` / `*.rpc.ts`, the handler in `apps/api/src/http/` / `rpc/`                          |
+| an MCP tool                            | a toolkit in `packages/domain/src/<context>/*.mcp.ts`, its handlers in `apps/api/src/mcp/` (root ADR 0015)                                        |
 | business logic                         | `packages/core/src/<context>/x.service.ts`                                                                                                        |
 | a query or a table                     | a store port in the core module, SQL in `packages/database/src/x.repository.ts`, a new file in `packages/database/migrations/`                    |
 | a typed api client the apps share      | a port and its HttpApi or RPC layer in `packages/client-runtime/src/<context>/`; the app provides `HttpClient` and `ApiOrigin`                    |
