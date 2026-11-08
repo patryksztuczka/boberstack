@@ -1,11 +1,11 @@
+import { ApiOrigin } from "@boberstack/client-runtime/api-origin";
+import { SignInMethodsHttpClientLayer } from "@boberstack/client-runtime/identity";
+import type { SignInMethodsClient } from "@boberstack/client-runtime/identity";
+import { TodosHttpClientLayer, TodosRpcClientLayer } from "@boberstack/client-runtime/todos";
+import type { TodosClient } from "@boberstack/client-runtime/todos";
 import { Cause, Exit, Layer, ManagedRuntime } from "effect";
 import type { Effect } from "effect";
-
-import type { SignInMethodsClient } from "./features/auth/api/sign-in-methods-client.ts";
-import { SignInMethodsHttpClientLayer } from "./features/auth/api/sign-in-methods-client.ts";
-import type { TodosClient } from "./features/todos/api/todos-client.ts";
-import { TodosHttpClientLayer } from "./features/todos/api/todos-http-client.ts";
-import { TodosRpcClientLayer } from "./features/todos/api/todos-rpc-client.ts";
+import { FetchHttpClient } from "effect/http";
 
 export type TodosTransport = "http" | "rpc";
 
@@ -16,6 +16,9 @@ const runtime = ManagedRuntime.make(
   Layer.mergeAll(
     TODOS_TRANSPORT === "rpc" ? TodosRpcClientLayer : TodosHttpClientLayer,
     SignInMethodsHttpClientLayer,
+  ).pipe(
+    Layer.provide(ApiOrigin.layer(globalThis.location.origin)),
+    Layer.provide(FetchHttpClient.layer),
   ),
 );
 

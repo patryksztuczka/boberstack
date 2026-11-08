@@ -9,5 +9,9 @@
     "types": ["vite-plus/client"]
   },
   "include": ["src", "vite.config.ts"],
-  "references": [{ "path": "../../packages/domain" }, { "path": "../../packages/ui" }]
+  "references": [
+    { "path": "../../packages/client-runtime" },
+    { "path": "../../packages/domain" },
+    { "path": "../../packages/ui" }
+  ]
 }

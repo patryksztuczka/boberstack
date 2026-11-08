@@ -41,6 +41,7 @@ packages/database/                   # adapter: the only SQL (root ADR 0004)
   migrations/                        # NNNN_name.sql, app and better-auth tables (root ADR 0006)
 packages/mail/src/                   # adapter: Mailpit provides Mailer
 packages/auth/src/                   # adapter: better-auth, the authentication middleware layers
+packages/client-runtime/src/                 # api clients the apps share: ports and HttpApi/RPC layers per context, ApiOrigin
 
 apps/api/src/                        # a composition root
   worker.ts                          # entry point (10)
@@ -192,6 +193,6 @@ apps/web/src/
   shared/
 ```
 
-A feature imports the contract from `@boberstack/domain` and UI from `@boberstack/ui`, never from `@boberstack/core`, an adapter package or `apps/api`. Components never build requests; they call the feature's hooks.
+A feature imports the contract from `@boberstack/domain`, the api clients from `@boberstack/client-runtime/<context>` and UI from `@boberstack/ui`, never from `@boberstack/core`, an adapter package or `apps/api`. `runtime.ts` provides the clients with `FetchHttpClient.layer` and `ApiOrigin.layer(globalThis.location.origin)`. Components never build requests; they call the feature's hooks.
 
 Source for the id convention: `effect/AGENTS.md` (Context.Service: "include the package name and the subdirectory path"). The rest is house convention.

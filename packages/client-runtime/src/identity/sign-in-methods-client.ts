@@ -2,9 +2,9 @@ import { Api } from "@boberstack/domain/api";
 import type { SignInMethods } from "@boberstack/domain/identity/sign-in-methods";
 import { Context, Effect, Layer } from "effect";
 import type { Effect as EffectType } from "effect";
-import { FetchHttpClient } from "effect/http";
 import { HttpApiClient } from "effect/http-api";
 
+import { ApiOrigin } from "../api-origin/index.ts";
 import { SignInMethodsUnavailableError } from "./sign-in-methods-client.errors.ts";
 
 export interface SignInMethodsClientApi {
@@ -14,7 +14,7 @@ export interface SignInMethodsClientApi {
 export class SignInMethodsClient extends Context.Service<
   SignInMethodsClient,
   SignInMethodsClientApi
->()("boberstack/web/auth/SignInMethodsClient") {}
+>()("boberstack/platform/client-runtime/identity/SignInMethodsClient") {}
 
 const unavailable = (error: { readonly message: string }) =>
   Effect.fail(new SignInMethodsUnavailableError({ reason: error.message }));
@@ -22,7 +22,8 @@ const unavailable = (error: { readonly message: string }) =>
 export const SignInMethodsHttpClientLayer = Layer.effect(
   SignInMethodsClient,
   Effect.gen(function* () {
-    const client = yield* HttpApiClient.make(Api, { baseUrl: globalThis.location.origin });
+    const { origin } = yield* ApiOrigin;
+    const client = yield* HttpApiClient.make(Api, { baseUrl: origin });
 
     return SignInMethodsClient.of({
       list: client.signInMethods
@@ -30,4 +31,4 @@ export const SignInMethodsHttpClientLayer = Layer.effect(
         .pipe(Effect.catchTags({ HttpClientError: unavailable, SchemaError: unavailable })),
     });
   }),
-).pipe(Layer.provide(FetchHttpClient.layer));
+);

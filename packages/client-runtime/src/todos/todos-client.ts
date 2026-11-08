@@ -19,5 +19,5 @@ export interface TodosClientApi {
 }
 
 export class TodosClient extends Context.Service<TodosClient, TodosClientApi>()(
-  "boberstack/web/todos/TodosClient",
+  "boberstack/platform/client-runtime/todos/TodosClient",
 ) {}

@@ -1,8 +1,8 @@
 import { Api } from "@boberstack/domain/api";
 import { Effect, Layer } from "effect";
-import { FetchHttpClient } from "effect/http";
 import { HttpApiClient } from "effect/http-api";
 
+import { ApiOrigin } from "../api-origin/index.ts";
 import { TodosUnavailableError } from "./todos-client.errors.ts";
 import { TodosClient } from "./todos-client.ts";
 
@@ -12,7 +12,8 @@ const unavailable = (error: { readonly message: string }) =>
 export const TodosHttpClientLayer = Layer.effect(
   TodosClient,
   Effect.gen(function* () {
-    const client = yield* HttpApiClient.make(Api, { baseUrl: globalThis.location.origin });
+    const { origin } = yield* ApiOrigin;
+    const client = yield* HttpApiClient.make(Api, { baseUrl: origin });
 
     return TodosClient.of({
       list: client.todos.list().pipe(
@@ -49,4 +50,4 @@ export const TodosHttpClientLayer = Layer.effect(
         ),
     });
   }),
-).pipe(Layer.provide(FetchHttpClient.layer));
+);

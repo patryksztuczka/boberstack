@@ -5,6 +5,9 @@
       "path": "packages/auth"
     },
     {
+      "path": "packages/client-runtime"
+    },
+    {
       "path": "packages/core"
     },
     {
