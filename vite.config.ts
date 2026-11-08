@@ -11,6 +11,7 @@ export default defineConfig({
     ignorePatterns: [
       "tools/oxlint/anti-slop/**",
       "apps/web/src/paraglide/**",
+      "apps/mobile/src/paraglide/**",
       ".scratch/**",
       "pnpm-lock.yaml",
     ],

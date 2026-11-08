@@ -9,6 +9,10 @@ coverage/
 .wrangler/
 .vite-hooks/_/
 apps/web/src/paraglide/
+apps/mobile/src/paraglide/
+apps/mobile/ios/
+apps/mobile/android/
+apps/mobile/.expo/
 .scratch/
 .DS_Store
 .dev/

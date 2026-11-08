@@ -151,7 +151,7 @@ const lint = {
       rules: testHygieneRules,
     },
     {
-      files: ["apps/web/**", "packages/ui/**"],
+      files: ["apps/web/**", "apps/mobile/**", "packages/ui/**"],
       plugins: ["react"],
       env: { browser: true },
     },
@@ -164,6 +164,19 @@ const lint = {
             featuresRoot: "apps/web/src/features",
             layers: ["apps/web/src/shared", "apps/web/src/features", "apps/web/src/app"],
             roots: ["apps/web/src/runtime.ts"],
+          },
+        ],
+      },
+    },
+    {
+      files: ["apps/mobile/src/**"],
+      rules: {
+        "@boberstack/frontend/feature-boundaries": [
+          "error",
+          {
+            featuresRoot: "apps/mobile/src/features",
+            layers: ["apps/mobile/src/shared", "apps/mobile/src/features", "apps/mobile/src/app"],
+            roots: ["apps/mobile/src/runtime.ts"],
           },
         ],
       },
@@ -198,6 +211,7 @@ const lint = {
     "**/coverage/**",
     "tools/oxlint/anti-slop/**",
     "apps/web/src/paraglide/**",
+    "apps/mobile/src/paraglide/**",
     ".agents/**",
     ".claude/**",
     ".scratch/**",

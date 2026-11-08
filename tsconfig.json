@@ -35,6 +35,9 @@
       "path": "apps/infra"
     },
     {
+      "path": "apps/mobile"
+    },
+    {
       "path": "apps/web"
     },
     {
