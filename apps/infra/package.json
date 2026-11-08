@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@alchemy.run/cloudflare": "catalog:",
-    "@alchemy.run/neon": "catalog:",
     "@boberstack/api": "workspace:*",
     "alchemy": "catalog:",
     "effect": "catalog:"

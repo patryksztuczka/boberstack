@@ -12,9 +12,6 @@ catalogs:
     '@alchemy.run/cloudflare':
       specifier: 2.0.0-beta.84
       version: 2.0.0-beta.84
-    '@alchemy.run/neon':
-      specifier: 2.0.0-beta.84
-      version: 2.0.0-beta.84
     '@alchemy.run/sql':
       specifier: 2.0.0-beta.84
       version: 2.0.0-beta.84
@@ -106,9 +103,6 @@ importers:
       '@alchemy.run/cloudflare':
         specifier: 'catalog:'
         version: 2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/sql-pg@4.0.7(effect@4.0.7))(@types/node@26.6.6)(alchemy@2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/vitest@4.0.7(effect@4.0.7)(vitest@5.0.5))(@types/node@26.6.6)(@types/react@19.3.0)(effect@4.0.7)(jiti@2.7.0)(react-devtools-core@6.1.5)(terser@5.51.2)(typescript@7.0.2)(ws@8.22.0))(effect@4.0.7)(jiti@2.7.0)(pg@8.23.1)(terser@5.51.2)(typescript@7.0.2)(yaml@2.9.1)
-      '@alchemy.run/neon':
-        specifier: 'catalog:'
-        version: 2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/sql-pg@4.0.7(effect@4.0.7))(alchemy@2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/vitest@4.0.7(effect@4.0.7)(vitest@5.0.5))(@types/node@26.6.6)(@types/react@19.3.0)(effect@4.0.7)(jiti@2.7.0)(react-devtools-core@6.1.5)(terser@5.51.2)(typescript@7.0.2)(ws@8.22.0))(effect@4.0.7)(pg@8.23.1)
       '@alchemy.run/sql':
         specifier: 'catalog:'
         version: 2.0.0-beta.84(@effect/sql-pg@4.0.7(effect@4.0.7))(alchemy@2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/vitest@4.0.7(effect@4.0.7)(vitest@5.0.5))(@types/node@26.6.6)(@types/react@19.3.0)(effect@4.0.7)(jiti@2.7.0)(react-devtools-core@6.1.5)(terser@5.51.2)(typescript@7.0.2)(ws@8.22.0))(effect@4.0.7)(pg@8.23.1)
@@ -179,9 +173,6 @@ importers:
       '@alchemy.run/cloudflare':
         specifier: 'catalog:'
         version: 2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/sql-pg@4.0.7(effect@4.0.7))(@types/node@26.6.6)(alchemy@2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/vitest@4.0.7(effect@4.0.7)(vitest@5.0.5))(@types/node@26.6.6)(@types/react@19.3.0)(effect@4.0.7)(jiti@2.7.0)(react-devtools-core@6.1.5)(terser@5.51.2)(typescript@7.0.2)(ws@8.22.0))(effect@4.0.7)(jiti@2.7.0)(pg@8.23.1)(terser@5.51.2)(typescript@7.0.2)(yaml@2.9.1)
-      '@alchemy.run/neon':
-        specifier: 'catalog:'
-        version: 2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/sql-pg@4.0.7(effect@4.0.7))(alchemy@2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/vitest@4.0.7(effect@4.0.7)(vitest@5.0.5))(@types/node@26.6.6)(@types/react@19.3.0)(effect@4.0.7)(jiti@2.7.0)(react-devtools-core@6.1.5)(terser@5.51.2)(typescript@7.0.2)(ws@8.22.0))(effect@4.0.7)(pg@8.23.1)
       '@boberstack/api':
         specifier: workspace:*
         version: link:../api
@@ -651,22 +642,6 @@ packages:
       effect: ^4.0.5
     peerDependenciesMeta:
       '@effect/platform-bun':
-        optional: true
-
-  '@alchemy.run/neon@2.0.0-beta.84':
-    resolution: {integrity: sha512-JnT4B2xQyxdJ6J9c0/J90oKW1EcsnB7PVBpggZjCkfX0BDlTEt7rUonYp8xNH5/NnrX0BelgsfYATZWb0NZlNg==}
-    peerDependencies:
-      '@effect/platform-node': ^4.0.5
-      '@vercel/nft': ^1.10.2
-      alchemy: 2.0.0-beta.84
-      effect: ^4.0.5
-      pg: ^8.22.0
-    peerDependenciesMeta:
-      '@effect/platform-node':
-        optional: true
-      '@vercel/nft':
-        optional: true
-      pg:
         optional: true
 
   '@alchemy.run/node-utils@2.0.0-beta.84':
@@ -1396,11 +1371,6 @@ packages:
     peerDependencies:
       effect: ^4.0.5
 
-  '@distilled.cloud/neon@1.0.0-rc.17':
-    resolution: {integrity: sha512-1++CYCn7856wZvu28pDwgNl3DzmVQzEzwYK6amCwlb2guWljHH1Ij2vpIjt70OYUY19nR1uur0sZIpq96JNtsQ==}
-    peerDependencies:
-      effect: ^4.0.5
-
   '@effect/atom-react@4.0.7':
     resolution: {integrity: sha512-9jQFhzl4lL79XmhTr4uHHZtDU2/Z9sBe7YpKZwc9/a6bGuO2DbmynJ4i+M97OIgOAqYjZVsiiNAXj2aeVbCSJg==}
     peerDependencies:
@@ -2046,15 +2016,6 @@ packages:
     peerDependencies:
       '@emnapi/core': ^1.7.1 || 2.0.0-beta.2
       '@emnapi/runtime': ^1.7.1 || 2.0.0-beta.2
-
-  '@neon/functions@0.11.0':
-    resolution: {integrity: sha512-xyIEk9aULR2nBTzyTgxljkM8aS+Ppe9oVw/t5mdqYOlY/mLFppHSZHq8hiWVDWy6Ca8oLd3loTtfVz+cZQQjsA==}
-    engines: {node: '>=20.19.0'}
-    peerDependencies:
-      hono: ^4.7.8
-    peerDependenciesMeta:
-      hono:
-        optional: true
 
   '@noble/ciphers@2.4.0':
     resolution: {integrity: sha512-AnjFn0Jv92laAkvMrghlFZq4qQCIN/4DxFV/eooqtC2YTjB7kBeLMS2T9KJX4Dn+ZVXLOwK0lSgqDtx9gvxtiw==}
@@ -7504,25 +7465,6 @@ snapshots:
       effect: 4.0.7
       rolldown: 1.2.13
 
-  '@alchemy.run/neon@2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/sql-pg@4.0.7(effect@4.0.7))(alchemy@2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/vitest@4.0.7(effect@4.0.7)(vitest@5.0.5))(@types/node@26.6.6)(@types/react@19.3.0)(effect@4.0.7)(jiti@2.7.0)(react-devtools-core@6.1.5)(terser@5.51.2)(typescript@7.0.2)(ws@8.22.0))(effect@4.0.7)(pg@8.23.1)':
-    dependencies:
-      '@alchemy.run/sql': 2.0.0-beta.84(@effect/sql-pg@4.0.7(effect@4.0.7))(alchemy@2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/vitest@4.0.7(effect@4.0.7)(vitest@5.0.5))(@types/node@26.6.6)(@types/react@19.3.0)(effect@4.0.7)(jiti@2.7.0)(react-devtools-core@6.1.5)(terser@5.51.2)(typescript@7.0.2)(ws@8.22.0))(effect@4.0.7)(pg@8.23.1)
-      '@distilled.cloud/aws': 1.0.0-rc.17(effect@4.0.7)
-      '@distilled.cloud/core': 1.0.0-rc.17(effect@4.0.7)
-      '@distilled.cloud/neon': 1.0.0-rc.17(effect@4.0.7)
-      '@neon/functions': 0.11.0
-      alchemy: 2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/vitest@4.0.7(effect@4.0.7)(vitest@5.0.5))(@types/node@26.6.6)(@types/react@19.3.0)(effect@4.0.7)(jiti@2.7.0)(react-devtools-core@6.1.5)(terser@5.51.2)(typescript@7.0.2)(ws@8.22.0)
-      effect: 4.0.7
-    optionalDependencies:
-      '@effect/platform-node': 4.0.7(effect@4.0.7)(redis@6.3.1)
-      pg: 8.23.1
-    transitivePeerDependencies:
-      - '@effect/sql-libsql'
-      - '@effect/sql-mysql2'
-      - '@effect/sql-pg'
-      - hono
-      - mysql2
-
   '@alchemy.run/node-utils@2.0.0-beta.84':
     dependencies:
       chokidar: 5.0.0
@@ -8265,6 +8207,7 @@ snapshots:
       '@distilled.cloud/aws4signer': 1.0.0-rc.17(effect@4.0.7)
       '@distilled.cloud/core': 1.0.0-rc.17(effect@4.0.7)
       effect: 4.0.7
+    optional: true
 
   '@distilled.cloud/cloudflare@1.0.0-rc.17(effect@4.0.7)':
     dependencies:
@@ -8276,11 +8219,6 @@ snapshots:
       effect: 4.0.7
 
   '@distilled.cloud/iceberg@1.0.0-rc.17(effect@4.0.7)':
-    dependencies:
-      '@distilled.cloud/core': 1.0.0-rc.17(effect@4.0.7)
-      effect: 4.0.7
-
-  '@distilled.cloud/neon@1.0.0-rc.17(effect@4.0.7)':
     dependencies:
       '@distilled.cloud/core': 1.0.0-rc.17(effect@4.0.7)
       effect: 4.0.7
@@ -9225,8 +9163,6 @@ snapshots:
       '@emnapi/runtime': 1.11.2
       '@tybys/wasm-util': 0.10.4
     optional: true
-
-  '@neon/functions@0.11.0': {}
 
   '@noble/ciphers@2.4.0': {}
 
