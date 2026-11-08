@@ -2,19 +2,19 @@
 
 An entry point is a file that starts the Effect runtime for a host: a Worker, a process, a browser tab, a deploy. It is where the layer graph meets the outside world, and nothing imports it. Everything else is library code that exports Effects and Layers.
 
-| Host              | Entry point                 | Runs                                                                            |
-| ----------------- | --------------------------- | ------------------------------------------------------------------------------- |
-| Cloudflare Worker | `apps/api/src/worker.ts`    | the api: HttpApi + RPC + better-auth, and the built SPA as static assets        |
-| Node process      | `apps/cli/src/main.ts`      | `cli db migrate`, `cli openapi`, `cli health` via `NodeRuntime.runMain`         |
-| Electron main     | `apps/desktop/src/main.ts`  | the desktop window around the web app via `NodeRuntime.runMain` (root ADR 0010) |
-| Browser           | `apps/web/src/runtime.ts`   | the one `ManagedRuntime` the React app calls through                            |
-| Deploy            | `apps/infra/alchemy.run.ts` | the Alchemy stack: Neon, Hyperdrive, the api Worker                             |
+| Host              | Entry point                                             | Runs                                                                            |
+| ----------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Cloudflare Worker | `apps/api/src/worker.ts`                                | the api: HttpApi + RPC + better-auth, and the built SPA as static assets        |
+| Node process      | `apps/cli/src/main.ts`                                  | `cli db migrate`, `cli openapi`, `cli health` via `NodeRuntime.runMain`         |
+| Electron main     | `apps/desktop/src/main.ts`                              | the desktop window around the web app via `NodeRuntime.runMain` (root ADR 0010) |
+| Browser, phone    | `apps/web/src/runtime.ts`, `apps/mobile/src/runtime.ts` | the client layer the shared atoms run on, seeded into the app's `AtomRegistry`  |
+| Deploy            | `apps/infra/alchemy.run.ts`                             | the Alchemy stack: Neon, Hyperdrive, the api Worker                             |
 
 ## Rules
 
 ### runtime.allowlist: only entry points start runtimes
 
-`Effect.runPromise`, `runSync`, `runFork`, `runCallback`, `NodeRuntime.runMain` and `ManagedRuntime.make` appear only in the files above (`@boberstack/effect/run-only-in-entry-points`). Adding an entry point is a change to the rule's `allow` list in `tools/oxlint/lint.config.ts`, which needs owner sign-off. Calling `runtime.runPromise(…)` on the existing web runtime is allowed anywhere in `apps/web`: that is the bridge.
+`Effect.runPromise`, `runSync`, `runFork`, `runCallback`, `NodeRuntime.runMain` and `ManagedRuntime.make` appear only in the files above (`@boberstack/effect/run-only-in-entry-points`). Adding an entry point is a change to the rule's `allow` list in `tools/oxlint/lint.config.ts`, which needs owner sign-off. The web and mobile apps start no runtime of their own: atoms run their fibers on `clientRuntime` ([`runtime.web`](#runtimeweb-atoms-for-react)).
 
 Route and handler modules never run effects. They export layers, and the entry point merges them.
 
@@ -33,18 +33,25 @@ program.pipe(Effect.provide(CliLayer), NodeRuntime.runMain);
 
 `runMain` turns SIGINT and SIGTERM into interruption, so every finalizer runs, and sets the exit code from the failure (`Runtime.errorExitCode`, [02](02-typed-errors.md)). The CLI reads `process.env` only through `Config`.
 
-### runtime.web: one `ManagedRuntime` for React
+### runtime.web: atoms for React
 
 ```ts
-// apps/web/src/runtime.ts
-export const runtime = ManagedRuntime.make(WebLayer);
+// packages/client-runtime/src/todos/todos.atoms.ts
+export const todos = clientRuntime
+  .atom(TodosClient.use((client) => client.list))
+  .pipe(Atom.withReactivity(["todos"]));
 
-// features/todos/api/use-todos.ts
-export const useTodos = () =>
-  useQuery({ queryKey: ["todos"], queryFn: () => runtime.runPromise(listTodos) });
+// apps/web/src/runtime.ts
+export const clientAtoms = [Atom.initialValue(clientLayer, WebClientLayer)];
+
+// apps/web/src/main.tsx
+<RegistryProvider initialValues={clientAtoms}>…</RegistryProvider>;
+
+// a component
+const list = useAtomValue(todos); // AsyncResult<ReadonlyArray<Todo>, TodosClientError>
 ```
 
-React, React Router and TanStack Query are hosts that do not run Effect, so they enter through `runtime`. A component never calls `Effect.runPromise` with its own `Effect.provide`: that rebuilds layers per call and never disposes them.
+React and React Router do not run Effect, so they read atoms (root ADR 0012). The atoms live in `packages/client-runtime` and run on `clientRuntime`, whose layer is the `clientLayer` atom; each app seeds it in its registry, and a test seeds a stub. A mutation is a function atom with `reactivityKeys`, which re-runs every atom read with `Atom.withReactivity` on the same keys. A component never calls `Effect.runPromise`, and never squashes a `Cause`: it matches the `AsyncResult` with `AsyncResult.matchWithError` and the error's tag.
 
 ### runtime.bridge: `run*With` for a library that calls back through Promises
 
@@ -61,4 +68,4 @@ const onSession = (session: Session) => Effect.runPromiseWith(context)(audit.rec
 
 With `runMain` and `Config`, entry points need neither `console` nor `process.env`. Only `scripts/**`, tool config files and Vitest global setup files are exempt from the ambient-globals rules ([01](01-default-services.md)).
 
-Source: `effect/AGENTS.md` (Running Effect programs), `ai-docs/src/01_effect/06_running/`, `ManagedRuntime.ts`, `Effect.ts` (`runPromiseWith`), `@effect/platform-node` `NodeRuntime.ts`.
+Source: `effect/AGENTS.md` (Running Effect programs), `ai-docs/src/01_effect/06_running/`, `reactivity/Atom.ts`, `@effect/atom-react` `Hooks.ts`, `ManagedRuntime.ts`, `Effect.ts` (`runPromiseWith`), `@effect/platform-node` `NodeRuntime.ts`.

@@ -62,7 +62,7 @@ Reading the accelerometer needs no permission on iOS. The `expo-sensors` config 
 
 ## How the session works
 
-The better-auth Expo plugin keeps the session cookie in the iOS keychain or the Android keystore through `expo-secure-store`. Every api call the shared clients in `packages/client-runtime` make sends that cookie in a `cookie` header (`apps/mobile/src/runtime.ts`), so the api checks it the same way it checks the browser's cookie. When the api answers 401, the app drops the session and shows the sign-in screen.
+The better-auth Expo plugin keeps the session cookie in the iOS keychain or the Android keystore through `expo-secure-store`. The screens read their data from the shared atoms in `packages/client-runtime` (root ADR 0012). `apps/mobile/src/runtime.ts` seeds them with the clients over a `fetch` that sends that cookie in a `cookie` header, so the api checks it the same way it checks the browser's cookie. The Todos screen keeps its atoms in its own registry (`apps/mobile/src/app/session-atoms.tsx`): pull to refresh re-runs the list, and leaving the screen interrupts what is still running. When the api answers 401 to any call, the client reports it, the app drops the session and shows the sign-in screen with a note that the session expired. Signing out removes the Todos screen, and its registry and cached todos go with it.
 
 ## Builds and updates with EAS
 
