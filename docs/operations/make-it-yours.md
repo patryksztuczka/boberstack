@@ -44,7 +44,7 @@ The starter is a working project. Delete what you will not use on day one. Lint,
 - [ ] Delete `packages/domain/src/todos/` and its group in `packages/domain/src/api.ts`.
 - [ ] Delete `packages/core/src/todos/`, `apps/api/src/http/todos.http.ts`, `apps/api/src/rpc/todos.rpc.ts`, and their entries in `http.layer.ts`, `rpc.layer.ts` and `app.layer.ts`.
 - [ ] Delete `packages/database/src/todo.repository.ts`, its integration test and its export in `packages/database/src/index.ts`.
-- [ ] Add a migration that drops the todos table. Do not delete the old migration if it has ever been applied (root ADR 0006).
+- [ ] Add a migration that drops the todos table. Do not delete the old migration if it has ever been applied (root ADR 0014).
 - [ ] Delete `apps/web/src/features/todos/` and its routes in `router.tsx`, and `apps/mobile/src/features/todos/` and its screen in `apps/mobile/src/app/navigation.tsx`.
 - [ ] Delete `docs/internals/todos/`, `docs/user/todos.md` and the Todos lines in `CONTEXT-MAP.md`.
 

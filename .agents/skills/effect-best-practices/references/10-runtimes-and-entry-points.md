@@ -8,7 +8,7 @@ An entry point is a file that starts the Effect runtime for a host: a Worker, a 
 | Node process      | `apps/cli/src/main.ts`                                  | `cli db migrate`, `cli openapi`, `cli health` via `NodeRuntime.runMain`         |
 | Electron main     | `apps/desktop/src/main.ts`                              | the desktop window around the web app via `NodeRuntime.runMain` (root ADR 0010) |
 | Browser, phone    | `apps/web/src/runtime.ts`, `apps/mobile/src/runtime.ts` | the client layer the shared atoms run on, seeded into the app's `AtomRegistry`  |
-| Deploy            | `apps/infra/alchemy.run.ts`                             | the Alchemy stack: Neon, Hyperdrive, the api Worker                             |
+| Deploy            | `apps/infra/alchemy.run.ts`                             | the Alchemy stack: Hyperdrive, the api Worker                                   |
 
 ## Rules
 

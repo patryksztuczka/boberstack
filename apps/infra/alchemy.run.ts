@@ -1,5 +1,4 @@
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as Neon from "@alchemy.run/neon";
 import Api from "@boberstack/api/worker";
 import * as Alchemy from "alchemy";
 import { Effect, Layer } from "effect";
@@ -15,7 +14,7 @@ const StateLayer = Layer.unwrap(
 export default Alchemy.Stack(
   "Boberstack",
   {
-    providers: Neon.providers().pipe(Layer.provideMerge(Cloudflare.providers())),
+    providers: Cloudflare.providers(),
     state: StateLayer,
   },
   Effect.gen(function* () {

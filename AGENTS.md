@@ -4,7 +4,7 @@ This file is the repo law for agents and contributors: what the project is for, 
 
 ## Project thesis
 
-`boberstack` is a starting point for a TypeScript product built on Effect v4 end to end: an api on Cloudflare Workers, a React SPA served by the same Worker, a Node CLI, and Postgres on Neon, deployed as one Alchemy stack. The todos and sign-in examples are there to be replaced.
+`boberstack` is a starting point for a TypeScript product built on Effect v4 end to end: an api on Cloudflare Workers, a React SPA served by the same Worker, a Node CLI, and Postgres from any provider, deployed as one Alchemy stack. The todos and sign-in examples are there to be replaced.
 
 It optimises for a codebase an agent can extend without making it worse. Every rule that can be a lint rule, a type or a hook is one, so a mistake fails `pnpm verify` instead of waiting for a reviewer. Rules that cannot be checked live in one place each and are short.
 

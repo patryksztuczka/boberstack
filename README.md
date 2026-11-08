@@ -26,7 +26,7 @@ It ships a working product, not a hello world: a todo list behind sign-in, serve
 
 - **Effect 4.0.7** on every server surface: `HttpApi`, RPC, CLI, SQL, Schema, Config. Pinned below 4.1.0 because Alchemy 2.0.0-beta.84 needs `effect/Crypto`.
 - **Cloudflare Workers** for the api and the static SPA, one Worker on one origin.
-- **Neon Postgres** through Hyperdrive in production, Postgres in Docker locally, Testcontainers in tests.
+- **Any Postgres** through Hyperdrive in production, Postgres in Docker locally, Testcontainers in tests.
 - **Alchemy 2** (beta): the infrastructure is an Effect program in `apps/infra/alchemy.run.ts`.
 - **better-auth** for sign-in, wired through `@alchemy.run/better-auth`.
 - **React 19** with React Router, Effect atoms for data (shared with the mobile app), React Hook Form (validated by the same Effect Schemas the api decodes), Tailwind 4, shadcn components and Paraglide for UI strings (English; add a locale in `apps/web/project.inlang`).
@@ -52,7 +52,7 @@ pnpm build
 pnpm run deploy      # alchemy deploy; plain `pnpm deploy` is a pnpm built-in
 ```
 
-One Alchemy stack deploys to your own Cloudflare and Neon accounts. Connect the accounts and add a mail transport first: [Deploy](docs/operations/deploy.md).
+One Alchemy stack deploys to your own Cloudflare account, against a Postgres you bring. Connect the account, point `DATABASE_URL` at the database and add a mail transport first: [Deploy](docs/operations/deploy.md).
 
 ## Make it yours
 

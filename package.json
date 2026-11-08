@@ -17,7 +17,7 @@
     "test:integration": "vp run -r test:integration",
     "build": "vp run -r build",
     "verify": "vp check && pnpm env:check && pnpm check:deps && pnpm check:suppressions && pnpm check:doc-pins && pnpm check:knip && pnpm typecheck && pnpm test && pnpm build",
-    "deploy": "pnpm build && APP_ENV=production pnpm --filter @boberstack/infra run deploy",
+    "deploy": "pnpm build && APP_ENV=production varlock run -- pnpm --silent --filter @boberstack/cli start db migrate && APP_ENV=production pnpm --filter @boberstack/infra run deploy",
     "env:check": "varlock load",
     "init:project": "node scripts/init.mjs",
     "db:down": "node scripts/dev.mjs db:down",
