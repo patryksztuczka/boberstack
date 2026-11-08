@@ -20,7 +20,7 @@ const seedUsers = Effect.gen(function* () {
   const sql = yield* SqlClient.SqlClient;
 
   yield* sql`
-    insert into "user" ("id", "name", "email", "emailVerified")
+    insert into "users" ("id", "name", "email", "emailVerified")
     values ('user-alice', 'Alice', 'alice@example.com', true),
            ('user-bob', 'Bob', 'bob@example.com', true)
   `;
