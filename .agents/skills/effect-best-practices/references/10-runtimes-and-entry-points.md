@@ -2,18 +2,19 @@
 
 An entry point is a file that starts the Effect runtime for a host: a Worker, a process, a browser tab, a deploy. It is where the layer graph meets the outside world, and nothing imports it. Everything else is library code that exports Effects and Layers.
 
-| Host              | Entry point                 | Runs                                                                     |
-| ----------------- | --------------------------- | ------------------------------------------------------------------------ |
-| Cloudflare Worker | `apps/api/src/worker.ts`    | the api: HttpApi + RPC + better-auth, and the built SPA as static assets |
-| Node process      | `apps/cli/src/main.ts`      | `cli db migrate`, `cli openapi`, `cli health` via `NodeRuntime.runMain`  |
-| Browser           | `apps/web/src/runtime.ts`   | the one `ManagedRuntime` the React app calls through                     |
-| Deploy            | `apps/infra/alchemy.run.ts` | the Alchemy stack: Neon, Hyperdrive, the api Worker                      |
+| Host              | Entry point                 | Runs                                                                            |
+| ----------------- | --------------------------- | ------------------------------------------------------------------------------- |
+| Cloudflare Worker | `apps/api/src/worker.ts`    | the api: HttpApi + RPC + better-auth, and the built SPA as static assets        |
+| Node process      | `apps/cli/src/main.ts`      | `cli db migrate`, `cli openapi`, `cli health` via `NodeRuntime.runMain`         |
+| Electron main     | `apps/desktop/src/main.ts`  | the desktop window around the web app via `NodeRuntime.runMain` (root ADR 0010) |
+| Browser           | `apps/web/src/runtime.ts`   | the one `ManagedRuntime` the React app calls through                            |
+| Deploy            | `apps/infra/alchemy.run.ts` | the Alchemy stack: Neon, Hyperdrive, the api Worker                             |
 
 ## Rules
 
 ### runtime.allowlist: only entry points start runtimes
 
-`Effect.runPromise`, `runSync`, `runFork`, `runCallback`, `NodeRuntime.runMain` and `ManagedRuntime.make` appear only in the four files above (`@boberstack/effect/run-only-in-entry-points`). Adding an entry point is a change to the rule's `allow` list in the root `vite.config.ts`, which needs owner sign-off. Calling `runtime.runPromise(…)` on the existing web runtime is allowed anywhere in `apps/web`: that is the bridge.
+`Effect.runPromise`, `runSync`, `runFork`, `runCallback`, `NodeRuntime.runMain` and `ManagedRuntime.make` appear only in the files above (`@boberstack/effect/run-only-in-entry-points`). Adding an entry point is a change to the rule's `allow` list in `tools/oxlint/lint.config.ts`, which needs owner sign-off. Calling `runtime.runPromise(…)` on the existing web runtime is allowed anywhere in `apps/web`: that is the bridge.
 
 Route and handler modules never run effects. They export layers, and the entry point merges them.
 

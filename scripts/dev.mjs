@@ -19,11 +19,12 @@ const READY_TIMEOUT_MS = 180_000;
 const STOP_GRACE_MS = 5_000;
 
 const USAGE =
-  "Usage: node scripts/dev.mjs [up|stop|status|ports|db:up|db:migrate|db:down]\n" +
+  "Usage: node scripts/dev.mjs [up|stop|status|ports|desktop|db:up|db:migrate|db:down]\n" +
   "  up          Postgres, migrations, the api Worker and the web app (default)\n" +
   "  stop        stops a pnpm dev started from this worktree\n" +
   "  status      prints .dev/state.json when pnpm dev is running\n" +
   "  ports       prints the ports and URLs this worktree uses, without starting anything\n" +
+  "  desktop ... builds apps/desktop and opens it on the running pnpm dev; arguments after -- go to Electron\n" +
   "  db:up       starts this worktree's Postgres container\n" +
   "  db:migrate  applies packages/database/migrations to it\n" +
   "  db:down     stops the container and keeps its volume\n" +
@@ -345,6 +346,38 @@ function database(root, task) {
   return status;
 }
 
+function desktop(root, args) {
+  const state = runningState(root);
+
+  if (state === undefined || state.status !== "ready") {
+    process.stderr.write("dev: the dev stack of this checkout is not ready; run pnpm dev first\n");
+
+    return 1;
+  }
+
+  const variables = {
+    DESKTOP_RENDERER_URL: state.urls.web,
+    DESKTOP_USER_DATA_DIR: join(root, ".dev", "desktop"),
+  };
+
+  const build = spawnSync("pnpm", ["--silent", "--filter", "@boberstack/desktop", "run", "build"], {
+    cwd: root,
+    stdio: "inherit",
+  });
+
+  if (build.status !== 0) return build.status ?? 1;
+
+  const { ELECTRON_RUN_AS_NODE: _runAsNode, ...environment } = process.env;
+
+  const electron = spawnSync(
+    "pnpm",
+    ["--silent", "--filter", "@boberstack/desktop", "exec", "electron", ".", ...args],
+    { cwd: root, stdio: "inherit", env: { ...environment, ...variables } },
+  );
+
+  return electron.status ?? 1;
+}
+
 async function main(argv) {
   const root = repositoryRoot();
   const task = argv[0] ?? "up";
@@ -370,6 +403,13 @@ async function main(argv) {
   }
 
   if (task === "db:up" || task === "db:migrate" || task === "db:down") return database(root, task);
+
+  if (task === "desktop") {
+    return desktop(
+      root,
+      argv.slice(1).filter((argument) => argument !== "--"),
+    );
+  }
 
   if (task === "cli") {
     const result = spawnSync(
