@@ -26,8 +26,6 @@ Each run adds todos to the demo user. Use a unique suffix in titles (a timestamp
 
 ## What usually lies
 
-- **The second add.** Under the React Compiler, `form.reset()` plus reading `form.formState` made the first submit work and every later one do nothing. Tests that render the form once never see it. Always add two in a row. The form uses `useFormState` and `resetField` for this reason.
 - **The counter after a toggle.** It comes from refetched data, not from local state. If it changes before the request finishes, someone added optimistic state; check that a failed request rolls it back.
-- **A list that only lives in the cache.** A mutation that forgets to invalidate `todos` still looks right until you reload. Step 5 catches it.
-- **Owner isolation.** Another user must not see the demo user's todos. Sign up a second user in a fresh browser profile when you touch the repository or the auth middleware.
-- **A 401 that looks like an empty list.** If the list is empty after sign-in, check `.dev/logs/api.log` and the network for `401` before you believe it.
+
+The second add, the cache, owner isolation and the 401 that looks empty are in the skill's "When the app lies"; steps 2 and 5 exercise them here.

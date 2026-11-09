@@ -26,6 +26,4 @@ Remove your todos at the end if the list grows past a screen.
 
 ## What usually lies
 
-- **A 401 that looks like an empty list.** The api answers 401 when the cookie did not reach it; the app then drops the session and shows sign-in with a "Your session ended" note. If the list is empty after sign-in, check `.dev/logs/api.log` for `401` before you believe it.
-- **A list that only lives in the atom.** A mutation that forgets to refresh `todos` looks right until a relaunch. Step 5 catches it.
-- **The keychain outlives the app.** A session from an earlier run makes `open --relaunch` skip the welcome screen. Sign out first when the flow starts signed out.
+The 401 that looks empty, data that only lives in the atom and the keychain are in the skill's "When the app lies"; step 5 exercises them here.
