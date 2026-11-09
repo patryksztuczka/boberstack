@@ -92,7 +92,7 @@ A test that needs more time, a retry or a skip to go green is reporting a bug, i
 - `.skip`, `.todo` and `xit` need a reason on the line above, so a switched-off test shows up in review and in a search:
 
 ```ts
-// QUARANTINE: #42 Hyperdrive in dev drops the connection after a restart
+// QUARANTINE: #<issue> <why it is off and when it comes back>
 it.skip("syncs todos", () => {});
 ```
 

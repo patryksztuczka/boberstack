@@ -25,7 +25,7 @@ tester.run(
       { code: 'await screen.findByText("Saved", {}, { timeout: 2000 });', filename },
       { code: 'layer(PgTestLayer)((it) => { it.effect("x", () => Effect.void); });', filename },
       {
-        code: '// QUARANTINE: #42 Hyperdrive in dev drops the connection after a restart\nit.skip("syncs todos", () => {});',
+        code: '// QUARANTINE: #42 the mail API rate-limits CI until its next release\nit.skip("syncs todos", () => {});',
         filename,
       },
       {

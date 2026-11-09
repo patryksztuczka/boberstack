@@ -106,7 +106,7 @@ tester.run("@boberstack/effect/module-boundaries", moduleBoundariesRule, {
       options: rootOptions,
     },
     {
-      code: 'type Env = typeof import("../../../../../apps/api/src/platform/environment/worker-environment.ts");',
+      code: 'type Env = typeof import("../../../../../apps/api/src/http/http.layer.ts");',
       filename: "packages/core/src/todos/sharing/share-link.test.ts",
       options: rootOptions,
     },

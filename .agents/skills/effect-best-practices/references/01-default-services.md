@@ -32,7 +32,7 @@ Do not wrap the clock in a service of your own, such as a `TimeProvider`. `Effec
 
 ### defaults.random: ids and secrets come from `Crypto`
 
-`Random` is seedable and not cryptographically secure: use it for jitter, sampling and shuffles. An id or a token comes from the `Crypto.Crypto` service (`import { Crypto } from "effect"`). Unlike `Random`, it is not a default service, so the composition root provides it: `NodeServices.layer` includes it on Node, and on the Worker and in the browser `platform/` builds it once with `Crypto.make` over Web Crypto. `randomUUIDv7()` sorts by creation time, which suits primary keys; never use it as a secret. Its methods fail with `PlatformError`, which a service maps to its own error or treats as a defect.
+`Random` is seedable and not cryptographically secure: use it for jitter, sampling and shuffles. An id or a token comes from the `Crypto.Crypto` service (`import { Crypto } from "effect"`). Unlike `Random`, it is not a default service, so the composition root provides it: `NodeServices.layer` includes it on Node, and on the Worker and in the browser the composition root builds it once with `Crypto.make` over Web Crypto. `randomUUIDv7()` sorts by creation time, which suits primary keys; never use it as a secret. Its methods fail with `PlatformError`, which a service maps to its own error or treats as a defect.
 
 ```ts
 import { Crypto } from "effect";

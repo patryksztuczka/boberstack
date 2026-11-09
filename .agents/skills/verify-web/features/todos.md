@@ -15,7 +15,7 @@ For the RPC transport, stop dev and start it again with `VITE_TODOS_TRANSPORT=rp
 ## Drive
 
 1. Note the counter. Add a todo with spaces around the title, for example `  First run  `. It appears trimmed as `First run`, the input is empty again, the counter goes up by one.
-2. Add a second todo right away, without reloading. It must appear too. This is the step that broke once.
+2. Add a second todo right away, without reloading. It must appear too.
 3. Submit an empty or whitespace-only title. Nothing is added and the field shows the "1 to 200 characters" error.
 4. Tick the first todo. The title gets struck through and the counter goes down by one.
 5. Reload the page. The tick and both todos are still there, so they reached Postgres and did not only live in the query cache.

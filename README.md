@@ -35,15 +35,12 @@ It ships a working product, not a hello world: a todo list behind sign-in, serve
 
 ## Quickstart
 
-You need Node 26.13.0 (`.node-version`), pnpm 11.28.9 and Docker.
-
 ```sh
-pnpm install     # also installs the Git hooks
-pnpm dev         # Postgres and Mailpit in Docker, migrations, the api and the web app
-pnpm dev:doctor  # in a second terminal: checks the stack and creates demo@example.com / demo12345
+pnpm install
+pnpm dev
 ```
 
-Open the web URL `pnpm dev` prints, sign in as the demo user and add a todo. Mail goes to the local Mailpit inbox, and `pnpm verify` runs what CI runs. [Local development](docs/operations/development.md) covers ports, mail, environment variables and social sign-in.
+[Local development](docs/operations/development.md) covers what to install first, the demo user, ports, mail, environment variables and social sign-in.
 
 ## Deploy
 
