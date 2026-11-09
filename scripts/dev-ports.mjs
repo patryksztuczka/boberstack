@@ -85,7 +85,7 @@ export function devEnvironment(root, environment) {
       COMPOSE_PROJECT_NAME: composeProjectName(root),
       PORT: String(ports.api),
       DATABASE_URL: databaseUrl,
-      AUTH_SECRET: "boberstack-local-development-secret",
+      AUTH_SECRET: "local-development-secret-never-deployed",
       AUTH_BASE_URL: `http://localhost:${String(ports.web)}`,
       AUTH_TRUSTED_ORIGINS: `http://localhost:${String(ports.api)}`,
       MAIL_TRANSPORT: "mailpit",
