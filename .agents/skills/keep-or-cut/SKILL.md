@@ -158,8 +158,13 @@ Cuts touch paths that need the owner's sign-off: dependencies, the lint config, 
 - [ ] Delete `packages/core/src/todos/`, `apps/api/src/http/todos.http.ts`, `apps/api/src/rpc/todos.rpc.ts`, and their entries in `http.layer.ts`, `rpc.layer.ts` and `app.layer.ts`.
 - [ ] Delete `packages/database/src/todo.repository.ts`, its integration test and its export in `packages/database/src/index.ts`.
 - [ ] Add a migration that drops the todos table. Do not delete the old migration if it has ever been applied (root ADR 0011).
+- [ ] Delete `apps/api/src/mcp/todos.mcp.ts` and point the toolkit in `apps/api/src/mcp/mcp.layer.ts` and `mcp.layer.test.ts` at the new context's, or cut MCP.
+- [ ] Delete `packages/client-runtime/src/todos/`, `TodosClient` in `ClientServices` (`packages/client-runtime/src/atom-runtime/atom-runtime.ts`) and the todos client layer in `apps/web/src/runtime.ts` and `apps/mobile/src/runtime.ts`.
 - [ ] Delete `apps/web/src/features/todos/` and its routes in `router.tsx`, and `apps/mobile/src/features/todos/` and its screen in `apps/mobile/src/app/navigation.tsx`.
-- [ ] Delete `docs/internals/todos/`, `docs/user/todos.md`, the Todos lines in `CONTEXT-MAP.md` and `.agents/skills/verify-web/features/todos.md`.
+- [ ] Point the pages that send a user to `/todos` at the new landing page: `AFTER_SIGN_IN` in `apps/web/src/features/auth/redirect-to.ts` and the link in `apps/web/src/features/welcome/components/welcome-page.tsx`. Delete the `todos_*` messages and reword `welcome_open_example` and `auth_email_verified_continue` in `apps/web/messages/en.json` and `apps/mobile/messages/en.json`.
+- [ ] Move the tests that stub the todos client to the new one: `apps/web/src/app/session-expiry.test.tsx`, `apps/web/src/features/auth/testing/render-auth-page.tsx`, `apps/mobile/src/app/session-expiry.test.ts` and `packages/client-runtime/src/session/session-expiry.test.ts`.
+- [ ] Point the scripts at a page and an endpoint of the new context: the `todos api` check in `scripts/dev-doctor.mjs`, `/todos` in `scripts/web-boot.mjs` and in `scripts/api-image.mjs`.
+- [ ] Delete `docs/internals/todos/`, `docs/user/todos.md`, the Todos lines in `CONTEXT-MAP.md` and `docs/README.md`, `.agents/skills/verify-web/features/todos.md` and `.agents/skills/verify-mobile/features/todos.md`. Point the launch steps of the `verify-web` and `verify-mobile` skills (`**/todos`, `new-todo-title`) and the todos in `docs/user/sign-in.md` and `docs/user/ai-assistants.md` at the new context.
 
 Keep the folders: the next context goes in the same places. Model it with the `domain-modeling` skill.
 
@@ -167,7 +172,8 @@ Keep the folders: the next context goes in the same places. Model it with the `d
 
 - [ ] Delete `packages/domain/src/*/*.rpc.ts` and `apps/api/src/rpc/`.
 - [ ] Remove the RPC layer from `app.layer.ts` and the RPC auth middleware from `packages/domain/src/identity/authentication.ts` and `packages/auth/src/authentication.layer.ts`.
-- [ ] Delete the RPC clients (`packages/client-runtime/src/*/*-rpc-client.ts`) and their exports, and the `VITE_TODOS_TRANSPORT` switch in `apps/web/src/runtime.ts`, the transport line on the todos page and the RPC steps in `.agents/skills/verify-web/features/todos.md`.
+- [ ] Delete the RPC clients (`packages/client-runtime/src/*/*-rpc-client.ts`) and their exports, and the `VITE_TODOS_TRANSPORT` switch in `apps/web/src/runtime.ts`, the transport line on the todos page and the RPC steps in `.agents/skills/verify-web/features/todos.md`, and the note about `TODOS_TRANSPORT` in `tools/oxlint/boberstack/frontend/README.md`.
+- [ ] Reword what still names RPC: the transport in root ADR 0010, the "HttpApi and RPC middleware" in `.agents/skills/verify-web/features/auth.md`, and in `AGENTS.md` "An HttpApi or RPC handler" and the "Where things go" rows for an endpoint and a typed api client.
 - [ ] Supersede root ADR 0005 with a new ADR.
 
 ### MCP
@@ -217,8 +223,8 @@ The desktop app serves the web app's build (root ADR 0008), so cutting the web a
 ### The desktop app
 
 - [ ] Delete `apps/desktop/`, its reference in the root `tsconfig.json`, and its entries in `tools/oxlint/lint.config.ts` (the `layer-config-only-in-roots` and `run-only-in-entry-points` allow lists and the two overrides that list `apps/desktop/**`).
-- [ ] Remove the `desktop` task from `scripts/dev.mjs`, the root `dev:desktop` script and the `DESKTOP_*` variables in `.env.schema`.
-- [ ] Delete the "Desktop app" section of `docs/operations/development.md`, the desktop rows in `AGENTS.md`, and the desktop lines in `tools/oxlint/boberstack/effect/README.md` and in references 07, 10 and 13 of the `effect-best-practices` skill. `docs/operations/mobile.md` takes the app icon from `apps/desktop/resources/icon.png`: name another source.
+- [ ] Remove the `desktop` task and its usage line from `scripts/dev.mjs`, the root `dev:desktop` script, the `DESKTOP_*` variables in `.env.schema`, and `electron` in the `pnpm-workspace.yaml` catalog and `allowBuilds`.
+- [ ] Delete the "Desktop app" section of `docs/operations/development.md` and its mention in `docs/README.md`, the desktop rows in `AGENTS.md`, and the desktop lines in `tools/oxlint/boberstack/effect/README.md` and in references 07, 10 and 13 of the `effect-best-practices` skill. `docs/operations/mobile.md` takes the app icon from `apps/desktop/resources/icon.png`: name another source.
 - [ ] Mark root ADR 0008 superseded.
 
 ### The mobile app
@@ -235,8 +241,9 @@ Do what the owner chose in step 1. The template ships two hosts; the project kee
 
 Container (not decided, only locally, a server of their own, a cloud that runs containers):
 
-- [ ] Delete `apps/infra/cloudflare.run.ts`, `apps/infra/src/`, the `*:cloudflare` scripts and `@alchemy.run/cloudflare` in `apps/infra/package.json`, `@alchemy.run/cloudflare` in the `pnpm-workspace.yaml` catalog and `workerd` in its `allowBuilds`, `cloudflare.run.ts` and `src` in `apps/infra/tsconfig.json`, `cloudflare.run.ts` in `knip.json`, and `apps/infra/src/worker.ts` in the `layer-config-only-in-roots` allow list of `tools/oxlint/lint.config.ts` and its rule defaults in `tools/oxlint/boberstack/effect/rules/`.
-- [ ] Delete the Cloudflare section of `docs/operations/deploy.md`, and the line about workerd in root ADR 0013's consequences.
+- [ ] Delete `apps/infra/cloudflare.run.ts`, `apps/infra/src/`, the `*:cloudflare` scripts and `@alchemy.run/cloudflare` in `apps/infra/package.json`, `@alchemy.run/cloudflare` in the `pnpm-workspace.yaml` catalog and `workerd` in its `allowBuilds`, `cloudflare.run.ts` and `src` in `apps/infra/tsconfig.json`, `cloudflare.run.ts` in `knip.json`, and `apps/infra/src/worker.ts` in the `layer-config-only-in-roots` allow list of `tools/oxlint/lint.config.ts`, in its rule defaults in `tools/oxlint/boberstack/effect/rules/` and in the valid cases of `layer-config-only-in-roots.test.ts`.
+- [ ] Remove what only the Worker used: `@alchemy.run/better-auth`, `@boberstack/api` and `@boberstack/auth` in `apps/infra/package.json`, and the `references` in `apps/infra/tsconfig.json`. `pnpm check:knip` names them otherwise.
+- [ ] Delete the Cloudflare section of `docs/operations/deploy.md` and its mention in `docs/README.md`, the line about workerd in root ADR 0013's consequences, and the Worker lines in references 05, 07, 10 and 13 of the `effect-best-practices` skill.
 - [ ] A server of their own: walk the owner through `docs/operations/deploy.md`. The first `pnpm run deploy` waits for the owner's yes (`AGENTS.md`).
 - [ ] A cloud: build it after step 9 as its own change, with the `playbook-feature` skill, before or after the owner's first request as they prefer. The new resource replaces `Docker.Container` in the same change, so the project always has a deploy that works.
 
