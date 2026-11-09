@@ -16,7 +16,7 @@ The [README](../README.md) has the quickstart. The runbooks:
 - [Mobile app](operations/mobile.md): run the Expo app on a simulator, test ids, drive it with agent-device, variants, EAS builds and updates
 - [Deploy](operations/deploy.md): Alchemy, Cloudflare, the database and the mail transport
 - [CI](operations/ci.md): the stages and what each one checks
-- [Make it yours](operations/make-it-yours.md): rename the project, then keep or cut each part
+- [Keep or cut](../.agents/skills/keep-or-cut/SKILL.md): set up a fresh copy of the template: rename the project, keep or cut each part, apply the GitHub settings. The skill deletes itself when it is done
 - [Pull request evidence](operations/pr-evidence.md): upload screenshots and recordings to R2 and paste them into a pull request
 
 ## I work on this repository
@@ -49,7 +49,8 @@ Every piece of knowledge has one home, and every other mention links to it. If t
 | How Effect code is written                          | the [`effect-best-practices` skill](../.agents/skills/effect-best-practices/SKILL.md) |
 | Commands, where code goes, what needs sign-off      | [`AGENTS.md`](../AGENTS.md)                                                           |
 | How a user does something with the product          | its feature page, `user/<feature>.md`                                                 |
-| How to run, deploy, keep or cut the starter         | `operations/`; the [README](../README.md) keeps the quickstart                        |
+| How to run and deploy the starter                   | `operations/`; the [README](../README.md) keeps the quickstart                        |
+| How to keep or cut a part of the starter            | the [`keep-or-cut` skill](../.agents/skills/keep-or-cut/SKILL.md)                     |
 | What a package is and how to build, run and test it | that package's README, when it needs more than `AGENTS.md` says                       |
 | A workaround for a defect in software we do not own | a `VENDOR:` comment at the workaround                                                 |
 | What the code does, and what a test proves          | the code: its names, types and tests                                                  |

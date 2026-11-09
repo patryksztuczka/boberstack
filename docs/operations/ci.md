@@ -8,7 +8,7 @@
 4. Build.
 5. Integration: the Testcontainers Postgres suites.
 
-The `CI OK` job fails when any stage failed or was cancelled and passes when they passed or were skipped, so the default-branch ruleset requires it instead of each stage ([GitHub settings](make-it-yours.md#github-settings)).
+The `CI OK` job fails when any stage failed or was cancelled and passes when they passed or were skipped, so the default-branch ruleset requires it instead of each stage ([GitHub settings](../../.agents/skills/keep-or-cut/SKILL.md#4-github-settings)).
 
 `.github/workflows/pr-title.yml` checks that the pull request title is a Conventional Commit subject. On a branch, a newer run cancels the older one. On `master`, every run finishes.
 

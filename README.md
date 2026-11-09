@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="#quickstart">Quickstart</a> ·
-  <a href="docs/operations/make-it-yours.md#keep-or-cut">Keep or cut</a> ·
+  <a href=".agents/skills/keep-or-cut/SKILL.md">Keep or cut</a> ·
   <a href="AGENTS.md">AGENTS.md</a> ·
   <a href="docs/README.md">Docs</a>
 </p>
@@ -20,7 +20,7 @@
 
 A beaver does not ask the river to behave; it builds a dam that holds. This starter works the same way. Every rule that a tool can check is a lint rule, a type, an Effect diagnostic, a hook or a CI step, so a mistake fails `pnpm verify` on your machine instead of waiting for a reviewer. Whatever no tool can check is written down once, short, in [AGENTS.md](AGENTS.md).
 
-It ships a working product, not a hello world: a todo list behind sign-in, served over HttpApi and Effect RPC, stored in Postgres, tested against a real database, and a welcome page with the beaver. Each piece shows how that layer is meant to be written, and each one can be cut (see [Keep or cut](docs/operations/make-it-yours.md#keep-or-cut)).
+It ships a working product, not a hello world: a todo list behind sign-in, served over HttpApi and Effect RPC, stored in Postgres, tested against a real database, and a welcome page with the beaver. Each piece shows how that layer is meant to be written, and each one can be cut (see [Keep or cut](.agents/skills/keep-or-cut/SKILL.md#6-keep-or-cut)).
 
 ## Stack
 
@@ -56,11 +56,9 @@ One Alchemy stack deploys to your own Cloudflare account, against a Postgres you
 
 ## Make it yours
 
-```sh
-pnpm init:project -- --name acme-shop --scope @acme
-```
+Create a repository from the template and ask your agent for the first thing you want built. `AGENTS.md` sends it to the [`keep-or-cut` skill](.agents/skills/keep-or-cut/SKILL.md) first. The agent asks what you are building, explains each part, whether the api should speak HttpApi, RPC or both, and where it will run. It renames the project, cuts the parts you will not use (the web, desktop or mobile app, todos, auth, RPC, MCP, the CLI, i18n), and applies the GitHub settings. Not sure yet what you need? Then it only renames the project and cuts nothing. Then it adds an "Origin" section to the README naming the template commit you started from, deletes the skill, and goes on with your request.
 
-Then cut what you will not use. [Make it yours](docs/operations/make-it-yours.md) has a checklist for each part: the welcome page, todos, RPC, HttpApi, the CLI, i18n, authentication and the web app.
+A part you cut can come back later: the skill at that template commit lists every file and line the part touches. Without an agent, follow the skill by hand.
 
 ## License
 

@@ -8,10 +8,11 @@ This file is the repo law for agents and contributors: what the project is for, 
 
 It optimises for a codebase an agent can extend without making it worse. Every rule that can be a lint rule, a type or a hook is one, so a mistake fails `pnpm verify` instead of waiting for a reviewer. Rules that cannot be checked live in one place each and are short.
 
-When a project starts from this template, rewrite this section on day one. `pnpm init:project` renames the packages, not the prose.
+When a project starts from this template, the `keep-or-cut` skill rewrites this section.
 
 ## General rules
 
+- If `.agents/skills/keep-or-cut/` exists, nobody has set this project up from the template yet. Run the `keep-or-cut` skill before any other task.
 - Read [CONTEXT-MAP.md](CONTEXT-MAP.md) and the context's `GLOSSARY.md` before naming anything. Code uses the glossary's words.
 - Features are service methods in `packages/core/src/<context>/`; apps compose them and transports stay thin (root ADR 0009). An HttpApi or RPC handler decodes input, calls one service method and maps its errors, if they are not already wire errors. Pure work (a slug, a label, a calculation) can be a plain function next to the service.
 - Before writing or reviewing Effect code, load the `effect-best-practices` skill. Before using an Effect, Alchemy or better-auth API you have not seen in this repo, read it at the pinned version: `pnpm sources:fetch` clones the tagged sources into `.repos/` (gitignored). Do not invent APIs.
