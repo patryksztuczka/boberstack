@@ -39,8 +39,9 @@ const effectRules = {
     "error",
     {
       allow: [
-        "apps/api/src/worker.ts",
+        "apps/api/src/server.ts",
         "apps/api/src/app.layer.ts",
+        "apps/infra/src/worker.ts",
         "apps/cli/src/main.ts",
         "apps/cli/src/commands/*.ts",
         "apps/desktop/src/main.ts",
@@ -73,10 +74,11 @@ const effectRules = {
     "error",
     {
       allow: [
-        "apps/api/src/worker.ts",
+        "apps/api/src/server.ts",
         "apps/cli/src/main.ts",
         "apps/desktop/src/main.ts",
         "apps/infra/alchemy.run.ts",
+        "apps/infra/cloudflare.run.ts",
         "**/vitest.global-setup.ts",
       ],
     },

@@ -30,11 +30,12 @@ const bridges = new Map<string, ReadonlySet<string>>([
 ]);
 
 const defaultAllow = [
-  "apps/api/src/worker.ts",
+  "apps/api/src/server.ts",
   "apps/cli/src/main.ts",
   "apps/desktop/src/main.ts",
   "apps/web/src/runtime.ts",
   "apps/infra/alchemy.run.ts",
+  "apps/infra/cloudflare.run.ts",
   "**/vitest.global-setup.ts",
 ];
 

@@ -6,8 +6,9 @@ import { ruleOptions } from "../shared/options.ts";
 import { matchesAny, relativeFilename } from "../shared/paths.ts";
 
 const defaultAllow = [
-  "apps/api/src/worker.ts",
+  "apps/api/src/server.ts",
   "apps/api/src/app.layer.ts",
+  "apps/infra/src/worker.ts",
   "apps/cli/src/main.ts",
   "apps/cli/src/commands/*.ts",
   "apps/desktop/src/main.ts",

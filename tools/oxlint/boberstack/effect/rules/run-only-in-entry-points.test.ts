@@ -11,7 +11,7 @@ tester.run("@boberstack/effect/run-only-in-entry-points", runOnlyInEntryPointsRu
     },
     {
       code: 'import { Effect } from "effect"; export default { fetch: (req) => Effect.runPromise(handle(req)) };',
-      filename: "apps/api/src/worker.ts",
+      filename: "apps/api/src/server.ts",
     },
     {
       code: 'import { Effect } from "effect"; await Effect.runPromise(stack);',
@@ -50,7 +50,7 @@ tester.run("@boberstack/effect/run-only-in-entry-points", runOnlyInEntryPointsRu
     },
     {
       code: 'import { Effect } from "effect"; const run = Effect.runPromiseWith(services);',
-      filename: "apps/api/src/worker.ts",
+      filename: "apps/api/src/server.ts",
     },
   ],
   invalid: [
