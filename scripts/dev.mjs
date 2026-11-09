@@ -20,7 +20,7 @@ const STOP_GRACE_MS = 5_000;
 
 const USAGE =
   "Usage: node scripts/dev.mjs [up|stop|status|ports|desktop|mobile|db:up|db:migrate|db:down]\n" +
-  "  up          Postgres, migrations, the api Worker and the web app (default)\n" +
+  "  up          Postgres, migrations, the api and the web app (default)\n" +
   "  stop        stops a pnpm dev started from this worktree\n" +
   "  status      prints .dev/state.json when pnpm dev is running\n" +
   "  ports       prints the ports and URLs this worktree uses, without starting anything\n" +

@@ -19,7 +19,7 @@ export interface TodosClientApi {
 }
 
 export class TodosClient extends Context.Service<TodosClient, TodosClientApi>()(
-  "boberstack/platform/client-runtime/todos/TodosClient",
+  "boberstack/client-runtime/todos/TodosClient",
 ) {}
 
 const isUnauthorized = Schema.is(UnauthorizedError);

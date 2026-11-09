@@ -6,7 +6,7 @@ You need Node 26.13.0 (`.node-version`), pnpm 11.28.9 and Docker.
 
 ```sh
 pnpm install     # also installs the Git hooks
-pnpm dev         # Postgres and Mailpit in Docker, migrations, the api Worker via alchemy dev, the web app via vp dev
+pnpm dev         # Postgres and Mailpit in Docker, migrations, the api via node --watch, the web app via vp dev
 pnpm dev:doctor  # in a second terminal: checks the stack and creates and verifies demo@example.com / demo12345
 ```
 
@@ -18,7 +18,7 @@ Ports come from a hash of the checkout path, so two worktrees can run `pnpm dev`
 
 ## Mail
 
-Every mail the app sends locally, such as the account confirmation and the password reset, lands in Mailpit at the `mail` URL `pnpm dev` prints. Nothing leaves your machine (root ADR 0008).
+Every mail the app sends locally, such as the account confirmation and the password reset, lands in Mailpit at the `mail` URL `pnpm dev` prints. Nothing leaves your machine (root ADR 0006).
 
 ## Environment
 
@@ -28,7 +28,7 @@ To try GitHub or Google sign-in, create an OAuth app with the provider and set i
 
 ## Desktop app
 
-`apps/desktop` is an Electron window around the same web app (root ADR 0010). With `pnpm dev` running, start it in a second terminal:
+`apps/desktop` is an Electron window around the same web app (root ADR 0008). With `pnpm dev` running, start it in a second terminal:
 
 ```sh
 pnpm dev:desktop                                      # builds the main process and opens the window on this checkout's Vite server
@@ -37,7 +37,7 @@ pnpm dev:desktop -- --remote-debugging-port=9333      # the same, with DevTools 
 
 The window opens the web URL `pnpm dev` printed, so Vite's hot reload works as in a browser. A change to `apps/desktop/src` needs a restart: quit the window and run the command again. Each checkout keeps its cookies, cache and single-instance lock in `.dev/desktop`, so a second worktree opens its own window and its own session.
 
-Bundle mode is what a packaged app will do. It serves `apps/web/dist` from disk and sends `/api` to the app named by `DESKTOP_APP_URL`. To try it against the local api Worker:
+Bundle mode is what a packaged app will do. It serves `apps/web/dist` from disk and sends `/api` to the app named by `DESKTOP_APP_URL`. To try it against the local api:
 
 ```sh
 pnpm --filter @boberstack/web build
@@ -51,7 +51,7 @@ The window and the Dock show `apps/desktop/resources/icon.png`. Packaging comes 
 
 ## Mobile app
 
-`apps/mobile` is a native Expo app on the same api (root ADR 0011). With `pnpm dev` running, `pnpm dev:mobile` builds it and opens it in the iOS simulator. [Mobile app](mobile.md) has the setup, the variants and the release steps.
+`apps/mobile` is a native Expo app on the same api (root ADR 0009). With `pnpm dev` running, `pnpm dev:mobile` builds it and opens it in the iOS simulator. [Mobile app](mobile.md) has the setup, the variants and the release steps.
 
 ## Before you push
 

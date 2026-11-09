@@ -13,16 +13,16 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 
 ## Which reference to read
 
-| You are…                                         | Read                                                                                                                                        |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| adding a service, a store, a module or a context | [04](references/04-services-and-layers.md), [05](references/05-project-structure.md)                                                        |
-| adding an endpoint or an RPC                     | [06](references/06-schema.md) `schema.sharing`, [02](references/02-typed-errors.md) `errors.http`, [05](references/05-project-structure.md) |
-| writing SQL or a migration                       | [05](references/05-project-structure.md) `structure.stores`, [12](references/12-test-layers-and-infrastructure.md)                          |
-| reading an env var or a secret                   | [07](references/07-configuration.md)                                                                                                        |
-| touching `worker.ts`, `main.ts`, `runtime.ts`    | [10](references/10-runtimes-and-entry-points.md)                                                                                            |
-| writing a test                                   | [11](references/11-testing.md), [12](references/12-test-layers-and-infrastructure.md)                                                       |
-| writing a form or reading data in an app         | [06](references/06-schema.md) `schema.forms`, [10](references/10-runtimes-and-entry-points.md) `runtime.web`                                |
-| fixing a lint error                              | the reference the message links to; [13](references/13-lint-rules.md) for the full list                                                     |
+| You are…                                                   | Read                                                                                                                                        |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| adding a service, a store, a module or a context           | [04](references/04-services-and-layers.md), [05](references/05-project-structure.md)                                                        |
+| adding an endpoint or an RPC                               | [06](references/06-schema.md) `schema.sharing`, [02](references/02-typed-errors.md) `errors.http`, [05](references/05-project-structure.md) |
+| writing SQL or a migration                                 | [05](references/05-project-structure.md) `structure.stores`, [12](references/12-test-layers-and-infrastructure.md)                          |
+| reading an env var or a secret                             | [07](references/07-configuration.md)                                                                                                        |
+| touching `server.ts`, `worker.ts`, `main.ts`, `runtime.ts` | [10](references/10-runtimes-and-entry-points.md)                                                                                            |
+| writing a test                                             | [11](references/11-testing.md), [12](references/12-test-layers-and-infrastructure.md)                                                       |
+| writing a form or reading data in an app                   | [06](references/06-schema.md) `schema.forms`, [10](references/10-runtimes-and-entry-points.md) `runtime.web`                                |
+| fixing a lint error                                        | the reference the message links to; [13](references/13-lint-rules.md) for the full list                                                     |
 
 ## Rule index
 
@@ -42,7 +42,7 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 | `errors.values`       | a pure function that can refuse returns a `Result`                                  | 02  |
 | `retry.while`         | retry inline, only the errors you name as transient                                 | 03  |
 | `retry.timeout`       | every external call has a timeout                                                   | 03  |
-| `jobs.where`          | recurring work on Workers is a Cron Trigger, not a loop                             | 03  |
+| `jobs.where`          | recurring work is a scoped loop on the server, a Cron Trigger on a Worker           | 03  |
 | `jobs.idempotency`    | a job claims `<job>/<period>` before working                                        | 03  |
 | `services.define`     | `Context.Service<Self, Api>()(id, { make })` + `static layer`                       | 04  |
 | `services.placement`  | features are service methods; handlers decode, call one method, map errors          | 04  |
@@ -54,7 +54,7 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 | `structure.imports`   | modules talk through `index.ts`; no SQL, adapters or root files in modules          | 05  |
 | `structure.adapters`  | the port in core, the adapter in its own package, the root chooses                  | 05  |
 | `structure.stores`    | `XStore` port, `XRepository` SQL, no in-memory fake                                 | 05  |
-| `structure.ids`       | service id `boberstack/<path>/<Class>`                                              | 05  |
+| `structure.ids`       | service id `boberstack/<package>/<path>/<Class>`                                    | 05  |
 | `structure.web`       | `features/<name>/{api,components,forms}`, contract from `@boberstack/domain`        | 05  |
 | `schema.records`      | domain records are branded `Schema.Class`                                           | 06  |
 | `schema.construction` | decode at the boundary; `make` only where failure is a defect                       | 06  |
@@ -75,7 +75,7 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 | `conc.resources`      | `acquireRelease` inside a layer                                                     | 09  |
 | `conc.callbacks`      | `Effect.callback`, never `new Promise`                                              | 09  |
 | `runtime.allowlist`   | only the listed entry points start runtimes                                         | 10  |
-| `runtime.worker`      | one Worker, one composition root, SPA assets on the same origin                     | 10  |
+| `runtime.api`         | `app.layer.ts` knows no host; `server.ts` or the Worker composes it with the SPA    | 10  |
 | `runtime.cli`         | `NodeRuntime.runMain`                                                               | 10  |
 | `runtime.web`         | React reads atoms from `packages/client-runtime`; it never runs an Effect           | 10  |
 | `runtime.bridge`      | `run*With` + `BRIDGE:` for Promise callbacks                                        | 10  |
@@ -111,8 +111,8 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 
 - **Taken:** the `Context.Service(id, { make })` + `static layer = Layer.effect(this, this.make)` shape, dependencies captured in `make`; branded error classes; the error model (name the failure, keep the source, say how to fix it, fall back only to a valid domain answer); `message` and `Runtime.errorExitCode` on errors a person reads; the hook that blocks `--no-verify`.
 - **Config:** rat-stack's config service has `layer` read Config and `configLayer` take values. We keep `layer(options)` and `layerConfig`, because `@boberstack/effect/layer-config-only-in-roots` keys on `layerConfig`.
-- **Surfaces:** rat-stack projects one capability onto CLI, HTTP, MCP and RPC through its own `defineContract`. We use Effect's `HttpApi` and `RpcGroup` directly, both in `packages/domain` (root ADR 0007). Less machinery, two contracts per operation.
+- **Surfaces:** rat-stack projects one capability onto CLI, HTTP, MCP and RPC through its own `defineContract`. We use Effect's `HttpApi` and `RpcGroup` directly, both in `packages/domain` (root ADR 0005). Less machinery, two contracts per operation.
 - **Lifecycles:** rat-stack puts finite lifecycles in XState machines. The starter has none; add XState when a real lifecycle appears.
-- **Tests:** rat-stack prefers property and model tests. We do too for pure functions, but a store's contract runs on real Postgres with no in-memory fake (root ADR 0004), which rat-stack does not require.
-- **Comments:** both ban prose comments. We keep `VENDOR:` notes and refuse an autofix that deletes them (root ADR 0005).
-- **Structure:** taken from rat-stack: services and ports in `packages/core`, each adapter in its own package, apps as composition roots (root ADR 0009). Kept our own: the contract in a separate `packages/domain` instead of inside core, a folder per bounded context in core, and role-suffixed files (`x.store.ts`, `x.repository.ts`).
+- **Tests:** rat-stack prefers property and model tests. We do too for pure functions, but a store's contract runs on real Postgres with no in-memory fake (root ADR 0003), which rat-stack does not require.
+- **Comments:** both ban prose comments. We keep `VENDOR:` notes and refuse an autofix that deletes them (root ADR 0004).
+- **Structure:** taken from rat-stack: services and ports in `packages/core`, each adapter in its own package, apps as composition roots (root ADR 0007). Kept our own: the contract in a separate `packages/domain` instead of inside core, a folder per bounded context in core, and role-suffixed files (`x.store.ts`, `x.repository.ts`).

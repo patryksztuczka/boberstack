@@ -3,7 +3,7 @@ import type { OxlintConfig } from "vite-plus/lint";
 const skill = ".agents/skills/effect-best-practices/references";
 
 const clientStateMessage =
-  "Client state lives in Effect atoms from @boberstack/client-runtime (root ADR 0012), not React Query.";
+  "Client state lives in Effect atoms from @boberstack/client-runtime (root ADR 0010), not React Query.";
 
 const antiSlopRules = {
   "anti-slop/no-array-filter-map": "error",
@@ -39,8 +39,9 @@ const effectRules = {
     "error",
     {
       allow: [
-        "apps/api/src/worker.ts",
+        "apps/api/src/server.ts",
         "apps/api/src/app.layer.ts",
+        "apps/infra/src/worker.ts",
         "apps/cli/src/main.ts",
         "apps/cli/src/commands/*.ts",
         "apps/desktop/src/main.ts",
@@ -73,10 +74,9 @@ const effectRules = {
     "error",
     {
       allow: [
-        "apps/api/src/worker.ts",
+        "apps/api/src/server.ts",
         "apps/cli/src/main.ts",
         "apps/desktop/src/main.ts",
-        "apps/infra/alchemy.run.ts",
         "**/vitest.global-setup.ts",
       ],
     },
@@ -85,11 +85,10 @@ const effectRules = {
   "@boberstack/effect/service-id-matches-path": [
     "error",
     {
-      prefix: "boberstack",
+      prefix: "boberstack/core",
       sourceRoot: "packages/core/src",
       extraRoots: {
-        "packages/domain/src": "boberstack/domain",
-        "packages/*/src": "boberstack/platform/*",
+        "packages/*/src": "boberstack/*",
       },
       idSource: "class",
     },

@@ -4,7 +4,7 @@
 
 AI assistants such as Claude and Cursor call products through the Model Context Protocol. We wanted them to reach the same service methods as the web app, on the Worker we already deploy. Effect 4 ships an MCP server in `effect/ai`, so no second SDK and no second schema language were needed. The choice was which of its HTTP transports to use. `McpServer.layerHttp` keeps one long-lived server fiber that every request shares; a Cloudflare Worker gives no guarantee that the next request reaches the same isolate, so sessions and open streams would be lost between requests.
 
-The api serves MCP at `/api/mcp` with `McpServer.layerHttpRequestScoped` and only the stateless protocol revision `2026-07-28`. Each POST runs its own server inside the request and leaves nothing behind. Tools follow root ADR 0007 and 0009: a `Toolkit` in `packages/domain/src/<context>/*.mcp.ts` built from the context's schemas, and thin handlers in `apps/api/src/mcp/` that read the Current User and call one service method. An HTTP middleware from `packages/auth` provides the Current User before any tool runs (Identity ADR 0002).
+The api serves MCP at `/api/mcp` with `McpServer.layerHttpRequestScoped` and only the stateless protocol revision `2026-07-28`. Each POST runs its own server inside the request and leaves nothing behind. Tools follow root ADR 0005 and 0007: a `Toolkit` in `packages/domain/src/<context>/*.mcp.ts` built from the context's schemas, and thin handlers in `apps/api/src/mcp/` that read the Current User and call one service method. An HTTP middleware from `packages/auth` provides the Current User before any tool runs (Identity ADR 0002).
 
 ## Consequences
 

@@ -14,7 +14,7 @@ tester.run("@boberstack/no-comments/no-comments", noCommentsRule, {
     "/* VENDOR: Chrome caches the 301 forever */\nfetch(url);",
     "// BRIDGE: better-auth calls the database adapter through Promises.\nrun();",
     "// SAFETY: the decoder checked the length above\nconst bytes = raw as Uint8Array;",
-    '// QUARANTINE: #42 Hyperdrive in dev drops the connection\nit.skip("syncs todos", run);',
+    '// QUARANTINE: #42 the mail API rate-limits CI until its next release\nit.skip("syncs todos", run);',
     "// oxlint-disable-next-line no-debugger -- the step-through harness needs it\ndebugger;",
     "// eslint-disable-next-line react-hooks/exhaustive-deps\nuseEffect(load, []);",
     '// @ts-expect-error the environment argument is required\ncreate("x");',

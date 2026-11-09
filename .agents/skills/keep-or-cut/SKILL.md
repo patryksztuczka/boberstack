@@ -5,7 +5,7 @@ description: Set up a fresh copy of the template before any other work. If this 
 
 # Keep or cut
 
-This repository is a copy of a template that ships a working product: an api Worker, a web app, a desktop app, a mobile app, a CLI, a todos example behind sign-in, and the checks that hold them together. This skill turns that copy into the owner's project. When it finishes, it deletes itself, so the next agent that opens the repository goes straight to work.
+This repository is a copy of a template that ships a working product: an api, a web app, a desktop app, a mobile app, a CLI, a todos example behind sign-in, and the checks that hold them together. This skill turns that copy into the owner's project. When it finishes, it deletes itself, so the next agent that opens the repository goes straight to work.
 
 The template lives at https://github.com/patryksztuczka/boberstack. Every step that needs the upstream uses that URL.
 
@@ -27,22 +27,22 @@ Then offer two ways in, and say that both are fine:
 - Decide now: go through the rounds below and cut what the project will not use.
 - Not sure yet: cut nothing. Rename the project, keep every part, run locally, and start building. Everything left in place still works and passes `pnpm verify`, so it costs only the code you are not using. Any part can be cut later with its checklist, which the README's "Origin" section links to. Recommend this when the owner hesitates over what they need, or when the request is an idea they want to try.
 
-On "not sure yet", skip to "The repository", then run steps 2 to 5, skip step 6, take "only locally" in step 7, and finish with steps 8 and 9.
+On "not sure yet", skip to "The repository", then run steps 2 to 5, skip step 6, keep the container in step 7, and finish with steps 8 and 9.
 
 ### Which clients
 
-| Part            | What it is                                                | Depends on                            |
-| --------------- | --------------------------------------------------------- | ------------------------------------- |
-| The web app     | a React SPA that the api Worker serves on the same origin |                                       |
-| The desktop app | an Electron window around the web app                     | the web app                           |
-| The mobile app  | an Expo app for iOS and Android                           | `packages/ui` for the beaver only     |
-| The CLI         | Node commands: `db migrate`, `openapi`, `health`          | the deploy applies migrations with it |
+| Part            | What it is                                         | Depends on                            |
+| --------------- | -------------------------------------------------- | ------------------------------------- |
+| The web app     | a React SPA that the api serves on the same origin |                                       |
+| The desktop app | an Electron window around the web app              | the web app                           |
+| The mobile app  | an Expo app for iOS and Android                    | `packages/ui` for the beaver only     |
+| The CLI         | Node commands: `db migrate`, `openapi`, `health`   | the deploy applies migrations with it |
 
 A request for a mobile app means cutting the web and desktop apps. An api that other systems call means cutting every client.
 
 ### How the clients talk to the api
 
-The api serves one contract from `packages/domain` over two transports (root ADR 0007). Explain the difference before you ask:
+The api serves one contract from `packages/domain` over two transports (root ADR 0005). Explain the difference before you ask:
 
 - HttpApi is REST. Each operation is a URL and an HTTP method, and the api publishes an OpenAPI document generated from the contract. Anything can call it: curl, an app in another language, a partner, a webhook. The mobile app, the health check, sign-in methods and the MCP client directory use it, and so does the web app by default.
 - Effect RPC is typed calls over one endpoint. The client gets each operation's result and error types straight from the contract, with no URLs or status codes to map. Only an Effect client can call it, and there is no OpenAPI document. The web app uses it for todos when started with `VITE_TODOS_TRANSPORT=rpc`.
@@ -60,11 +60,16 @@ Recommend HttpApi alone when anyone besides the project's own TypeScript clients
 
 ### Where it will run
 
-The template deploys to Cloudflare, but the owner may not know yet, or may want another provider. Ask, and lay out the options:
+The api is a Node server in a container image, and Alchemy deploys that image (root ADR 0013). Ask first whether the owner already knows where the project will run. When they do not, recommend keeping the container and deciding later: nothing outside `apps/infra/` depends on the host, so moving is one change there. Then lay out the options:
 
-- Only locally for now. Nothing to set up: `pnpm dev` runs everything on this machine and the Cloudflare stack waits unused. Recommend this when the owner does not know yet. Nothing done now makes moving later harder: `packages/core` and the transports in `apps/api/src/app.layer.ts` do not depend on Cloudflare; only `apps/api/src/worker.ts` and `apps/infra/` do.
-- Cloudflare, ready to deploy. One Worker serves the api and the web build on one origin, and reaches any Postgres on the internet (Neon, Supabase, RDS) through Hyperdrive. The owner needs a Cloudflare account, a Postgres URL and a mail transport: only Mailpit exists, and a deployed Worker without a real transport refuses to start (root ADR 0008). Name the Worker limits: no long-lived process, no filesystem, no Node-only libraries in the api, recurring work through Cron Triggers (root ADR 0013).
-- AWS, GCP, Azure, Fly.io or a server of their own. There is no ready path. Say what it takes: a composition root that runs `AppLayer` on a Node HTTP server and serves the web build, a container image, Postgres connected directly instead of through Hyperdrive, that provider's infrastructure in place of `apps/infra/alchemy.run.ts`, and an ADR that supersedes root ADR 0013. It is a feature of its own (step 7).
+- Not decided, or only locally for now. Keep the container. `pnpm dev` runs everything on this machine, and the stack waits unused until the first deploy.
+- A server of their own: a VPS, a home server, any machine with Docker. Keep the container. `pnpm run deploy` builds the image on that machine over SSH (`DEPLOY_DOCKER_HOST`) and runs it there. The owner needs Docker on the server, a Postgres it can reach, a domain with TLS in front of the container (Caddy or Traefik) and a mail transport.
+- A cloud that runs containers: AWS (ECS, App Runner), Google Cloud Run, Fly.io, Hetzner, Kubernetes, Azure Container Apps. Keep the container. Alchemy has a resource for each except Azure, and swapping `Docker.Container` in `apps/infra/alchemy.run.ts` for it, with the same image, is a feature of its own (step 7). Azure runs the same image without Alchemy, or on AKS through `@alchemy.run/kubernetes`.
+- Cloudflare. Switch to the Worker host: one Worker serves the api and the web build on one origin and reaches any Postgres on the internet (Neon, Supabase, RDS) through Hyperdrive. The owner needs a Cloudflare account, a Postgres URL and a mail transport. Name the Worker limits: no long-lived process, no filesystem, no Node-only libraries in the api, recurring work through Cron Triggers.
+
+### How it sends mail
+
+Sign-up sends a confirmation mail, so a deployed api needs a mail provider. The template ships only Mailpit, which keeps every mail on this machine, and an api without a production transport refuses to start (root ADR 0006). Ask which provider the owner uses or wants: an HTTP API such as Resend, Postmark, Amazon SES or Mailgun works on every host, SMTP on the container, Cloudflare Email Service on the Cloudflare host. Do not pick one for them. When they do not know yet, keep Mailpit and add the transport before the first deploy. Adding it is a feature of its own (step 7).
 
 ### The repository
 
@@ -73,7 +78,7 @@ The template deploys to Cloudflare, but the owner may not know yet, or may want 
 
 ### Confirm the plan
 
-Before you change anything, write the plan back as one short list: name and scope, what stays, what goes, the transport, the hosting, the GitHub settings and the bucket. Start when the owner says yes.
+Before you change anything, write the plan back as one short list: name and scope, what stays, what goes, the transport, the hosting, the mail provider, the GitHub settings and the bucket. Start when the owner says yes.
 
 ## 2. Find the upstream commit
 
@@ -135,7 +140,7 @@ Tell the owner what it costs: a public bucket on the project's Cloudflare accoun
 Delete what the project will not use on day one. Lint, the type checker and the tests point at whatever still depends on what you removed. After each cut:
 
 - run `pnpm install`, then `pnpm verify` and `pnpm test:integration`;
-- search for the part's paths and names (`grep -rn` for the folder, the package name, the script); every hit outside a superseded ADR is a leftover;
+- search for the part's paths and names (`grep -rn` for the folder, the package name, the script); every hit is a leftover, except in an ADR this step supersedes;
 - update `AGENTS.md`, `CONTEXT-MAP.md` and the pages in `docs/user/` and `docs/operations/` that describe what you cut;
 - commit the cut on its own, such as `chore: cut the web app`.
 
@@ -152,7 +157,7 @@ Cuts touch paths that need the owner's sign-off: dependencies, the lint config, 
 - [ ] Delete `packages/domain/src/todos/` and its group in `packages/domain/src/api.ts`.
 - [ ] Delete `packages/core/src/todos/`, `apps/api/src/http/todos.http.ts`, `apps/api/src/rpc/todos.rpc.ts`, and their entries in `http.layer.ts`, `rpc.layer.ts` and `app.layer.ts`.
 - [ ] Delete `packages/database/src/todo.repository.ts`, its integration test and its export in `packages/database/src/index.ts`.
-- [ ] Add a migration that drops the todos table. Do not delete the old migration if it has ever been applied (root ADR 0014).
+- [ ] Add a migration that drops the todos table. Do not delete the old migration if it has ever been applied (root ADR 0011).
 - [ ] Delete `apps/web/src/features/todos/` and its routes in `router.tsx`, and `apps/mobile/src/features/todos/` and its screen in `apps/mobile/src/app/navigation.tsx`.
 - [ ] Delete `docs/internals/todos/`, `docs/user/todos.md`, the Todos lines in `CONTEXT-MAP.md` and `.agents/skills/verify-web/features/todos.md`.
 
@@ -163,14 +168,14 @@ Keep the folders: the next context goes in the same places. Model it with the `d
 - [ ] Delete `packages/domain/src/*/*.rpc.ts` and `apps/api/src/rpc/`.
 - [ ] Remove the RPC layer from `app.layer.ts` and the RPC auth middleware from `packages/domain/src/identity/authentication.ts` and `packages/auth/src/authentication.layer.ts`.
 - [ ] Delete the RPC clients (`packages/client-runtime/src/*/*-rpc-client.ts`) and their exports, and the `VITE_TODOS_TRANSPORT` switch in `apps/web/src/runtime.ts`, the transport line on the todos page and the RPC steps in `.agents/skills/verify-web/features/todos.md`.
-- [ ] Supersede root ADR 0007 with a new ADR.
+- [ ] Supersede root ADR 0005 with a new ADR.
 
 ### MCP
 
 - [ ] Delete `packages/domain/src/*/*.mcp.ts`, `apps/api/src/mcp/` and the MCP layer in `app.layer.ts`.
 - [ ] Delete `packages/auth/src/mcp-authentication.ts`, `access-token.errors.ts`, and `jwt()`, `mcp()` and `mcpResourceServer` in `packages/auth/src/better-auth.ts`; remove `@better-auth/mcp` and `@better-auth/oauth-provider`.
 - [ ] Delete `packages/client-runtime/src/identity/mcp-client-directory*`, the consent page and `mcp-client-request.ts` in `apps/web/src/features/auth/`, the `oauthProviderClient()` plugin, the `/oauth/consent` route, and the `/.well-known` routes in `apps/api/src/worker.ts` and `apps/web/vite.config.ts`.
-- [ ] Add a migration that drops the OAuth provider tables (root ADR 0014), delete `docs/user/ai-assistants.md`, and supersede root ADR 0015 and Identity ADR 0002.
+- [ ] Add a migration that drops the OAuth provider tables (root ADR 0011), delete `docs/user/ai-assistants.md`, and supersede root ADR 0012 and Identity ADR 0002.
 
 ### HttpApi and OpenAPI
 
@@ -178,7 +183,7 @@ Keep the folders: the next context goes in the same places. Model it with the `d
 - [ ] Delete `packages/domain/src/*/*.http-api.ts`, `packages/domain/src/api.ts`, `apps/api/src/http/` and the HTTP auth middleware.
 - [ ] Delete the `HttpApi` clients (`packages/client-runtime/src/*/*-http-client.ts` and the other `*Http*Layer`s), and provide the RPC ones in `apps/web/src/runtime.ts` and `apps/mobile/src/runtime.ts`. Drop the `VITE_TODOS_TRANSPORT` switch.
 - [ ] Drop `openapi` from the CLI and point `health` at the RPC.
-- [ ] Supersede root ADR 0007 with a new ADR.
+- [ ] Supersede root ADR 0005 with a new ADR.
 
 ### The CLI
 
@@ -193,16 +198,16 @@ Keep the folders: the next context goes in the same places. Model it with the `d
 
 - [ ] Delete `packages/auth/`, `packages/domain/src/identity/`, and `packages/client-runtime/src/identity/` and `session/`.
 - [ ] Remove `.middleware(…)` from every `HttpApiGroup` and `RpcGroup`, and stop reading `CurrentUser` in handlers; Todos would then need a new ownership rule (Todos ADR 0001).
-- [ ] Remove `@boberstack/auth` and `@alchemy.run/better-auth` from `apps/api/package.json`, `packages/auth` from `apps/api/tsconfig.json`, and the better-auth bindings from `apps/api/src/worker.ts`.
+- [ ] Remove `@boberstack/auth` and `@alchemy.run/better-auth` from `apps/api/package.json`, `packages/auth` from `apps/api/tsconfig.json`, and the better-auth wiring from `apps/api/src/app.layer.ts`, `apps/api/src/server.ts` and `apps/infra/src/worker.ts`.
 - [ ] Add a migration that drops the better-auth tables.
 - [ ] Delete the sign-in features and route guards of `apps/web` and `apps/mobile`, `docs/internals/identity/`, `docs/user/sign-in.md` and `.agents/skills/verify-web/features/auth.md`.
 
 ### The web app
 
-The desktop app serves the web app's build (root ADR 0010), so cutting the web app cuts the desktop app too.
+The desktop app serves the web app's build (root ADR 0008), so cutting the web app cuts the desktop app too.
 
 - [ ] Delete `apps/web/`, its reference in the root `tsconfig.json`, its entry in `knip.json`, and the `apps/web` overrides in `tools/oxlint/lint.config.ts` (the `react` plugin scope and `feature-boundaries`), `vite.config.ts`, `scripts/suppressions.mjs` and `.gitignore`.
-- [ ] Remove `assets` from the Worker in `apps/api/src/worker.ts`. The Worker then answers `/api/*` and `/.well-known/*` only.
+- [ ] Drop `WEB_ROOT` and the web stage of `apps/infra/api.Dockerfile`, and `assets` from the Worker in `apps/infra/src/worker.ts`. The api then answers `/api/*` and `/.well-known/*` only.
 - [ ] In `scripts/dev.mjs`, drop the `web` child and its health check and point the mobile app's `EXPO_PUBLIC_API_URL` at the api URL. In `scripts/dev-ports.mjs`, drop the `web` port and point `AUTH_BASE_URL` at the api. Remove `DEV_WEB_PORT` from `.env.schema`.
 - [ ] Delete `scripts/web-boot.mjs`, the `check:web-boot` script and its step in `.github/workflows/ci.yml`, the `browser` script and the `agent-browser` devDependency.
 - [ ] Delete the `verify-web` skill (`.agents/skills/verify-web/` and its link in `.claude/skills/`). Move its launch step into `verify-mobile`, which borrows it, and replace its mentions in `AGENTS.md`, the playbook and principle skills and `.github/pull_request_template.md` with `verify-mobile`, or with a request against the api when no client is left.
@@ -214,23 +219,39 @@ The desktop app serves the web app's build (root ADR 0010), so cutting the web a
 - [ ] Delete `apps/desktop/`, its reference in the root `tsconfig.json`, and its entries in `tools/oxlint/lint.config.ts` (the `layer-config-only-in-roots` and `run-only-in-entry-points` allow lists and the two overrides that list `apps/desktop/**`).
 - [ ] Remove the `desktop` task from `scripts/dev.mjs`, the root `dev:desktop` script and the `DESKTOP_*` variables in `.env.schema`.
 - [ ] Delete the "Desktop app" section of `docs/operations/development.md`, the desktop rows in `AGENTS.md`, and the desktop lines in `tools/oxlint/boberstack/effect/README.md` and in references 07, 10 and 13 of the `effect-best-practices` skill. `docs/operations/mobile.md` takes the app icon from `apps/desktop/resources/icon.png`: name another source.
-- [ ] Mark root ADR 0010 superseded.
+- [ ] Mark root ADR 0008 superseded.
 
 ### The mobile app
 
 - [ ] Delete `apps/mobile/`, its reference in the root `tsconfig.json`, the `apps/mobile` overrides in `tools/oxlint/lint.config.ts` and `vite.config.ts`, and its lines in `.gitignore`.
 - [ ] Remove the `mobile` task from `scripts/dev.mjs`, the `metro` port from `scripts/dev-ports.mjs`, the root `dev:mobile` script and the mobile variables in `.env.schema`.
 - [ ] Remove `expo()` and the app schemes from `packages/auth/src/better-auth.ts`, and `@better-auth/expo` from `packages/auth/package.json`.
-- [ ] Delete `docs/operations/mobile.md` and mark root ADR 0011 superseded.
+- [ ] Delete `docs/operations/mobile.md` and mark root ADR 0009 superseded.
 - [ ] Delete the `verify-mobile` skill (`.agents/skills/verify-mobile/` and its link in `.claude/skills/`), the `agent-device` devDependency and the root `device` script, the `@boberstack/frontend/accessible-controls` rule in `tools/oxlint/`, and the `verify-mobile` lines in `AGENTS.md` and the playbook skills.
 
 ## 7. Hosting
 
-Do what the owner chose in step 1.
+Do what the owner chose in step 1. The template ships two hosts; the project keeps one.
 
-- Only locally: nothing to do. Keep `apps/infra/` and `docs/operations/deploy.md`, and have the README say the project is not deployed yet.
-- Cloudflare: walk the owner through `docs/operations/deploy.md`: connect the account, set `DATABASE_URL`, add a mail transport. The first `pnpm run deploy` waits for the owner's yes (`AGENTS.md`).
-- Another provider: build it after step 9 as its own change, with the `playbook-feature` skill, before or after the owner's first request as they prefer. Leave the Cloudflare stack in place until then: the new deploy replaces it in the same change, so the project always has one that works.
+Container (not decided, only locally, a server of their own, a cloud that runs containers):
+
+- [ ] Delete `apps/infra/cloudflare.run.ts`, `apps/infra/src/`, the `*:cloudflare` scripts and `@alchemy.run/cloudflare` in `apps/infra/package.json`, `@alchemy.run/cloudflare` in the `pnpm-workspace.yaml` catalog and `workerd` in its `allowBuilds`, `cloudflare.run.ts` and `src` in `apps/infra/tsconfig.json`, `cloudflare.run.ts` in `knip.json`, and `apps/infra/src/worker.ts` in the `layer-config-only-in-roots` allow list of `tools/oxlint/lint.config.ts` and its rule defaults in `tools/oxlint/boberstack/effect/rules/`.
+- [ ] Delete the Cloudflare section of `docs/operations/deploy.md`, and the line about workerd in root ADR 0013's consequences.
+- [ ] A server of their own: walk the owner through `docs/operations/deploy.md`. The first `pnpm run deploy` waits for the owner's yes (`AGENTS.md`).
+- [ ] A cloud: build it after step 9 as its own change, with the `playbook-feature` skill, before or after the owner's first request as they prefer. The new resource replaces `Docker.Container` in the same change, so the project always has a deploy that works.
+
+Cloudflare:
+
+- [ ] `git mv apps/infra/cloudflare.run.ts apps/infra/alchemy.run.ts`. In `apps/infra/package.json`, make `dev`, `deploy` and `destroy` the Cloudflare commands without the file argument, delete the `*:cloudflare` scripts, and remove `@alchemy.run/docker` here and in the catalog.
+- [ ] Delete `apps/api/src/server.ts`, `apps/infra/api.Dockerfile`, `.dockerignore`, the `dev` and `start` scripts and `@effect/platform-node` and `@effect/sql-pg` in `apps/api/package.json`, and `Auth.layerConfig` in `packages/auth/src/better-auth.ts`.
+- [ ] Remove `PORT`, `WEB_ROOT`, `AUTH_SECRET`, `DEPLOY_DOCKER_HOST` and `API_PORT` from `.env.schema`, and `PORT` and `AUTH_SECRET` from `scripts/dev-ports.mjs`.
+- [ ] Remove `apps/api/src/server.ts` from the allow lists of `tools/oxlint/lint.config.ts` and the rule defaults; `apps/infra/src/worker.ts` stays in `layer-config-only-in-roots`.
+- [ ] Delete the container section of `docs/operations/deploy.md`, and write an ADR that supersedes root ADR 0013 with the Worker as the only host.
+- [ ] Walk the owner through the Cloudflare section of `docs/operations/deploy.md`: connect the account, set `DATABASE_URL`, add a mail transport. The first `pnpm run deploy` waits for the owner's yes (`AGENTS.md`).
+
+Mail, on either host:
+
+- [ ] When the owner named a provider, build its `Mailer` adapter after step 9 as its own change, with the `playbook-feature` skill, the way root ADR 0006 describes. Otherwise note in the README that a mail transport is needed before the first deploy.
 
 ## 8. Write the project's own words
 

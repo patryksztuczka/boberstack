@@ -5,6 +5,13 @@
     "outDir": "node_modules/.cache/tsc",
     "types": ["node"]
   },
-  "include": ["alchemy.run.ts"],
-  "references": [{ "path": "../api" }]
+  "include": ["alchemy.run.ts", "cloudflare.run.ts", "src"],
+  "references": [
+    {
+      "path": "../api"
+    },
+    {
+      "path": "../../packages/auth"
+    }
+  ]
 }

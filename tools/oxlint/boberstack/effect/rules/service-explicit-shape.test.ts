@@ -6,7 +6,7 @@ const error = { messageId: "missingApi" };
 tester.run("@boberstack/effect/service-explicit-shape", serviceExplicitApiRule, {
   valid: [
     'import { Context, Effect } from "effect"; export class TodoCatalog extends Context.Service<TodoCatalog, { readonly find: (id: string) => Effect.Effect<number> }>()("boberstack/todos/TodoCatalog") {}',
-    'import { Context } from "effect"; export const Db = Context.Service<DbApi>("boberstack/platform/database/Db");',
+    'import { Context } from "effect"; export const Db = Context.Service<DbApi>("boberstack/database/Db");',
     'const Context = { Service: () => () => class {} }; class X extends Context.Service<X>()("x") {}',
   ],
   invalid: [

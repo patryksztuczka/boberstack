@@ -50,7 +50,7 @@ Logger.layer([Logger.consoleJson, Logger.tracerLogger]);
 Layer.succeed(References.MinimumLogLevel, "Info");
 ```
 
-On the Worker, `console` output lands in Cloudflare Workers Logs, so `Logger.consoleJson` gives one searchable JSON line per log.
+`console` output goes to the container's stdout (`docker logs`), or to Workers Logs on the Cloudflare host. `Logger.consoleJson` gives one searchable JSON line per log in both.
 
 ### obs.errors: report at the boundary, once
 

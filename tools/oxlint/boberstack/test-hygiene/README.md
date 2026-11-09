@@ -15,7 +15,7 @@ Allowed: `vi.waitFor`, `expect.poll`, Testing Library's `findBy*` and `waitFor` 
 A quarantined test looks like this:
 
 ```ts
-// QUARANTINE: #42 Hyperdrive in dev drops the connection after a restart; back once Alchemy beta.90 lands
+// QUARANTINE: #<issue> <why it is off and when it comes back>
 it.skip("syncs todos", () => {});
 ```
 

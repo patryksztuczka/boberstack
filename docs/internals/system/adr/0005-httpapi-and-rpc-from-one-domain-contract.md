@@ -2,7 +2,7 @@
 
 **Status:** accepted, 2026-10-30.
 
-Everything that crosses the boundary between apps, records, branded ids, wire errors with their HTTP status, the `HttpApi` with its groups, the `RpcGroup`s and the authentication middleware tags, is defined once in `packages/domain`. The api implements it, and the web app and the CLI call it with clients derived from the same definitions. The api serves both transports from one Worker: `HttpApi` for REST and the OpenAPI document, Effect RPC for typed calls with typed errors.
+Everything that crosses the boundary between apps, records, branded ids, wire errors with their HTTP status, the `HttpApi` with its groups, the `RpcGroup`s and the authentication middleware tags, is defined once in `packages/domain`. The api implements it, and the web app and the CLI call it with clients derived from the same definitions. The api serves both transports from one handler: `HttpApi` for REST and the OpenAPI document, Effect RPC for typed calls with typed errors.
 
 A shape defined twice drifts. With one contract, a renamed field or a new error fails the build on both sides, a React Hook Form form validates with the schema the endpoint decodes, and the OpenAPI document is generated, never written by hand.
 

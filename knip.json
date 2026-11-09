@@ -7,7 +7,7 @@
       "entry": ["scripts/*.mjs", ".claude/hooks/*.mjs"]
     },
     "apps/infra": {
-      "entry": ["alchemy.run.ts"]
+      "entry": ["alchemy.run.ts", "cloudflare.run.ts"]
     },
     "apps/web": {
       "ignoreDependencies": ["tailwindcss"]

@@ -14,7 +14,7 @@ export interface SessionExpiryApi {
 }
 
 export class SessionExpiry extends Context.Service<SessionExpiry, SessionExpiryApi>()(
-  "boberstack/platform/client-runtime/session/SessionExpiry",
+  "boberstack/client-runtime/session/SessionExpiry",
 ) {
   static readonly layer = Layer.effect(
     this,

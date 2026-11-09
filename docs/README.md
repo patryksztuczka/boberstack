@@ -14,7 +14,7 @@ The [README](../README.md) has the quickstart. The runbooks:
 
 - [Local development](operations/development.md): the dev stack, ports, mail, environment variables, social sign-in, the desktop app
 - [Mobile app](operations/mobile.md): run the Expo app on a simulator, test ids, drive it with agent-device, variants, EAS builds and updates
-- [Deploy](operations/deploy.md): Alchemy, Cloudflare, the database and the mail transport
+- [Deploy](operations/deploy.md): Alchemy, the container, the Cloudflare alternative, the database and the mail transport
 - [CI](operations/ci.md): the stages and what each one checks
 - [Keep or cut](../.agents/skills/keep-or-cut/SKILL.md): set up a fresh copy of the template: rename the project, keep or cut each part, apply the GitHub settings. The skill deletes itself when it is done
 - [Pull request evidence](operations/pr-evidence.md): upload screenshots and recordings to R2 and paste them into a pull request
@@ -27,10 +27,10 @@ Then the [Context Map](../CONTEXT-MAP.md): it names the bounded contexts, how th
 
 - [Todos](internals/todos/GLOSSARY.md) and its [ADRs](internals/todos/adr)
 - [Identity](internals/identity/GLOSSARY.md) and its [ADRs](internals/identity/adr)
-- [System-wide ADRs](internals/system/adr): the monorepo, Effect, Cloudflare and Postgres, SQL and tests, comments, migrations, the shared contract, mail, packages, the desktop app, the mobile app, client state in Effect atoms, MCP
+- [System-wide ADRs](internals/system/adr): the monorepo, Effect, the container host and Postgres, SQL and tests, comments, migrations, the shared contract, mail, packages, the desktop app, the mobile app, client state in Effect atoms, MCP
 - [ADR template](internals/adr-template.md)
 
-How Effect code is written is in the [`effect-best-practices` skill](../.agents/skills/effect-best-practices/SKILL.md). Code carries no comments except `VENDOR:` notes about defects in software we do not own ([root ADR 0005](internals/system/adr/0005-keep-only-comments-about-other-peoples-defects.md)).
+How Effect code is written is in the [`effect-best-practices` skill](../.agents/skills/effect-best-practices/SKILL.md). Code carries no comments except `VENDOR:` notes about defects in software we do not own ([root ADR 0004](internals/system/adr/0004-keep-only-comments-about-other-peoples-defects.md)).
 
 ## I am an agent
 

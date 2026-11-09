@@ -9,7 +9,7 @@ All lint config lives in the root `vite.config.ts` (`lint` block); Vite+ ignores
 - Oxlint built-in plugins `typescript`, `oxc`, `import`, `promise`, `vitest`, plus `react` in `apps/web` and `packages/ui`.
 - Type-aware rules through tsgolint.
 - `import/no-cycle`.
-- `no-restricted-imports` in `apps/**` and `packages/**`: `@tanstack/react-query`, because client state lives in Effect atoms (root ADR 0012).
+- `no-restricted-imports` in `apps/**` and `packages/**`: `@tanstack/react-query`, because client state lives in Effect atoms (root ADR 0010).
 
 ### `anti-slop` (vendored from dmmulroy/anti-slop, MIT)
 
@@ -46,7 +46,7 @@ All lint config lives in the root `vite.config.ts` (`lint` block); Vite+ ignores
 
 ### `@boberstack/no-comments`
 
-`@boberstack/no-comments/no-comments` reports every comment except tool directives, JSDoc types in plain JavaScript, and lines starting with `VENDOR:`, `SAFETY:`, `BRIDGE:` or `QUARANTINE:`. It offers removal as a suggestion, never an autofix, so a reason without a home is never deleted silently. Why: root ADR 0005.
+`@boberstack/no-comments/no-comments` reports every comment except tool directives, JSDoc types in plain JavaScript, and lines starting with `VENDOR:`, `SAFETY:`, `BRIDGE:` or `QUARANTINE:`. It offers removal as a suggestion, never an autofix, so a reason without a home is never deleted silently. Why: root ADR 0004.
 
 ### `@boberstack/suppressions`
 
@@ -91,21 +91,21 @@ On `apps/api`, `apps/cli`, `apps/infra` and `packages/domain`.
 | `retry-requires-while`       | `Effect.retry` without `while` or `until`                                                                          | 03    |
 | `run-only-in-entry-points`   | `Effect.run*`, `runMain`, `ManagedRuntime.make` outside the entry points; `run*With` without `// BRIDGE:`          | 10    |
 | `service-explicit-shape`     | `Context.Service<Self>()` without an API type argument                                                             | 04    |
-| `service-id-matches-path`    | a service id that is not `boberstack/<path>/<Class>` (autofix)                                                     | 05    |
+| `service-id-matches-path`    | a service id that is not `boberstack/<package>/<path>/<Class>` (autofix)                                           | 05    |
 | `tagged-error-naming`        | an error class without the `Error` suffix, with a tag unlike its name, or outside `*.errors.ts`                    | 02    |
 | `try-requires-catch`         | `Effect.try` or `Effect.tryPromise` without `{ try, catch }`                                                       | 02    |
 
-Not ported from the upstream Effect plugin: `bounded-concurrency`, `fork-detach-reason` and `no-throw`. Their rules ([09](09-concurrency-and-resources.md), [02](02-typed-errors.md)) are checked in review.
+No rule checks bounded concurrency or the reason for a detached fork ([09](09-concurrency-and-resources.md)); review does.
 
 ## Configured paths
 
-| Option                             | Value                                                                                                                                                                                                       |
-| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `run-only-in-entry-points` `allow` | `apps/api/src/worker.ts`, `apps/cli/src/main.ts`, `apps/desktop/src/main.ts`, `apps/web/src/runtime.ts`, `apps/infra/alchemy.run.ts`                                                                        |
-| `layer-config-only-in-roots` roots | `apps/api/src/worker.ts`, `apps/api/src/app.layer.ts`, `apps/cli/src/main.ts`, `apps/cli/src/commands/*.ts`, `apps/desktop/src/main.ts`                                                                     |
-| `module-boundaries`                | `sourceRoot: packages/core/src`, `indexOnly: packages/*/src/**`, `rootFiles: apps/*/src/*`                                                                                                                  |
-| `service-id-matches-path`          | prefix `boberstack`, `sourceRoot: packages/core/src`, extra roots `packages/domain/src` → `boberstack/domain` and `packages/*/src` → `boberstack/platform/*` (the folder name fills `*`), `idSource: class` |
-| `effectRules` override `files`     | `apps/api`, `apps/cli`, `apps/desktop`, `apps/infra`, `packages/**`                                                                                                                                         |
-| `tagged-error-naming`              | `filePattern: \.errors\.ts$`                                                                                                                                                                                |
+| Option                             | Value                                                                                                                                                               |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `run-only-in-entry-points` `allow` | `apps/api/src/server.ts`, `apps/cli/src/main.ts`, `apps/desktop/src/main.ts`, `**/vitest.global-setup.ts`                                                           |
+| `layer-config-only-in-roots` roots | `apps/api/src/server.ts`, `apps/api/src/app.layer.ts`, `apps/infra/src/worker.ts`, `apps/cli/src/main.ts`, `apps/cli/src/commands/*.ts`, `apps/desktop/src/main.ts` |
+| `module-boundaries`                | `sourceRoot: packages/core/src`, `indexOnly: packages/*/src/**`, `rootFiles: apps/*/src/*`                                                                          |
+| `service-id-matches-path`          | prefix `boberstack/core`, `sourceRoot: packages/core/src`, extra root `packages/*/src` → `boberstack/*` (the folder name fills `*`), `idSource: class`              |
+| `effectRules` override `files`     | `apps/api`, `apps/cli`, `apps/desktop`, `apps/infra`, `packages/**`                                                                                                 |
+| `tagged-error-naming`              | `filePattern: \.errors\.ts$`                                                                                                                                        |
 
 Changing any of these, or turning a rule off, needs owner sign-off ([AGENTS.md](../../../../AGENTS.md)). A targeted `// oxlint-disable-next-line <rule> -- <reason>` is the escape hatch for one real boundary.

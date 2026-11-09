@@ -21,5 +21,5 @@ export interface TodoStoreApi {
 }
 
 export class TodoStore extends Context.Service<TodoStore, TodoStoreApi>()(
-  "boberstack/todos/TodoStore",
+  "boberstack/core/todos/TodoStore",
 ) {}

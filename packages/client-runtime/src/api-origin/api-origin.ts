@@ -5,7 +5,7 @@ export interface ApiOriginApi {
 }
 
 export class ApiOrigin extends Context.Service<ApiOrigin, ApiOriginApi>()(
-  "boberstack/platform/client-runtime/api-origin/ApiOrigin",
+  "boberstack/client-runtime/api-origin/ApiOrigin",
 ) {
   static readonly layer = (origin: string) => Layer.succeed(this, { origin });
 }

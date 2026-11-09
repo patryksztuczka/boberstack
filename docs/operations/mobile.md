@@ -1,6 +1,6 @@
 # Mobile app
 
-`apps/mobile` is a native Expo app that talks to the same api as the web app (root ADR 0011). It signs in with email and password and manages todos. iOS is the platform we run day to day; Android builds from the same code.
+`apps/mobile` is a native Expo app that talks to the same api as the web app (root ADR 0009). It signs in with email and password and manages todos. iOS is the platform we run day to day; Android builds from the same code.
 
 ## Set up once
 
@@ -17,7 +17,7 @@ pnpm dev:mobile                                # builds the development variant 
 pnpm dev:mobile -- --device "iPhone 17"        # pick the simulator; arguments after -- go to expo run:ios
 ```
 
-The command needs the dev stack of this checkout to be ready. It sets `APP_VARIANT=development` and points `EXPO_PUBLIC_API_URL` at the web URL `pnpm dev` printed, where Vite forwards `/api` to the Worker, the same way the web app reaches it. Metro runs on a port derived from the checkout path like the other dev ports; `DEV_METRO_PORT` overrides it.
+The command needs the dev stack of this checkout to be ready. It sets `APP_VARIANT=development` and points `EXPO_PUBLIC_API_URL` at the web URL `pnpm dev` printed, where Vite forwards `/api` to the api, the same way the web app reaches it. Metro runs on a port derived from the checkout path like the other dev ports; `DEV_METRO_PORT` overrides it.
 
 The first run generates `apps/mobile/ios` (Git ignores it), installs the pods and compiles the app, which takes several minutes. Later runs reuse the build and only start Metro. A change under `apps/mobile/src` or in a workspace package reloads in the simulator. A new native dependency or a change to `app.config.ts` needs a new native build: run `pnpm --filter @boberstack/mobile exec expo prebuild --clean` and then `pnpm dev:mobile` again.
 
@@ -96,7 +96,7 @@ Reading the accelerometer needs no permission on iOS. The `expo-sensors` config 
 
 ## How the session works
 
-The better-auth Expo plugin keeps the session cookie in the iOS keychain or the Android keystore through `expo-secure-store`. The screens read their data from the shared atoms in `packages/client-runtime` (root ADR 0012). `apps/mobile/src/runtime.ts` seeds them with the clients over a `fetch` that sends that cookie in a `cookie` header, so the api checks it the same way it checks the browser's cookie. The Todos screen keeps its atoms in its own registry (`apps/mobile/src/app/session-atoms.tsx`): pull to refresh re-runs the list, and leaving the screen interrupts what is still running. When the api answers 401 to any call, the client reports it, the app drops the session and shows the sign-in screen with a note that the session expired. Signing out removes the Todos screen, and its registry and cached todos go with it.
+The better-auth Expo plugin keeps the session cookie in the iOS keychain or the Android keystore through `expo-secure-store`. The screens read their data from the shared atoms in `packages/client-runtime` (root ADR 0010). `apps/mobile/src/runtime.ts` seeds them with the clients over a `fetch` that sends that cookie in a `cookie` header, so the api checks it the same way it checks the browser's cookie. The Todos screen keeps its atoms in its own registry (`apps/mobile/src/app/session-atoms.tsx`): pull to refresh re-runs the list, and leaving the screen interrupts what is still running. When the api answers 401 to any call, the client reports it, the app drops the session and shows the sign-in screen with a note that the session expired. Signing out removes the Todos screen, and its registry and cached todos go with it.
 
 ## Builds and updates with EAS
 

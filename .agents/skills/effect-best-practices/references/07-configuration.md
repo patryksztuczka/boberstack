@@ -7,7 +7,7 @@
 ### config.pair: every configurable layer has `layer(options)` and `layerConfig`
 
 - `layer(options)` takes plain values. Tests use it.
-- `layerConfig` reads `Config.*` and calls `layer(options)`. Only composition roots use it (`@boberstack/effect/layer-config-only-in-roots`): `apps/api/src/worker.ts`, `apps/api/src/app.layer.ts`, `apps/cli/src/main.ts`, `apps/cli/src/commands/*.ts`, `apps/desktop/src/main.ts`.
+- `layerConfig` reads `Config.*` and calls `layer(options)`. Only composition roots use it (`@boberstack/effect/layer-config-only-in-roots`): `apps/api/src/server.ts`, `apps/api/src/app.layer.ts`, `apps/infra/src/worker.ts`, `apps/cli/src/main.ts`, `apps/cli/src/commands/*.ts`, `apps/desktop/src/main.ts`.
 
 There is no global config object. A value a module needs from the deployment is a service named after what the module does with it, so the module never sees a variable name.
 
@@ -19,7 +19,7 @@ export interface AuthSettingsApi {
 }
 
 export class AuthSettings extends Context.Service<AuthSettings, AuthSettingsApi>()(
-  "boberstack/platform/auth/AuthSettings",
+  "boberstack/auth/AuthSettings",
 ) {
   static readonly layer = (settings: AuthSettingsApi) => Layer.succeed(AuthSettings, settings);
 
@@ -43,7 +43,7 @@ const TestConfig = ConfigProvider.layer(ConfigProvider.fromUnknown({ BETTER_AUTH
 
 ### config.schema: every variable is declared in `.env.schema`
 
-[`.env.schema`](../../../../.env.schema) lists every variable `Config` reads, with its type, whether it is `@sensitive` and whether production requires it. It holds no values: defaults stay in code (`Config.withDefault`), local values go in `.env.local` (gitignored). [varlock](https://varlock.dev) loads and validates them: `pnpm env:check` checks the current environment, and the `apps/infra` scripts run `alchemy` under `varlock run`, so `pnpm dev` and `pnpm run deploy` stop on a missing or malformed value before anything starts. Alchemy's own `.env` loading is off (`--env-file /dev/null`), so varlock is the only loader.
+[`.env.schema`](../../../../.env.schema) lists every variable `Config` reads, with its type, whether it is `@sensitive` and whether production requires it. It holds no values: defaults stay in code (`Config.withDefault`), local values go in `.env.local` (gitignored). [varlock](https://varlock.dev) loads and validates them: `pnpm env:check` checks the current environment, and the api's `dev` script and the `apps/infra` scripts run under `varlock run`, so `pnpm dev` and `pnpm run deploy` stop on a missing or malformed value before anything starts. Alchemy's own `.env` loading is off (`--env-file /dev/null`), so varlock is the only loader.
 
 `@boberstack/effect/config-in-env-schema` keeps the code and the schema in step: a `Config` name must be a string literal declared in the schema, and `Config.Redacted` must match `@sensitive`. Adding a variable is two lines: the schema entry and the `Config` read.
 
@@ -63,12 +63,13 @@ betterAuth({ secret: Redacted.value(secret) });
 
 ### config.where: where the values come from
 
-| Runtime    | Source                                                                                                                                                                       |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| api Worker | Alchemy's Worker bridge installs a `ConfigProvider` over the Worker's `env`; `alchemy dev` and `alchemy deploy` bind the values `varlock run` put in the process environment |
-| `apps/cli` | the default `ConfigProvider` reads `process.env`; `pnpm dev` and docker compose set the local database URL                                                                   |
-| `apps/web` | build-time `import.meta.env` values, read once in `runtime.ts` or `vite.config.ts`, never in a feature                                                                       |
-| tests      | `layer(options)` with plain values; no `Config` at all ([12](12-test-layers-and-infrastructure.md))                                                                          |
+| Runtime    | Source                                                                                                                                                                                               |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| api server | the default `ConfigProvider` reads `process.env`; `pnpm dev` sets it through `varlock run`, and the container stack passes the container its environment                                             |
+| api Worker | on the Cloudflare host, Alchemy's Worker bridge installs a `ConfigProvider` over the Worker's `env`; `alchemy dev` and `alchemy deploy` bind the values `varlock run` put in the process environment |
+| `apps/cli` | the default `ConfigProvider` reads `process.env`; `pnpm dev` and docker compose set the local database URL                                                                                           |
+| `apps/web` | build-time `import.meta.env` values, read once in `runtime.ts` or `vite.config.ts`, never in a feature                                                                                               |
+| tests      | `layer(options)` with plain values; no `Config` at all ([12](12-test-layers-and-infrastructure.md))                                                                                                  |
 
 A secret goes into the stack through `.env.local`, `.env.production.local` or the deploy's environment, never into a committed file.
 

@@ -13,4 +13,4 @@ Everything else belongs in a name, a type, a test, an ADR (`docs/internals/<cont
 
 The rule reports a run of adjacent comment lines once and offers to remove it as a suggestion, never as a fix. Move the content first, then run `vp lint --fix-suggestions <file>`.
 
-Ported from `single-source-panel/ssp-audiomatching` (`tools/oxlint/ssp-comments`), with the `THROW:` and `DETACH:` markers dropped because their rules are not used here. Adapted from [rat-stack's `no-comments` rule](https://github.com/joelhooks/rat-stack/blob/main/scripts/oxlint-plugin-no-comments.ts), MIT, Copyright (c) 2026 Joel Hooks.
+Ported from `single-source-panel/ssp-audiomatching` (`tools/oxlint/ssp-comments`). Adapted from [rat-stack's `no-comments` rule](https://github.com/joelhooks/rat-stack/blob/main/scripts/oxlint-plugin-no-comments.ts), MIT, Copyright (c) 2026 Joel Hooks.

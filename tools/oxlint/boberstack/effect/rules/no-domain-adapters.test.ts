@@ -227,7 +227,7 @@ tester.run("@boberstack/effect/no-domain-adapters", noDomainAdaptersRule, {
       errors: [{ messageId: "vendor" }],
     },
     {
-      code: 'const { Neon } = await import("@alchemy.run/neon");',
+      code: 'const { Docker } = await import("@alchemy.run/docker");',
       filename: domain,
       errors: [{ messageId: "vendor" }],
     },

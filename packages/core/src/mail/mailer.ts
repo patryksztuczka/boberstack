@@ -19,4 +19,4 @@ export interface MailerApi {
   readonly send: (message: MailMessage) => Effect.Effect<void, MailDeliveryError>;
 }
 
-export class Mailer extends Context.Service<Mailer, MailerApi>()("boberstack/mail/Mailer") {}
+export class Mailer extends Context.Service<Mailer, MailerApi>()("boberstack/core/mail/Mailer") {}

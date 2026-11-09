@@ -47,13 +47,15 @@ A call to another system gets `Effect.timeout`. It adds `Cause.TimeoutError` to 
 yield * client.send(request).pipe(Effect.timeout("5 seconds"));
 ```
 
-A Worker request has a CPU and wall-clock budget set by Cloudflare. A timeout shorter than that budget turns a hang into a typed failure instead of a killed isolate.
+A timeout turns a hang into a typed failure instead of a request that waits until the client gives up. On the Cloudflare host, keep it shorter than the Worker's CPU and wall-clock budget, or Cloudflare kills the isolate first.
 
 ## Scheduled work
 
-### jobs.where: a Worker has no background loop
+### jobs.where: a loop on the server, a Cron Trigger on a Worker
 
-A Cloudflare Worker lives for one event. `Effect.repeat(Schedule.spaced(…))` inside the api Worker stops when the request ends, so recurring work is a Cron Trigger declared in the Alchemy stack (`apps/infra/alchemy.run.ts`), handled by the Worker as a scheduled event. On Node (`apps/cli`), an in-process `Layer.effectDiscard(work.pipe(Effect.repeat(…), Effect.forkScoped))` is fine.
+The api server is a long-lived Node process, so recurring work is a layer that `server.ts` provides: `Layer.effectDiscard(work.pipe(Effect.repeat(…), Effect.forkScoped))`. Every running container runs its own copy of the loop, so the claim in `jobs.idempotency` decides which one does the work. `apps/cli` can run the same layer.
+
+A Cloudflare Worker lives for one event. `Effect.repeat(Schedule.spaced(…))` inside it stops when the request ends, so on the Cloudflare host recurring work is a Cron Trigger declared in the Cloudflare stack and handled by the Worker as a scheduled event.
 
 ### jobs.shape: a job is `run(period)`; the entry point picks the period
 
@@ -61,6 +63,6 @@ The scheduled handler computes the period it is responsible for from the Clock, 
 
 ### jobs.idempotency: a job claims `<job>/<period>` before working
 
-Cron Triggers fire at least once and a failed run is retried by hand, so a job must be safe to run twice for the same period. Claim the key with one statement its constraint decides (`INSERT … ON CONFLICT DO NOTHING RETURNING`) in the job's store, skip a period already completed, and give a run stuck in `running` a staleness timeout.
+A Cron Trigger fires at least once, every container runs its own loop, and a failed run is retried by hand, so a job must be safe to run twice for the same period. Claim the key with one statement its constraint decides (`INSERT … ON CONFLICT DO NOTHING RETURNING`) in the job's store, skip a period already completed, and give a run stuck in `running` a staleness timeout.
 
 Source: `effect/src/Effect.ts` (`retry`, `timeout`), `Schedule.ts`, `Predicate.ts` (`isTagged`).

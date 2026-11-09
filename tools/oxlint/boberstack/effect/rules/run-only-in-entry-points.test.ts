@@ -11,11 +11,7 @@ tester.run("@boberstack/effect/run-only-in-entry-points", runOnlyInEntryPointsRu
     },
     {
       code: 'import { Effect } from "effect"; export default { fetch: (req) => Effect.runPromise(handle(req)) };',
-      filename: "apps/api/src/worker.ts",
-    },
-    {
-      code: 'import { Effect } from "effect"; await Effect.runPromise(stack);',
-      filename: "apps/infra/alchemy.run.ts",
+      filename: "apps/api/src/server.ts",
     },
     {
       code: 'import { ManagedRuntime } from "effect"; export const runtime = ManagedRuntime.make(AppLayer);',
@@ -50,10 +46,15 @@ tester.run("@boberstack/effect/run-only-in-entry-points", runOnlyInEntryPointsRu
     },
     {
       code: 'import { Effect } from "effect"; const run = Effect.runPromiseWith(services);',
-      filename: "apps/api/src/worker.ts",
+      filename: "apps/api/src/server.ts",
     },
   ],
   invalid: [
+    {
+      code: 'import { Effect } from "effect"; await Effect.runPromise(stack);',
+      filename: "apps/infra/alchemy.run.ts",
+      errors: [{ messageId: "notEntry" }],
+    },
     {
       code: 'import { Effect } from "effect"; export const handler = (req) => Effect.runPromise(handle(req));',
       filename: route,

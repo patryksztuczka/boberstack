@@ -20,7 +20,7 @@ yield * Effect.forEach(emails, invite, { concurrency: "unbounded" });
 await Promise.all(emails.map((email) => Effect.runPromise(invite(email))));
 ```
 
-A Worker request holds few connections. Through Hyperdrive, keep database fan-out inside one request at a single-digit concurrency. This rule is reviewed, not linted.
+One request must not take the whole Postgres pool, and on the Cloudflare host a Worker request holds few connections through Hyperdrive. Keep database fan-out inside one request at a single-digit concurrency. This rule is reviewed, not linted.
 
 ### conc.background: background fibers belong to a scope
 
@@ -39,7 +39,7 @@ static readonly layer = Layer.effect(
 );
 ```
 
-On the Worker, a fiber still running when the response is sent dies with the request. Work that must finish after the response needs the Worker's `waitUntil`, wired once in `worker.ts`.
+On the Node server, a fiber in a layer's `FiberSet` keeps running after the response and stops at shutdown. On the Cloudflare host, a fiber still running when the response is sent dies with the request. Work that must finish after the response needs the Worker's `waitUntil`, wired once in `apps/infra/src/worker.ts`.
 
 v4 renames: `Effect.fork` is `Effect.forkChild`, `Effect.forkDaemon` is `Effect.forkDetach`.
 

@@ -4,7 +4,7 @@ This file is the repo law for agents and contributors: what the project is for, 
 
 ## Project thesis
 
-`boberstack` is a starting point for a TypeScript product built on Effect v4 end to end: an api on Cloudflare Workers, a React SPA served by the same Worker, a Node CLI, and Postgres from any provider, deployed as one Alchemy stack. The todos and sign-in examples are there to be replaced.
+`boberstack` is a starting point for a TypeScript product built on Effect v4 end to end: an api that runs as a Node server in a container, a React SPA served by the same server, a Node CLI, and Postgres from any provider, deployed as one Alchemy stack. A Cloudflare Workers host ships as the alternative. The todos and sign-in examples are there to be replaced.
 
 It optimises for a codebase an agent can extend without making it worse. Every rule that can be a lint rule, a type or a hook is one, so a mistake fails `pnpm verify` instead of waiting for a reviewer. Rules that cannot be checked live in one place each and are short.
 
@@ -14,10 +14,10 @@ When a project starts from this template, the `keep-or-cut` skill rewrites this 
 
 - If `.agents/skills/keep-or-cut/` exists, nobody has set this project up from the template yet. Run the `keep-or-cut` skill before any other task.
 - Read [CONTEXT-MAP.md](CONTEXT-MAP.md) and the context's `GLOSSARY.md` before naming anything. Code uses the glossary's words.
-- Features are service methods in `packages/core/src/<context>/`; apps compose them and transports stay thin (root ADR 0009). An HttpApi or RPC handler decodes input, calls one service method and maps its errors, if they are not already wire errors. Pure work (a slug, a label, a calculation) can be a plain function next to the service.
+- Features are service methods in `packages/core/src/<context>/`; apps compose them and transports stay thin (root ADR 0007). An HttpApi or RPC handler decodes input, calls one service method and maps its errors, if they are not already wire errors. Pure work (a slug, a label, a calculation) can be a plain function next to the service.
 - Before writing or reviewing Effect code, load the `effect-best-practices` skill. Before using an Effect, Alchemy or better-auth API you have not seen in this repo, read it at the pinned version: `pnpm sources:fetch` clones the tagged sources into `.repos/` (gitignored). Do not invent APIs.
-- SQL lives only in `packages/database/`, and a store is tested on real Postgres, never with an in-memory fake (root ADR 0004).
-- No prose comments in code. A workaround for someone else's bug keeps a `VENDOR:` comment (root ADR 0005).
+- SQL lives only in `packages/database/`, and a store is tested on real Postgres, never with an in-memory fake (root ADR 0003).
+- No prose comments in code. A workaround for someone else's bug keeps a `VENDOR:` comment (root ADR 0004).
 - Add a lint rule before cleaning up a pattern by hand, so it cannot come back. When you are corrected for the same thing twice, use the `correct` skill.
 - A new version replaces the old one in the same change: no `V2`, no re-export kept for compatibility (the `principle-no-shims` skill).
 - Work by task type with the `playbook-*` skills: bug fix, feature, refactoring, investigation, prototype, perf issue, hillclimb.
@@ -30,7 +30,7 @@ When a project starts from this template, the `keep-or-cut` skill rewrites this 
 | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `pnpm install`                                        | installs; `prepare` runs `vp config`, which installs the Git hooks                                                                                                                 |
 | `pnpm db:up`                                          | starts local Postgres in Docker                                                                                                                                                    |
-| `pnpm dev`                                            | local Postgres, `alchemy dev` for the api Worker, and `vp dev` for the web app with `/api` proxied to the Worker. Ports are per checkout (below)                                   |
+| `pnpm dev`                                            | local Postgres, the api server under `node --watch`, and `vp dev` for the web app with `/api` proxied to the api. Ports are per checkout (below)                                   |
 | `pnpm check`                                          | `vp check`: oxfmt and oxlint, type-aware                                                                                                                                           |
 | `pnpm typecheck`                                      | TypeScript 7 with Effect diagnostics                                                                                                                                               |
 | `pnpm test`                                           | unit tests in every package                                                                                                                                                        |
@@ -40,7 +40,8 @@ When a project starts from this template, the `keep-or-cut` skill rewrites this 
 | `pnpm check:deps`                                     | fails on a dependency that is not an exact version                                                                                                                                 |
 | `pnpm check:doc-pins`                                 | fails when a document names a version the workspace does not install                                                                                                               |
 | `pnpm check:knip`                                     | fails on unused files, exports and dependencies                                                                                                                                    |
-| `pnpm check:web-boot`                                 | opens the built `apps/web/dist`, served like the Worker, in Chrome through agent-browser; fails when a page does not mount or logs an error                                        |
+| `pnpm check:web-boot`                                 | opens the built `apps/web/dist`, served like the api serves it, in Chrome through agent-browser; fails when a page does not mount or logs an error                                 |
+| `pnpm check:api-image`                                | builds `apps/infra/api.Dockerfile`, runs it against a throwaway Postgres migrated with `cli db migrate` and checks that it serves the api and the web app; needs Docker            |
 | `pnpm env:check`                                      | `varlock load`: validates the environment, `.env.local` included, against `.env.schema`                                                                                            |
 | `pnpm check:suppressions`                             | counts lint and type-check suppressions against `suppressions.baseline.json`; reports growth, never fails                                                                          |
 | `pnpm check:changed`                                  | format, lint, typecheck and unit tests for the files changed since `master`                                                                                                        |
@@ -52,10 +53,10 @@ When a project starts from this template, the `keep-or-cut` skill rewrites this 
 | `pnpm -s device <command>`                            | runs agent-device, which drives the iOS simulator and the Android emulator for the `verify-mobile` skill ([mobile](docs/operations/mobile.md#drive-it-with-agent-device))          |
 | `pnpm pr-evidence <files>`                            | uploads screenshots and recordings to the R2 bucket and prints the Markdown for a pull request ([pr-evidence](docs/operations/pr-evidence.md))                                     |
 | `pnpm sources:fetch`                                  | clones the pinned sources of Effect, Alchemy and better-auth into `.repos/`                                                                                                        |
-| `pnpm run deploy`                                     | `alchemy deploy` of `apps/infra/alchemy.run.ts`. Plain `pnpm deploy` is pnpm's own command                                                                                         |
+| `pnpm run deploy`                                     | builds, migrates, then `alchemy deploy` of the container stack `apps/infra/alchemy.run.ts`. Plain `pnpm deploy` is pnpm's own command                                              |
 | `pnpm init:project -- --name <name> --scope <@scope>` | renames the project, the package scope and the service-id prefix                                                                                                                   |
 
-`pnpm dev` derives its ports from a hash of the checkout path, so worktrees run side by side; each also gets its own Compose project, database and Mailpit inbox (local mail, root ADR 0008). `node scripts/dev.mjs ports` prints them, `.dev/state.json` holds the running URLs and pids, `.dev/logs/` the logs, and `DEV_WEB_PORT`, `DEV_API_PORT`, `DEV_POSTGRES_PORT`, `DEV_MAILPIT_PORT` and `DEV_METRO_PORT` (the mobile app's Metro) override them.
+`pnpm dev` derives its ports from a hash of the checkout path, so worktrees run side by side; each also gets its own Compose project, database and Mailpit inbox (local mail, root ADR 0006). `node scripts/dev.mjs ports` prints them, `.dev/state.json` holds the running URLs and pids, `.dev/logs/` the logs, and `DEV_WEB_PORT`, `DEV_API_PORT`, `DEV_POSTGRES_PORT`, `DEV_MAILPIT_PORT` and `DEV_METRO_PORT` (the mobile app's Metro) override them.
 
 Build the change first, then check it once at the end: `pnpm check:changed` for what you touched, then `pnpm verify`, plus `pnpm test:integration` when you touched SQL, migrations, auth or an endpoint, plus the `verify-web` skill when you touched the web UI and `verify-mobile` when you touched the mobile app.
 
@@ -67,19 +68,19 @@ Git hooks come from Vite+: `pre-commit` runs `vp staged`, `commit-msg` checks th
 | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | a record, id or error the client sees  | `packages/domain/src/<context>/`                                                                                                                                      |
 | an endpoint or an RPC                  | the contract in `packages/domain/src/<context>/*.http-api.ts` / `*.rpc.ts`, the handler in `apps/api/src/http/` / `rpc/`                                              |
-| an MCP tool                            | a toolkit in `packages/domain/src/<context>/*.mcp.ts`, its handlers in `apps/api/src/mcp/` (root ADR 0015)                                                            |
+| an MCP tool                            | a toolkit in `packages/domain/src/<context>/*.mcp.ts`, its handlers in `apps/api/src/mcp/` (root ADR 0012)                                                            |
 | business logic                         | `packages/core/src/<context>/x.service.ts`                                                                                                                            |
 | a query or a table                     | a store port in the core module, SQL in `packages/database/src/x.repository.ts`, a new file in `packages/database/migrations/`                                        |
 | a typed api client the apps share      | a port and its HttpApi or RPC layer in `packages/client-runtime/src/<context>/`; the app provides `HttpClient` and `ApiOrigin`                                        |
-| data a screen reads or changes         | an atom in `packages/client-runtime/src/<context>/x.atoms.ts` on `clientRuntime`; the app reads it with `@effect/atom-react` (root ADR 0012)                          |
-| a call to another system               | a port in the core module, the adapter in its own package, `packages/<capability>/` (root ADR 0009)                                                                   |
-| an email                               | a template in `packages/core/src/mail/templates/`, sent through the `Mailer` port (root ADR 0008)                                                                     |
-| an entry point that runs services      | a composition root in `apps/<name>/` that provides core with adapter packages, and its own source of identity (root ADR 0009)                                         |
+| data a screen reads or changes         | an atom in `packages/client-runtime/src/<context>/x.atoms.ts` on `clientRuntime`; the app reads it with `@effect/atom-react` (root ADR 0010)                          |
+| a call to another system               | a port in the core module, the adapter in its own package, `packages/<capability>/` (root ADR 0007)                                                                   |
+| an email                               | a template in `packages/core/src/mail/templates/`, sent through the `Mailer` port (root ADR 0006)                                                                     |
+| an entry point that runs services      | a composition root in `apps/<name>/` that provides core with adapter packages, and its own source of identity (root ADR 0007)                                         |
 | an env var or secret                   | a line in `.env.schema` (`@sensitive` for a secret), read with `Config` in a `layerConfig` in an adapter package; the local value in `.env.local`                     |
 | a screen                               | `apps/web/src/features/<name>/`; what other features may use is exported from its `index.ts`                                                                          |
 | a mobile screen                        | `apps/mobile/src/features/<name>/`, by the same rules as a web screen; every control gets a `testID` ([mobile](docs/operations/mobile.md#accessibility-and-test-ids)) |
 | a UI primitive                         | `packages/ui`                                                                                                                                                         |
-| desktop shell behaviour                | `apps/desktop/src/`: decisions as plain functions with tests, Electron calls only in `main.ts` (root ADR 0010)                                                        |
+| desktop shell behaviour                | `apps/desktop/src/`: decisions as plain functions with tests, Electron calls only in `main.ts` (root ADR 0008)                                                        |
 | a bounded context                      | `CONTEXT-MAP.md`, `docs/internals/<context>/GLOSSARY.md`, then code (the `domain-modeling` skill)                                                                     |
 | a decision worth remembering           | an ADR (the `domain-modeling` skill)                                                                                                                                  |
 | how a user does something              | a section in `docs/user/<feature>.md`, in the product's voice ([docs/README.md](docs/README.md#writing-user-docs))                                                    |

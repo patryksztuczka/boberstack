@@ -6,7 +6,7 @@
 2. Typecheck.
 3. Unit tests, only for the packages a change touches and their dependents. The stage fails if a changed package was not selected, so it cannot pass by testing nothing.
 4. Build.
-5. Integration: the Testcontainers Postgres suites.
+5. Integration: the Testcontainers Postgres suites, then `pnpm check:api-image`, which builds the api image and checks that it serves the api and the web app.
 
 The `CI OK` job fails when any stage failed or was cancelled and passes when they passed or were skipped, so the default-branch ruleset requires it instead of each stage ([GitHub settings](../../.agents/skills/keep-or-cut/SKILL.md#4-github-settings)).
 

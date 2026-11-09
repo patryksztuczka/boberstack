@@ -11,7 +11,7 @@ tester.run("@boberstack/effect/layer-config-only-in-roots", layerConfigOnlyInRoo
     },
     {
       code: "export default class Api extends Worker { layer = AppLayer.pipe(Layer.provide(Database.layerConfig)); }",
-      filename: "apps/api/src/worker.ts",
+      filename: "apps/infra/src/worker.ts",
     },
     {
       code: "program.pipe(Effect.provide(Database.layerConfig));",

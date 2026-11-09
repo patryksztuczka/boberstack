@@ -30,7 +30,7 @@ export interface MailpitInboxApi {
 }
 
 export class MailpitInbox extends Context.Service<MailpitInbox, MailpitInboxApi>()(
-  "boberstack/platform/mail/testing/MailpitInbox",
+  "boberstack/mail/testing/MailpitInbox",
 ) {
   static readonly layer = (url: URL) =>
     Layer.effect(

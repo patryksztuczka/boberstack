@@ -81,7 +81,11 @@ export interface McpResourceServerApi {
   readonly accessTokenUserOf: (token: string) => Effect.Effect<User, AccessTokenError>;
 }
 
-const makeAuth = Effect.gen(function* () {
+interface AuthSecretOption {
+  readonly secret?: Effect.Effect<Redacted.Redacted<string>>;
+}
+
+const makeAuth = Effect.fnUntraced(function* (secretOption: AuthSecretOption) {
   const baseURL = yield* Config.String("AUTH_BASE_URL").pipe(Config.option);
   const trustedOrigins = yield* Config.String("AUTH_TRUSTED_ORIGINS").pipe(Config.withDefault(""));
   const social = yield* SocialSignIn;
@@ -107,6 +111,7 @@ const makeAuth = Effect.gen(function* () {
   const mcpResource = Option.map(baseURL, (origin) => new URL(MCP_PATH, origin).href);
 
   const betterAuth = yield* BetterAuth({
+    ...secretOption,
     basePath: "/api/auth",
     baseURL: Option.getOrUndefined(baseURL),
     trustedOrigins: trustedOriginsFrom(trustedOrigins),
@@ -203,8 +208,15 @@ const makeAuth = Effect.gen(function* () {
   };
 });
 
-export class Auth extends Context.Service<Auth, Effect.Success<typeof makeAuth>>()(
-  "boberstack/platform/auth/Auth",
+export class Auth extends Context.Service<Auth, Effect.Success<ReturnType<typeof makeAuth>>>()(
+  "boberstack/auth/Auth",
 ) {
-  static readonly layer = Layer.effect(this, makeAuth);
+  static readonly layer = Layer.effect(this, makeAuth({}));
+
+  static readonly layerConfig = Layer.effect(
+    this,
+    Effect.flatMap(Config.Redacted("AUTH_SECRET"), (secret) =>
+      makeAuth({ secret: Effect.succeed(secret) }),
+    ),
+  );
 }

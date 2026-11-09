@@ -1,6 +1,6 @@
 # 12 · Test layers and infrastructure
 
-Test layers inject failures or replace systems Postgres cannot stand in for. Database-backed suites use a real PostgreSQL in a disposable Testcontainers container and cannot reach a development or production database. Why no in-memory store: root ADR 0004.
+Test layers inject failures or replace systems Postgres cannot stand in for. Database-backed suites use a real PostgreSQL in a disposable Testcontainers container and cannot reach a development or production database. Why no in-memory store: root ADR 0003.
 
 ## Rules
 
@@ -20,7 +20,7 @@ vi.mock("../todos/todo.store.ts", () => ({/* … */}));
 
 ### tl.postgres: one real Postgres per test run
 
-`packages/database/src/testing/pg-test.ts` starts one `postgres` container per `pnpm test:integration` run, never one per test or per file, and applies every file in `packages/database/migrations/` in order. The tables tests see are the tables production has (root ADR 0014). The container is a scoped resource: `Effect.acquireRelease` starts it and stops it.
+`packages/database/src/testing/pg-test.ts` starts one `postgres` container per `pnpm test:integration` run, never one per test or per file, and applies every file in `packages/database/migrations/` in order. The tables tests see are the tables production has (root ADR 0011). The container is a scoped resource: `Effect.acquireRelease` starts it and stops it.
 
 ```ts
 export class PgTestStartError extends Schema.TaggedError<

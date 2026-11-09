@@ -34,7 +34,7 @@ An ADR can be a title, a status line and one paragraph. The value is in recordin
 
 ## Numbering
 
-Scan the target `adr/` folder for the highest number and add one. Numbers are per folder, so the same number in two contexts is not a collision. Cite as "Todos ADR 0001", "Identity ADR 0001" or "root ADR 0005".
+Scan the target `adr/` folder for the highest number and add one. Numbers are per folder, so the same number in two contexts is not a collision. Cite as "Todos ADR 0001", "Identity ADR 0001" or "root ADR 0004".
 
 ## When to offer an ADR
 
@@ -53,5 +53,5 @@ If a decision is easy to reverse, skip it; you'll just reverse it. If it's not s
 - **Technology choices that carry lock-in.** Database, auth provider, deployment target. Not every library, just the ones that would take a quarter to swap out.
 - **Boundary and scope decisions.** "Identity owns users; other contexts reference them by id only." The explicit no's are as valuable as the yes's.
 - **Deliberate deviations from the obvious path.** "Stores have no in-memory fake; their contract runs on real Postgres." These stop the next engineer from "fixing" something that was deliberate.
-- **Constraints not visible in the code.** "The api runs on Cloudflare Workers, so there is no long-lived process and no filesystem."
+- **Constraints not visible in the code.** "The api must also run on workerd while the Cloudflare host exists, so nothing outside `server.ts` imports a `node:` module."
 - **Rejected alternatives when the rejection is non-obvious.** If you considered an ORM and chose SQL in repositories for subtle reasons, record it, or someone will propose the ORM again in six months.

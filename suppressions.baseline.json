@@ -1,4 +1,5 @@
 {
   "@effect-diagnostics globalRandom": 2,
-  "@effect-diagnostics globalTimers": 1
+  "@effect-diagnostics globalTimers": 1,
+  "@effect-diagnostics nodeBuiltinImport": 1
 }

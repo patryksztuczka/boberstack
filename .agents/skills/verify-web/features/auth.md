@@ -2,11 +2,11 @@
 
 ## What exists
 
-Email and password through better-auth, mounted at `/api/auth` in the api Worker, with verified email required: sign-up sends a Verification link, and sign-in refuses an unverified User and sends a new one. Password reset by mail. GitHub and Google sign-in when their client id and secret are set; `GET /api/sign-in-methods` tells the web which buttons to show. Pages `/sign-up`, `/sign-in`, `/check-email`, `/email-verified`, `/forgot-password`, `/reset-password`, and a "Sign out" button in the header. The api reads the session in its HttpApi and RPC middleware and answers `401` without one.
+Email and password through better-auth, mounted at `/api/auth` in the api, with verified email required: sign-up sends a Verification link, and sign-in refuses an unverified User and sends a new one. Password reset by mail. GitHub and Google sign-in when their client id and secret are set; `GET /api/sign-in-methods` tells the web which buttons to show. Pages `/sign-up`, `/sign-in`, `/check-email`, `/email-verified`, `/forgot-password`, `/reset-password`, and a "Sign out" button in the header. The api reads the session in its HttpApi and RPC middleware and answers `401` without one.
 
-Mail goes through the `Mailer` port; locally it lands in Mailpit, at `urls.mailpit` in `.dev/state.json` (root ADR 0008).
+Mail goes through the `Mailer` port; locally it lands in Mailpit, at `urls.mailpit` in `.dev/state.json` (root ADR 0006).
 
-Code: `apps/web/src/features/auth/`, `packages/auth/`, `packages/core/src/mail/` (templates), `packages/mail/`, tables created in `packages/database/migrations/0001_auth.sql` and renamed to the plural in `0003_plural_table_names.sql`.
+Code: `apps/web/src/features/auth/`, `packages/auth/`, `packages/core/src/mail/` (templates), `packages/mail/`, tables created in `packages/database/migrations/0001_init.sql`.
 
 ## How to reach it
 
@@ -26,7 +26,7 @@ Code: `apps/web/src/features/auth/`, `packages/auth/`, `packages/core/src/mail/`
 - **"Invalid origin" or a rejected callback URL in dev.** `pnpm dev` sets `AUTH_BASE_URL` to the web URL, so links in mail and redirects stay on the web origin, and `AUTH_TRUSTED_ORIGINS` to the api URL, because the Vite proxy rewrites `Origin` to it. If sign-in fails only in dev with `403`, or a mail link answers with an invalid-callback error, one of the two drifted. Check `.dev/logs/api.log`.
 - **A link from an old mail.** Verification links last 24 hours, reset links one hour and once. Always open the newest message for the address.
 - **The mail renders, the images do not.** The wordmark and the beaver load from `<app>/email/*.png`. In Mailpit they come from the web dev server; a 404 there means `apps/web/public/email/` is missing a file.
-- **Stale data after sign-out.** The private routes keep their atoms in their own registry, which sign-out disposes when it leaves them (root ADR 0012). If something moves the todos atoms to the root registry, the next user briefly sees the previous user's todos. Step 6 after step 4 catches it.
+- **Stale data after sign-out.** The private routes keep their atoms in their own registry, which sign-out disposes when it leaves them (root ADR 0010). If something moves the todos atoms to the root registry, the next user briefly sees the previous user's todos. Step 6 after step 4 catches it.
 - **A session cookie from an earlier run.** A reused browser profile is already signed in, so `/sign-in` jumps straight to `/todos`. Start from a fresh profile or sign out first.
 - **Unit tests of the forms.** They never talk to better-auth or Mailpit, so a broken `/api/auth` route or a broken mail adapter passes them.
 

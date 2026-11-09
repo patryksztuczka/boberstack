@@ -27,6 +27,7 @@
     "check:doc-pins": "node scripts/check-doc-pins.mjs",
     "check:knip": "knip --no-progress",
     "check:web-boot": "node scripts/web-boot.mjs",
+    "check:api-image": "node scripts/api-image.mjs",
     "sources:fetch": "node scripts/fetch-sources.mjs",
     "dev:status": "node scripts/dev.mjs status",
     "cli": "node scripts/dev.mjs cli",
