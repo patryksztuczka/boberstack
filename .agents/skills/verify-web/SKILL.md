@@ -100,4 +100,12 @@ If you could not drive a step, say which and why. "Verified" without this eviden
 
 ## When the app lies
 
-Each feature file ends with "What usually lies". Read it before you call a step good. When you find a new one, add it there in one line with how to see it.
+These hold for any feature. Each feature file ends with "What usually lies" for its own traps; read both before you call a step good.
+
+- **The second submit.** Under the React Compiler, `form.reset()` inside `handleSubmit` plus reading `form.formState` made the first submit work and every later one do nothing, and `reset()` there can leave the fields as they were. Tests that render a form once never see it. Submit twice in a row. Forms read `useFormState` and clear fields with `resetField`.
+- **Data that only lives in the cache.** A mutation that forgets its reactivity key still looks right until you reload. Reload after every write you check.
+- **The same data on two pages.** A list page with counts and a detail page that changes them: after a write on one, open the other and check it moved too.
+- **A 401 that looks like an empty list.** If a list is empty after sign-in, check `.dev/logs/api.log` and the network for `401` before you believe it.
+- **Owner isolation.** Another user must not see or change the demo user's rows. Sign up a second user in a fresh browser profile when you touch a store or the auth middleware.
+
+When you find a new one, add it in one line with how to see it: here when it holds for any feature, in the feature file when it does not.

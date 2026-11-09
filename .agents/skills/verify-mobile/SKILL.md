@@ -97,5 +97,8 @@ If you could not drive a step, say which and why. "Verified" without this eviden
 - The simulator has no accelerometer: the beaver on the welcome screen only glances around. Tilt cannot be verified here.
 - The app keeps its session in the keychain across launches, so `open --relaunch` may land on Todos, not on the welcome screen. Sign out first (`id="sign-out"`) when the flow starts signed out.
 - A stale bundle from another worktree's Metro looks like your change did nothing. Check that the `--metro-port` matches `node scripts/dev.mjs ports`.
+- **A 401 that looks like an empty list.** The api answers 401 when the cookie did not reach it; the app then drops the session and shows sign-in with a "Your session ended" note. Check `.dev/logs/api.log` for `401` before you believe an empty list.
+- **Data that only lives in the atom.** A mutation that forgets its reactivity key looks right until a relaunch. Relaunch after every write you check.
+- **The same data on two screens.** After a write on one screen, go back to the screen that shows the same data and check it moved too.
 
 When you find a new one, add it here in one line with how to see it.
