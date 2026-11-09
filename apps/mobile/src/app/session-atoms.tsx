@@ -4,7 +4,7 @@ import { Atom } from "effect/reactivity";
 import { useContext, useEffect } from "react";
 import type { ReactNode } from "react";
 
-import { expireSession } from "../features/auth/index.ts";
+import { expireSession, useSessionUserId } from "../features/auth/index.ts";
 import { watchSessionExpiry } from "./session-expiry.ts";
 
 const SessionExpiryWatcher = ({ children }: { readonly children: ReactNode }) => {
@@ -17,9 +17,13 @@ const SessionExpiryWatcher = ({ children }: { readonly children: ReactNode }) =>
 
 export const SessionAtoms = ({ children }: { readonly children: ReactNode }) => {
   const layer = useAtomValue(clientLayer);
+  const userId = useSessionUserId();
 
   return (
-    <RegistryProvider initialValues={[Atom.initialValue(clientLayer, layer)]}>
+    <RegistryProvider
+      key={userId ?? "signed-out"}
+      initialValues={[Atom.initialValue(clientLayer, layer)]}
+    >
       <SessionExpiryWatcher>{children}</SessionExpiryWatcher>
     </RegistryProvider>
   );

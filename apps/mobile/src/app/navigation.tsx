@@ -14,6 +14,7 @@ import { m } from "../paraglide/messages.js";
 import { SessionAtoms } from "./session-atoms.tsx";
 
 const RootStack = createNativeStackNavigator({
+  layout: ({ children }) => <SessionAtoms>{children}</SessionAtoms>,
   screens: {
     Welcome: {
       if: useShowsWelcome,
@@ -28,7 +29,6 @@ const RootStack = createNativeStackNavigator({
     Todos: {
       if: useIsSignedIn,
       screen: TodosScreen,
-      layout: ({ children }) => <SessionAtoms>{children}</SessionAtoms>,
       options: { title: m.todos_title(), headerRight: () => <SignOutButton /> },
     },
   },

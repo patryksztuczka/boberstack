@@ -3,6 +3,7 @@ export {
   useIsSignedIn,
   useIsSignedOut,
   useSessionLoading,
+  useSessionUserId,
   useShowsWelcome,
 } from "./api/session.ts";
 
