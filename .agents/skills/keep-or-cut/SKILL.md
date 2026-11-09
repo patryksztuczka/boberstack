@@ -1,6 +1,6 @@
 ---
 name: keep-or-cut
-description: Set up a fresh copy of the template before any other work. If this skill still exists in the repository, nobody has set the project up yet. Run it first whenever someone asks to build, start or change anything in this project, and when they ask to rename it, cut the parts they do not need (the web app, the mobile app, the desktop app, todos, auth, RPC, MCP, the CLI, i18n) or set up GitHub. It renames the project, cuts the unused parts, records where the project came from, then deletes itself.
+description: Set up a fresh copy of the template before any other work. If this skill still exists in the repository, nobody has set the project up yet. Run it first whenever someone asks to build, start or change anything in this project, and when they ask to rename it, cut the parts they do not need (the web app, the mobile app, the desktop app, todos, auth, RPC, MCP, the CLI, i18n), choose hosting or set up GitHub. It walks the owner through what to keep, which api transport (HttpApi or RPC) and where to host, renames the project, cuts the unused parts, records where the project came from, then deletes itself.
 ---
 
 # Keep or cut
@@ -11,16 +11,69 @@ The template lives at https://github.com/patryksztuczka/boberstack. Every step t
 
 Run the steps in order. Setup comes before the task the owner asked for. When setup is done, go back to that task.
 
-## 1. Ask the owner
+## 1. Guide the owner
 
-What the project is and who it is for comes from the owner. Read their request first, then ask what it leaves open, all in one round:
+Act as a guide, not a form. The owner may never have read this template. For each choice, say in plain words what the part does, what keeping it costs and what cutting it costs, then recommend one option based on their request. Ask in short rounds, in the order below, and wait for each answer. Write in the owner's language. Skip what their request already settles.
 
-- The project name (lower-case kebab-case, such as `acme-shop`) and the package scope (such as `@acme`).
-- Which parts to keep. Offer the list under "Keep or cut" below with a recommendation drawn from their request. A request for a mobile app recommends cutting the web app and the desktop app; a request for an api only recommends cutting every client.
+### What the project is
+
+- What they are building and who uses it.
+- The project name (lower-case kebab-case, such as `acme-shop`) and the package scope (such as `@acme`). Suggest both.
+
+### Decide now or later
+
+Then offer two ways in, and say that both are fine:
+
+- Decide now: go through the rounds below and cut what the project will not use.
+- Not sure yet: cut nothing. Rename the project, keep every part, run locally, and start building. Everything left in place still works and passes `pnpm verify`, so it costs only the code you are not using. Any part can be cut later with its checklist, which the README's "Origin" section links to. Recommend this when the owner hesitates over what they need, or when the request is an idea they want to try.
+
+On "not sure yet", skip to "The repository", then run steps 2 to 5, skip step 6, take "only locally" in step 7, and finish with steps 8 and 9.
+
+### Which clients
+
+| Part            | What it is                                                | Depends on                            |
+| --------------- | --------------------------------------------------------- | ------------------------------------- |
+| The web app     | a React SPA that the api Worker serves on the same origin |                                       |
+| The desktop app | an Electron window around the web app                     | the web app                           |
+| The mobile app  | an Expo app for iOS and Android                           | `packages/ui` for the beaver only     |
+| The CLI         | Node commands: `db migrate`, `openapi`, `health`          | the deploy applies migrations with it |
+
+A request for a mobile app means cutting the web and desktop apps. An api that other systems call means cutting every client.
+
+### How the clients talk to the api
+
+The api serves one contract from `packages/domain` over two transports (root ADR 0007). Explain the difference before you ask:
+
+- HttpApi is REST. Each operation is a URL and an HTTP method, and the api publishes an OpenAPI document generated from the contract. Anything can call it: curl, an app in another language, a partner, a webhook. The mobile app, the health check, sign-in methods and the MCP client directory use it, and so does the web app by default.
+- Effect RPC is typed calls over one endpoint. The client gets each operation's result and error types straight from the contract, with no URLs or status codes to map. Only an Effect client can call it, and there is no OpenAPI document. The web app uses it for todos when started with `VITE_TODOS_TRANSPORT=rpc`.
+- Both ship today. Each operation is then declared twice, once per transport, over the same schemas, and one service method handles both.
+
+Recommend HttpApi alone when anyone besides the project's own TypeScript clients will call the api, and when the owner is unsure: everything in the template already uses it, so cutting RPC is the small cut. Recommend RPC alone only when every caller is the project's own Effect client and the owner wants typed errors end to end. Cutting HttpApi first moves the health check, sign-in methods, the MCP client directory and the mobile app to RPC. Keeping both costs two declarations per operation. Sign-in works on any choice: better-auth serves `/api/auth/*` itself.
+
+### Which features
+
+- The todos example. Cut it almost always: the project's first own context takes its place.
+- Sign-in with better-auth: email and password with a confirmation mail, social sign-in when configured. Keep it when the product has users.
+- MCP: an AI assistant signs in with OAuth and acts on a user's data. Needs sign-in.
+- i18n with Paraglide, English only, in the web app.
+- The welcome page and the beaver.
+
+### Where it will run
+
+The template deploys to Cloudflare, but the owner may not know yet, or may want another provider. Ask, and lay out the options:
+
+- Only locally for now. Nothing to set up: `pnpm dev` runs everything on this machine and the Cloudflare stack waits unused. Recommend this when the owner does not know yet. Nothing done now makes moving later harder: `packages/core` and the transports in `apps/api/src/app.layer.ts` do not depend on Cloudflare; only `apps/api/src/worker.ts` and `apps/infra/` do.
+- Cloudflare, ready to deploy. One Worker serves the api and the web build on one origin, and reaches any Postgres on the internet (Neon, Supabase, RDS) through Hyperdrive. The owner needs a Cloudflare account, a Postgres URL and a mail transport: only Mailpit exists, and a deployed Worker without a real transport refuses to start (root ADR 0008). Name the Worker limits: no long-lived process, no filesystem, no Node-only libraries in the api, recurring work through Cron Triggers (root ADR 0013).
+- AWS, GCP, Azure, Fly.io or a server of their own. There is no ready path. Say what it takes: a composition root that runs `AppLayer` on a Node HTTP server and serves the web build, a container image, Postgres connected directly instead of through Hyperdrive, that provider's infrastructure in place of `apps/infra/alchemy.run.ts`, and an ADR that supersedes root ADR 0013. It is a feature of its own (step 7).
+
+### The repository
+
 - Whether to apply the GitHub settings (step 4).
-- Whether to set up the R2 bucket for pull request screenshots and recordings (step 5), with its cost.
+- Whether to set up the R2 bucket for pull request screenshots and recordings (step 5), with its cost. It lives on Cloudflare whatever the hosting.
 
-Do not start cutting before the owner has answered.
+### Confirm the plan
+
+Before you change anything, write the plan back as one short list: name and scope, what stays, what goes, the transport, the hosting, the GitHub settings and the bucket. Start when the owner says yes.
 
 ## 2. Find the upstream commit
 
@@ -41,7 +94,7 @@ git rev-list FETCH_HEAD | while read -r commit; do
 done
 ```
 
-When neither prints a commit, take the last template commit before this repository's first one: `git rev-list -1 --before="$(git log -1 --format=%cI "$first")" FETCH_HEAD`, and say in the README that it is approximate. Keep the commit and today's date for step 8.
+When neither prints a commit, take the last template commit before this repository's first one: `git rev-list -1 --before="$(git log -1 --format=%cI "$first")" FETCH_HEAD`, and say in the README that it is approximate. Keep the commit and today's date for step 9.
 
 ## 3. Rename
 
@@ -109,7 +162,7 @@ Keep the folders: the next context goes in the same places. Model it with the `d
 
 - [ ] Delete `packages/domain/src/*/*.rpc.ts` and `apps/api/src/rpc/`.
 - [ ] Remove the RPC layer from `app.layer.ts` and the RPC auth middleware from `packages/domain/src/identity/authentication.ts` and `packages/auth/src/authentication.layer.ts`.
-- [ ] Delete the RPC clients (`packages/client-runtime/src/*/*-rpc-client.ts`) and provide the `HttpApi` ones (`*-http-client.ts`) in their place.
+- [ ] Delete the RPC clients (`packages/client-runtime/src/*/*-rpc-client.ts`) and their exports, and the `VITE_TODOS_TRANSPORT` switch in `apps/web/src/runtime.ts`, the transport line on the todos page and the RPC steps in `.agents/skills/verify-web/features/todos.md`.
 - [ ] Supersede root ADR 0007 with a new ADR.
 
 ### MCP
@@ -121,7 +174,11 @@ Keep the folders: the next context goes in the same places. Model it with the `d
 
 ### HttpApi and OpenAPI
 
-The mirror image of cutting RPC: delete `*.http-api.ts`, `packages/domain/src/api.ts`, `apps/api/src/http/` and the HTTP auth middleware, delete the `HttpApi` clients in `packages/client-runtime/src/` and provide the RPC ones in their place, and drop `openapi` from the CLI.
+- [ ] Declare the health check, sign-in methods and the MCP client directory as RPCs first, with their RPC clients in `packages/client-runtime/src/`.
+- [ ] Delete `packages/domain/src/*/*.http-api.ts`, `packages/domain/src/api.ts`, `apps/api/src/http/` and the HTTP auth middleware.
+- [ ] Delete the `HttpApi` clients (`packages/client-runtime/src/*/*-http-client.ts` and the other `*Http*Layer`s), and provide the RPC ones in `apps/web/src/runtime.ts` and `apps/mobile/src/runtime.ts`. Drop the `VITE_TODOS_TRANSPORT` switch.
+- [ ] Drop `openapi` from the CLI and point `health` at the RPC.
+- [ ] Supersede root ADR 0007 with a new ADR.
 
 ### The CLI
 
@@ -167,13 +224,21 @@ The desktop app serves the web app's build (root ADR 0010), so cutting the web a
 - [ ] Delete `docs/operations/mobile.md` and mark root ADR 0011 superseded.
 - [ ] Delete the `verify-mobile` skill (`.agents/skills/verify-mobile/` and its link in `.claude/skills/`), the `agent-device` devDependency and the root `device` script, the `@boberstack/frontend/accessible-controls` rule in `tools/oxlint/`, and the `verify-mobile` lines in `AGENTS.md` and the playbook skills.
 
-## 7. Write the project's own words
+## 7. Hosting
+
+Do what the owner chose in step 1.
+
+- Only locally: nothing to do. Keep `apps/infra/` and `docs/operations/deploy.md`, and have the README say the project is not deployed yet.
+- Cloudflare: walk the owner through `docs/operations/deploy.md`: connect the account, set `DATABASE_URL`, add a mail transport. The first `pnpm run deploy` waits for the owner's yes (`AGENTS.md`).
+- Another provider: build it after step 9 as its own change, with the `playbook-feature` skill, before or after the owner's first request as they prefer. Leave the Cloudflare stack in place until then: the new deploy replaces it in the same change, so the project always has one that works.
+
+## 8. Write the project's own words
 
 - [ ] Rewrite the "Project thesis" section of `AGENTS.md` for this project.
-- [ ] Rewrite `README.md` for this project: what it is, the quickstart and deploy for the parts that stayed, and the "Origin" section from step 8. Drop the beaver, the template's pitch and its "Make it yours" section.
+- [ ] Rewrite `README.md` for this project: what it is, the quickstart for the parts that stayed, how to deploy to the hosting from step 1, and the "Origin" section from step 9. Drop the beaver, the template's pitch and its "Make it yours" section.
 - [ ] Rewrite `docs/user/` for the product, and the `docs/README.md` index to match what is left.
 
-## 8. Remove the setup and leave a trail
+## 9. Remove the setup and leave a trail
 
 The project no longer needs the template's setup tools. Leave a note that says where it came from, so a part cut today can come back later.
 
@@ -184,7 +249,7 @@ Add this section to the end of `README.md`, with the commit and date from step 2
 
 This project started from the template at https://github.com/patryksztuczka/boberstack, commit [`<sha>`](https://github.com/patryksztuczka/boberstack/tree/<sha>), on <date>.
 
-Setup cut <the parts, such as the web app, the desktop app and the todos example>. To bring a part back, read its section in the template's [keep-or-cut skill](https://github.com/patryksztuczka/boberstack/blob/<sha>/.agents/skills/keep-or-cut/SKILL.md): it lists every file and line the part touches. Copy those from the template, then compare with the template's latest `master` for newer versions.
+Setup cut <the parts, such as the web app, the desktop app and the todos example, or "nothing">. To cut a part later or bring one back, read its section in the template's [keep-or-cut skill](https://github.com/patryksztuczka/boberstack/blob/<sha>/.agents/skills/keep-or-cut/SKILL.md): it lists every file and line the part touches. To bring a part back, copy those from the template, then compare with the template's latest `master` for newer versions.
 ```
 
 Then:
