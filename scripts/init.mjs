@@ -203,7 +203,7 @@ function buildReplacements(current, options) {
     replacements.push({
       label: "project name",
       pattern: new RegExp(
-        `(?<![\\w@.-])${escapeRegExp(current.name)}(?![\\w-])${pluginFolderGuard(current)}`,
+        `(?<![\\w@.-])(?<!github\\.com/[\\w.-]+/)${escapeRegExp(current.name)}(?![\\w-])${pluginFolderGuard(current)}`,
         "g",
       ),
       replacement: options.name,
@@ -360,7 +360,7 @@ function main(argv) {
     `init: ${changes.length} file(s) updated and formatted. Run pnpm install to refresh pnpm-lock.yaml, then pnpm verify.\n`,
   );
   process.stdout.write(
-    "init: next, follow docs/operations/make-it-yours.md. Ask the owner whether to set up the R2 bucket for pull request screenshots and recordings (docs/operations/pr-evidence.md).\n",
+    "init: next, go on with the keep-or-cut skill (.agents/skills/keep-or-cut/SKILL.md) from its GitHub settings step.\n",
   );
 }
 

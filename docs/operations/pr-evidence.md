@@ -43,6 +43,6 @@ brew install ffmpeg
 
 ## Take it out
 
-To keep the drag-and-drop workflow instead, delete `.agents/skills/file-pr/scripts/`, the `pr-evidence` script in `package.json`, this page, and the `pr-evidence` lines in the `file-pr` and `verify-web` skills, `AGENTS.md`, `docs/README.md`, `docs/operations/make-it-yours.md`, `scripts/init.mjs` and `.github/pull_request_template.md`.
+To keep the drag-and-drop workflow instead, delete `.agents/skills/file-pr/scripts/`, the `pr-evidence` script in `package.json`, this page, and the `pr-evidence` lines in the `file-pr` and `verify-web` skills, `AGENTS.md`, `docs/README.md`, the `keep-or-cut` skill and `.github/pull_request_template.md`.
 
 To delete a bucket you set up, empty and delete `boberstack-pr-evidence` in the Cloudflare dashboard under R2.
