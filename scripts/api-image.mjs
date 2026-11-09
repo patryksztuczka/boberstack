@@ -9,6 +9,8 @@ const POSTGRES_IMAGE = "postgres:17-alpine";
 
 const HOST_PORT = 39_300;
 
+const DATABASE_HOST_PORT = 39_301;
+
 const READY_TIMEOUT_MS = 60_000;
 
 const CHECKS = [
@@ -48,6 +50,45 @@ function cleanUp() {
   ]) {
     spawnSync("docker", args, { stdio: "ignore" });
   }
+}
+
+function containerLogs() {
+  const result = spawnSync("docker", ["logs", api], { encoding: "utf8" });
+
+  return `${result.stdout ?? ""}${result.stderr ?? ""}`;
+}
+
+function migrate() {
+  const result = spawnSync("node", ["apps/cli/src/main.ts", "db", "migrate"], {
+    cwd: repositoryRoot(),
+    encoding: "utf8",
+    env: {
+      ...process.env,
+      DATABASE_URL: `postgres://postgres:postgres@localhost:${String(DATABASE_HOST_PORT)}/app`,
+    },
+  });
+
+  return result.status === 0;
+}
+
+async function waitForDatabase() {
+  const deadline = Date.now() + READY_TIMEOUT_MS;
+
+  while (Date.now() < deadline) {
+    const ready = spawnSync(
+      "docker",
+      ["exec", database, "pg_isready", "-U", "postgres", "-d", "app"],
+      {
+        stdio: "ignore",
+      },
+    );
+
+    if (ready.status === 0 && migrate()) return true;
+
+    await delay(1_000);
+  }
+
+  return false;
 }
 
 const delay = (milliseconds) =>
@@ -97,6 +138,8 @@ async function main() {
       database,
       "--network",
       network,
+      "--publish",
+      `${String(DATABASE_HOST_PORT)}:5432`,
       "--env",
       "POSTGRES_PASSWORD=postgres",
       "--env",
@@ -105,6 +148,11 @@ async function main() {
     ],
     { quiet: true },
   );
+
+  if (!(await waitForDatabase())) {
+    throw new Error("Postgres did not start, or cli db migrate failed against it");
+  }
+
   docker(
     [
       "run",
@@ -131,7 +179,7 @@ async function main() {
   );
 
   if (!(await waitForHealth())) {
-    process.stderr.write(docker(["logs", api], { quiet: true }));
+    process.stderr.write(containerLogs());
     throw new Error(
       `the api image did not answer /api/health within ${String(READY_TIMEOUT_MS)} ms`,
     );
@@ -142,7 +190,7 @@ async function main() {
   );
 
   if (failures.length > 0) {
-    process.stderr.write(docker(["logs", api], { quiet: true }));
+    process.stderr.write(containerLogs());
     throw new Error(`the api image answered wrong:\n${failures.join("\n")}`);
   }
 
