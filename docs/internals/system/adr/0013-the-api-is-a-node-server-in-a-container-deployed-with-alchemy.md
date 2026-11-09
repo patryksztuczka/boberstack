@@ -1,6 +1,6 @@
 # The api is a Node server in a container, deployed with Alchemy
 
-**Status:** accepted, 2026-11-09. Supersedes root ADR 0013.
+**Status:** accepted, 2026-11-09.
 
 boberstack is a template, and the people who start from it host on a VPS, on AWS, GCP or Azure, on Fly, or on Cloudflare. A template whose api only runs as a Cloudflare Worker makes that vendor its first decision and the first thing to rip out.
 
@@ -19,6 +19,6 @@ Alchemy declares the infrastructure. The default stack, `apps/infra/alchemy.run.
 
 ## Considered options
 
-- Cloudflare Workers as the only host (root ADR 0013): global deploys in seconds, but every other host means rewriting the entry point.
+- Cloudflare Workers as the only host: global deploys in seconds, but every other host means rewriting the entry point.
 - `Docker.Service`, Alchemy's inline program platform: no Dockerfile, but it runs on bun instead of Node, needs Docker Swarm, replaces the service on every change and has no dev mode, so local work would rebuild an image per edit.
 - A Dockerfile without Alchemy: portable, but the deploy would be a shell script next to the stack, and the template would lose its single infrastructure program.

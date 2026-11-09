@@ -73,7 +73,7 @@ When two contexts use a term, one owns it and carries the full definition. The o
 
 Pick the owner by asking which context would have to change if the term's meaning changed. The context that produces the thing usually owns the word. In this starter, Identity owns User; Todos says a todo belongs to a User and links to Identity's entry.
 
-One home per piece of knowledge is the general rule, in [docs/README.md](../../../docs/README.md#where-a-sentence-belongs); what a comment may say is root ADR 0005. This skill covers `GLOSSARY.md`, `CONTEXT-MAP.md`, module files and ADRs.
+One home per piece of knowledge is the general rule, in [docs/README.md](../../../docs/README.md#where-a-sentence-belongs); what a comment may say is root ADR 0004. This skill covers `GLOSSARY.md`, `CONTEXT-MAP.md`, module files and ADRs.
 
 ### Module files
 
@@ -91,7 +91,7 @@ A new bounded context gets, in one change: a line in `CONTEXT-MAP.md` with its r
 
 ### Recording a decision
 
-An ADR goes in the owning context's `docs/internals/<context>/adr/`, or in `docs/internals/system/adr/` when it belongs to no single context. Number it one past the highest number in that folder; numbering is per folder, and it is cited as "Todos ADR 0001" or "root ADR 0005". Never renumber an existing ADR. Start from [`docs/internals/adr-template.md`](../../../docs/internals/adr-template.md).
+An ADR goes in the owning context's `docs/internals/<context>/adr/`, or in `docs/internals/system/adr/` when it belongs to no single context. Number it one past the highest number in that folder; numbering is per folder, and it is cited as "Todos ADR 0001" or "root ADR 0004". Never renumber an existing ADR. Start from [`docs/internals/adr-template.md`](../../../docs/internals/adr-template.md).
 
 In the same change, update the module file the decision affects, so the current state and the history never disagree. If the decision changes a term's meaning, update the glossary entry too. When an ADR replaces an older one, set the older one's status to `superseded by <context> ADR NNNN` and leave its text alone.
 

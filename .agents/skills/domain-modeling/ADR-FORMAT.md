@@ -34,7 +34,7 @@ An ADR can be a title, a status line and one paragraph. The value is in recordin
 
 ## Numbering
 
-Scan the target `adr/` folder for the highest number and add one. Numbers are per folder, so the same number in two contexts is not a collision. Cite as "Todos ADR 0001", "Identity ADR 0001" or "root ADR 0005".
+Scan the target `adr/` folder for the highest number and add one. Numbers are per folder, so the same number in two contexts is not a collision. Cite as "Todos ADR 0001", "Identity ADR 0001" or "root ADR 0004".
 
 ## When to offer an ADR
 

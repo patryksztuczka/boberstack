@@ -7,7 +7,7 @@ An entry point is a file that starts the Effect runtime for a host: a server pro
 | Node server       | `apps/api/src/server.ts`                                    | the api: HttpApi + RPC + MCP + better-auth, and the built SPA from `WEB_ROOT`, via `NodeRuntime.runMain` |
 | Cloudflare Worker | `apps/infra/src/worker.ts`                                  | the same api on the alternative host, and the built SPA as static assets                                 |
 | Node process      | `apps/cli/src/main.ts`                                      | `cli db migrate`, `cli openapi`, `cli health` via `NodeRuntime.runMain`                                  |
-| Electron main     | `apps/desktop/src/main.ts`                                  | the desktop window around the web app via `NodeRuntime.runMain` (root ADR 0010)                          |
+| Electron main     | `apps/desktop/src/main.ts`                                  | the desktop window around the web app via `NodeRuntime.runMain` (root ADR 0008)                          |
 | Browser, phone    | `apps/web/src/runtime.ts`, `apps/mobile/src/runtime.ts`     | the client layer the shared atoms run on, seeded into the app's `AtomRegistry`                           |
 | Deploy            | `apps/infra/alchemy.run.ts`, `apps/infra/cloudflare.run.ts` | the Alchemy stacks: the api image and container, or Hyperdrive and the api Worker                        |
 
@@ -25,7 +25,7 @@ Route and handler modules never run effects. They export layers, and the entry p
 
 `apps/api/src/server.ts` is the composition root on Node. It gives `ApiHandler` a `PgClient.layerConfig` over `DATABASE_URL`, gives better-auth `Auth.layerConfig` (`AUTH_SECRET`) and the same database through `@alchemy.run/better-auth/Postgres`, and serves the handler with `NodeHttpServer` on `PORT`. When `WEB_ROOT` is set, it serves that directory with SPA fallback and sends `/api/*` and `/.well-known/*` to the api. It runs as one long-lived process through `Layer.launch` and `NodeRuntime.runMain`: a layer may hold a pool or run a background loop ([03](03-retry-and-scheduling.md)), and SIGTERM runs every finalizer.
 
-`apps/infra/src/worker.ts` is the composition root on the Cloudflare host. It declares the Worker with Alchemy's `Cloudflare.Worker`, reaches Postgres through Hyperdrive, uses `Auth.layer` with a secret Alchemy generates, and serves `apps/web/dist` as static assets; requests to `/api/*` and `/.well-known/*` reach the Worker first. A Worker has no long-lived process: no `Layer.launch`, no background loop, and per-request resources are released when the request's scope closes. A project keeps one of the two hosts (root ADR 0016).
+`apps/infra/src/worker.ts` is the composition root on the Cloudflare host. It declares the Worker with Alchemy's `Cloudflare.Worker`, reaches Postgres through Hyperdrive, uses `Auth.layer` with a secret Alchemy generates, and serves `apps/web/dist` as static assets; requests to `/api/*` and `/.well-known/*` reach the Worker first. A Worker has no long-lived process: no `Layer.launch`, no background loop, and per-request resources are released when the request's scope closes. A project keeps one of the two hosts (root ADR 0013).
 
 ### runtime.cli: `runMain` on Node
 
@@ -54,7 +54,7 @@ export const clientAtoms = [Atom.initialValue(clientLayer, WebClientLayer)];
 const list = useAtomValue(todos); // AsyncResult<ReadonlyArray<Todo>, TodosClientError>
 ```
 
-React and React Router do not run Effect, so they read atoms (root ADR 0012). The atoms live in `packages/client-runtime` and run on `clientRuntime`, whose layer is the `clientLayer` atom; each app seeds it in its registry, and a test seeds a stub. A mutation is a function atom with `reactivityKeys`, which re-runs every atom read with `Atom.withReactivity` on the same keys. A component never calls `Effect.runPromise`, and never squashes a `Cause`: it matches the `AsyncResult` with `AsyncResult.matchWithError` and the error's tag.
+React and React Router do not run Effect, so they read atoms (root ADR 0010). The atoms live in `packages/client-runtime` and run on `clientRuntime`, whose layer is the `clientLayer` atom; each app seeds it in its registry, and a test seeds a stub. A mutation is a function atom with `reactivityKeys`, which re-runs every atom read with `Atom.withReactivity` on the same keys. A component never calls `Effect.runPromise`, and never squashes a `Cause`: it matches the `AsyncResult` with `AsyncResult.matchWithError` and the error's tag.
 
 ### runtime.bridge: `run*With` for a library that calls back through Promises
 

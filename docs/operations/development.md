@@ -18,7 +18,7 @@ Ports come from a hash of the checkout path, so two worktrees can run `pnpm dev`
 
 ## Mail
 
-Every mail the app sends locally, such as the account confirmation and the password reset, lands in Mailpit at the `mail` URL `pnpm dev` prints. Nothing leaves your machine (root ADR 0008).
+Every mail the app sends locally, such as the account confirmation and the password reset, lands in Mailpit at the `mail` URL `pnpm dev` prints. Nothing leaves your machine (root ADR 0006).
 
 ## Environment
 
@@ -28,7 +28,7 @@ To try GitHub or Google sign-in, create an OAuth app with the provider and set i
 
 ## Desktop app
 
-`apps/desktop` is an Electron window around the same web app (root ADR 0010). With `pnpm dev` running, start it in a second terminal:
+`apps/desktop` is an Electron window around the same web app (root ADR 0008). With `pnpm dev` running, start it in a second terminal:
 
 ```sh
 pnpm dev:desktop                                      # builds the main process and opens the window on this checkout's Vite server
@@ -51,7 +51,7 @@ The window and the Dock show `apps/desktop/resources/icon.png`. Packaging comes 
 
 ## Mobile app
 
-`apps/mobile` is a native Expo app on the same api (root ADR 0011). With `pnpm dev` running, `pnpm dev:mobile` builds it and opens it in the iOS simulator. [Mobile app](mobile.md) has the setup, the variants and the release steps.
+`apps/mobile` is a native Expo app on the same api (root ADR 0009). With `pnpm dev` running, `pnpm dev:mobile` builds it and opens it in the iOS simulator. [Mobile app](mobile.md) has the setup, the variants and the release steps.
 
 ## Before you push
 

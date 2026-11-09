@@ -30,7 +30,7 @@ Then the [Context Map](../CONTEXT-MAP.md): it names the bounded contexts, how th
 - [System-wide ADRs](internals/system/adr): the monorepo, Effect, the container host and Postgres, SQL and tests, comments, migrations, the shared contract, mail, packages, the desktop app, the mobile app, client state in Effect atoms, MCP
 - [ADR template](internals/adr-template.md)
 
-How Effect code is written is in the [`effect-best-practices` skill](../.agents/skills/effect-best-practices/SKILL.md). Code carries no comments except `VENDOR:` notes about defects in software we do not own ([root ADR 0005](internals/system/adr/0005-keep-only-comments-about-other-peoples-defects.md)).
+How Effect code is written is in the [`effect-best-practices` skill](../.agents/skills/effect-best-practices/SKILL.md). Code carries no comments except `VENDOR:` notes about defects in software we do not own ([root ADR 0004](internals/system/adr/0004-keep-only-comments-about-other-peoples-defects.md)).
 
 ## I am an agent
 

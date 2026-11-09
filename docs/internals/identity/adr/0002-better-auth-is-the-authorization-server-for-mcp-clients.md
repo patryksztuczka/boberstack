@@ -10,7 +10,7 @@ The api verifies access tokens in-process: it reads the signing keys with `getJw
 
 ## Consequences
 
-- The provider's tables (`jwks`, `oauthClients`, `oauthAccessTokens`, `oauthRefreshTokens`, `oauthConsents` and others) come from `packages/database/migrations/0001_init.sql`, like every other table (root ADR 0014). `packages/auth` gives each a plural `modelName`, because every table is named in the plural.
+- The provider's tables (`jwks`, `oauthClients`, `oauthAccessTokens`, `oauthRefreshTokens`, `oauthConsents` and others) come from `packages/database/migrations/0001_init.sql`, like every other table (root ADR 0011). `packages/auth` gives each a plural `modelName`, because every table is named in the plural.
 - DPoP is not supported: a sender-constrained token gets a 401, although the discovery document still lists DPoP algorithms. Clients that use plain bearer tokens are unaffected.
 - No scope is enforced yet: any token with Consent for the MCP endpoint can call every tool. Per-tool scopes need `scopes` on `mcp()` and a check in the middleware.
 - Every MCP request costs two reads: the signing keys and the User.

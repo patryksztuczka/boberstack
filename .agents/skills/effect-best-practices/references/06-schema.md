@@ -75,7 +75,7 @@ const row = Schema.decodeUnknownSync(TodoRow)(raw);
 
 ### schema.sharing: a contract that crosses an app boundary lives in `packages/domain`
 
-Records, ids, wire errors, the `HttpApi`, every `HttpApiGroup` and `RpcGroup`, and the auth middleware tags live in `packages/domain`. The api implements them, the web app and the CLI call them, and all three validate with the same definition. `packages/domain` imports only `effect`. Why: root ADR 0007.
+Records, ids, wire errors, the `HttpApi`, every `HttpApiGroup` and `RpcGroup`, and the auth middleware tags live in `packages/domain`. The api implements them, the web app and the CLI call them, and all three validate with the same definition. `packages/domain` imports only `effect`. Why: root ADR 0005.
 
 ### schema.forms: a form validates with the contract's schema
 

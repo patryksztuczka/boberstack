@@ -1,6 +1,6 @@
 # Keep only comments about other people's defects
 
-**Status:** accepted, 2026-10-30. Adapted from a production Effect codebase, where the previous, looser rule had let about 9,300 comments grow.
+**Status:** accepted, 2026-10-30.
 
 Code in this repository carries no prose comments. A comment stays only when it records a defect or quirk in software we do not own, such as a browser, the Workers runtime, an SDK, a library or a build tool, and the code that works around it. Such a comment starts with `VENDOR:`. Everything else a comment would say has a home listed in [docs/README.md](../../../README.md#where-a-sentence-belongs): a name, a type or a test, or the glossary, ADR, module file or commit message it belongs to.
 

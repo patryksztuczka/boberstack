@@ -2,7 +2,7 @@
 
 **Status:** accepted, 2026-11-08.
 
-Root ADR 0006 applied the migrations with two runners: Neon's at deploy, which records them in `__alchemy_migrations`, and Effect's `Migrator` locally and in tests, which records them in `effect_sql_migrations`. Two bookkeeping tables could disagree about what a database has, and the local runner must never touch a database the deploy runner owns. Root ADR 0013 removed Neon from the stack, and with it the reason for a second runner.
+A schema changes in production, locally and in every test database. Two migration runners, such as a database vendor's at deploy and another one in tests, would keep two bookkeeping tables that can disagree about what a database has.
 
 Every table, ours and better-auth's, is created by plain SQL files in `packages/database/migrations/`, named `NNNN_name.sql` and applied in order by one runner: `cli db migrate`, which is `Migrator` over `sqlFileMigrations`. `pnpm run deploy` runs it against the production `DATABASE_URL` before `alchemy deploy`; `pnpm dev` runs it against the checkout's Docker Postgres; the Testcontainers Postgres layer runs it before any suite. `@alchemy.run/better-auth`'s own deploy-time migration is turned off.
 
@@ -17,4 +17,5 @@ Every table, ours and better-auth's, is created by plain SQL files in `packages/
 
 - Migrations as TypeScript files run by the same `Migrator`: allow data migrations with logic, but the SQL is no longer a plain file to review. Worth revisiting with the first migration that needs logic.
 - better-auth's generator for auth tables and our files for the rest: two sources of schema truth.
-- An ORM's migration tool: rejected with the ORM (root ADR 0004).
+- A database vendor's migration runner at deploy: ties the template to one Postgres provider and keeps a second runner for local work and tests.
+- An ORM's migration tool: rejected with the ORM (root ADR 0003).

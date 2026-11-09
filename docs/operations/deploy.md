@@ -1,6 +1,6 @@
 # Deploy
 
-The api is a Node server in a container image that also serves the built web app (root ADR 0016). Alchemy builds the image and runs it on a Docker host: this machine, or a server you reach over SSH. The database is any Postgres the container can reach. The stack does not create it.
+The api is a Node server in a container image that also serves the built web app (root ADR 0013). Alchemy builds the image and runs it on a Docker host: this machine, or a server you reach over SSH. The database is any Postgres the container can reach. The stack does not create it.
 
 The template also ships a Cloudflare host. A project keeps one of the two; the `keep-or-cut` skill deletes the other.
 
@@ -35,7 +35,7 @@ The image is built on that server, so a laptop on a different CPU architecture n
 pnpm run deploy      # plain `pnpm deploy` is a pnpm built-in
 ```
 
-The deploy builds every package, applies `packages/database/migrations/` to `DATABASE_URL` with `cli db migrate` (root ADR 0014), then runs `alchemy deploy` on `apps/infra/alchemy.run.ts`. The stack generates better-auth's signing secret, builds `apps/infra/api.Dockerfile` and starts the container with `restart: unless-stopped`. It passes the container `DATABASE_URL`, the generated `AUTH_SECRET`, and the `AUTH_*`, `MAIL_*`, `GITHUB_*` and `GOOGLE_*` variables that are set. No secret goes in a committed file.
+The deploy builds every package, applies `packages/database/migrations/` to `DATABASE_URL` with `cli db migrate` (root ADR 0011), then runs `alchemy deploy` on `apps/infra/alchemy.run.ts`. The stack generates better-auth's signing secret, builds `apps/infra/api.Dockerfile` and starts the container with `restart: unless-stopped`. It passes the container `DATABASE_URL`, the generated `AUTH_SECRET`, and the `AUTH_*`, `MAIL_*`, `GITHUB_*` and `GOOGLE_*` variables that are set. No secret goes in a committed file.
 
 `pnpm --filter @boberstack/infra run destroy` removes the container and the image.
 
@@ -67,4 +67,4 @@ A deploy to a shared stage, `alchemy destroy`, and a deploy whose plan replaces 
 
 ## Mail transport
 
-Sign-up sends a confirmation link, so a deployed api needs a way to send mail. Only Mailpit exists today, and without a real transport the api refuses to start. Root ADR 0008 describes how to add one and set `MAIL_TRANSPORT`.
+Sign-up sends a confirmation link, so a deployed api needs a way to send mail. Only Mailpit exists today, and without a real transport the api refuses to start. Root ADR 0006 describes how to add one and set `MAIL_TRANSPORT`.
