@@ -4,7 +4,7 @@ import { TodosService } from "@boberstack/core/todos";
 import { TodoRepositoryLayer } from "@boberstack/database";
 import { MailpitMailer } from "@boberstack/mail";
 import { Config, Effect, Layer } from "effect";
-import { HttpRouter, HttpServerRequest } from "effect/http";
+import { HttpMiddleware, HttpRouter, HttpServerRequest } from "effect/http";
 import type { SqlClient } from "effect/sql";
 
 import { HttpLayer } from "./http/http.layer.ts";
@@ -51,11 +51,13 @@ export const ApiHandler = <E, R>(sql: Layer.Layer<SqlClient.SqlClient, E, R>) =>
     );
 
     return {
-      fetch: Effect.gen(function* () {
-        const request = yield* HttpServerRequest.HttpServerRequest;
-        const { pathname } = new URL(request.url, "http://localhost");
+      fetch: HttpMiddleware.logger(
+        Effect.gen(function* () {
+          const request = yield* HttpServerRequest.HttpServerRequest;
+          const { pathname } = new URL(request.url, "http://localhost");
 
-        return isAuthPath(pathname) ? yield* auth.handle : yield* app;
-      }),
+          return isAuthPath(pathname) ? yield* auth.handle : yield* app;
+        }),
+      ),
     };
   });

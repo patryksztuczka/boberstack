@@ -13,6 +13,7 @@ import { Auth } from "./better-auth.ts";
 
 const currentUserFrom = (auth: typeof Auth.Service, headers: Headers.Headers) =>
   auth.sessionOf(headers).pipe(
+    Effect.tapCause((cause) => Effect.logError("session lookup unavailable", cause)),
     Effect.mapError(() => new AuthenticationUnavailableError()),
     Effect.catchDefect(() => Effect.fail(new AuthenticationUnavailableError())),
     Effect.flatMap((session) =>
