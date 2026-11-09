@@ -22,7 +22,7 @@ The atoms are shared; the React hooks that read them come from `@effect/atom-rea
 - The web todos page renders the `AsyncResult` states instead of suspending in a route loader. A loader runs outside React and cannot reach the signed-in registry, and a suspended transition never commits, so leaving it could not interrupt the request. The card's frame shows at once and the list fills in.
 - A test of a screen seeds `clientLayer` in a `RegistryProvider` with stub layers; `apps/web/src/app/session-expiry.test.tsx` and `apps/mobile/src/app/session-expiry.test.ts` do it with a stub `HttpClient`.
 - `@tanstack/react-query` is refused in `apps/**` and `packages/**` by `no-restricted-imports` in `tools/oxlint/lint.config.ts`.
-- Each mobile screen that needs the session's atoms wraps itself in `SessionAtoms` (the Todos screen does it through `layout`). When two signed-in screens need to share cached data, move the provider up to wrap both.
+- The mobile navigator wraps every screen in one `SessionAtoms` through its `layout`, keyed by the signed-in User, so the signed-in screens share one registry and signing out, or in as someone else, starts a fresh one. A registry per screen would keep each screen's cache apart, and a write on one screen would leave another stale.
 
 ## Considered options
 

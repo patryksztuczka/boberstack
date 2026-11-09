@@ -6,6 +6,8 @@ export const useIsSignedIn = () => authClient.useSession().data !== null;
 
 export const useIsSignedOut = () => authClient.useSession().data === null;
 
+export const useSessionUserId = () => authClient.useSession().data?.user.id;
+
 export const useSessionLoading = () => {
   const session = authClient.useSession();
 
