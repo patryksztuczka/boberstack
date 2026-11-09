@@ -139,6 +139,8 @@ jobs:
 
       - name: Integration tests (Testcontainers, Docker on the runner)
         run: pnpm test:integration
+      - name: Build the api image and serve the api and the web app from it
+        run: pnpm check:api-image
 
   ci-ok:
     name: CI OK

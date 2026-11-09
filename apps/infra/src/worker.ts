@@ -1,36 +1,50 @@
 import { CloudflareHyperdrive } from "@alchemy.run/better-auth/CloudflareHyperdrive";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as SQL from "@alchemy.run/sql/Postgres";
-import { Auth, SocialSignIn } from "@boberstack/auth";
-import { MailpitMailer } from "@boberstack/mail";
+import { ApiHandler, AuthLayer } from "@boberstack/api/app";
+import { Auth } from "@boberstack/auth";
+import * as Alchemy from "alchemy";
 import * as Http from "alchemy/Http";
-import { Config, Effect, Layer } from "effect";
-import { HttpRouter, HttpServerRequest } from "effect/http";
+import { Config, Effect, Layer, Redacted } from "effect";
 
-import { AppLayer } from "./app.layer.ts";
-import { Database } from "./database.ts";
+const LOCAL_DATABASE_URL = "postgres://postgres:postgres@localhost:5432/app";
 
-const isAuthPath = (pathname: string) =>
-  pathname === "/api/auth" ||
-  pathname.startsWith("/api/auth/") ||
-  pathname.startsWith("/.well-known/oauth-") ||
-  pathname.startsWith("/.well-known/openid-configuration");
+const DatabaseUrl = Config.Redacted("DATABASE_URL");
 
-const MailerLayer = Layer.unwrap(
-  Effect.map(
-    Config.Literals(["mailpit"], "MAIL_TRANSPORT"),
-    (transport) => ({ mailpit: MailpitMailer.layerConfig })[transport],
-  ),
-);
+const originOf = (databaseUrl: Redacted.Redacted<string>) => {
+  const url = new URL(Redacted.value(databaseUrl));
 
-const AuthLayer = Layer.unwrap(
-  Effect.map(Database, (connection) =>
-    Auth.layer.pipe(
-      Layer.provide(CloudflareHyperdrive(connection)),
-      Layer.provide(MailerLayer),
-      Layer.provide(SocialSignIn.layerConfig),
-    ),
-  ),
+  return {
+    scheme: "postgres" as const,
+    host: url.hostname,
+    port: Number(url.port || "5432"),
+    database: url.pathname.slice(1),
+    user: decodeURIComponent(url.username),
+    password: Redacted.make(decodeURIComponent(url.password)),
+  };
+};
+
+const Database = Effect.gen(function* () {
+  if (yield* Alchemy.ALCHEMY_DEV) {
+    const origin = originOf(
+      yield* DatabaseUrl.pipe(Config.withDefault(Redacted.make(LOCAL_DATABASE_URL))),
+    );
+
+    return yield* Cloudflare.Hyperdrive.Connection("Database", {
+      origin,
+      caching: { disabled: true },
+      dev: { ...origin, sslmode: "disable" },
+    });
+  }
+
+  return yield* Cloudflare.Hyperdrive.Connection("Database", {
+    origin: originOf(yield* DatabaseUrl),
+    caching: { disabled: true },
+  });
+});
+
+const WorkerAuthLayer = Layer.unwrap(
+  Effect.map(Database, (connection) => AuthLayer(Auth.layer, CloudflareHyperdrive(connection))),
 );
 
 export default class Api extends Cloudflare.Worker<Api>()(
@@ -46,24 +60,12 @@ export default class Api extends Cloudflare.Worker<Api>()(
     dev: { port, strictPort: true },
   })),
   Effect.gen(function* () {
-    const auth = yield* Auth;
     const hyperdrive = yield* Cloudflare.Hyperdrive.Connect(Database);
 
-    const app = yield* HttpRouter.toHttpEffect(
-      AppLayer.pipe(
-        Layer.provide(SQL.PostgresLayer({ url: hyperdrive.connectionString })),
-        Layer.provide(SocialSignIn.layerConfig),
-        Layer.provide(Http.Platform),
-      ),
+    return yield* ApiHandler(SQL.PostgresLayer({ url: hyperdrive.connectionString })).pipe(
+      Effect.provide(Http.Platform),
     );
-
-    return {
-      fetch: Effect.gen(function* () {
-        const request = yield* HttpServerRequest.HttpServerRequest;
-        const { pathname } = new URL(request.url, "http://localhost");
-
-        return isAuthPath(pathname) ? yield* auth.handle : yield* app;
-      }),
-    };
-  }).pipe(Effect.provide(AuthLayer.pipe(Layer.provideMerge(Cloudflare.Hyperdrive.ConnectBinding)))),
+  }).pipe(
+    Effect.provide(WorkerAuthLayer.pipe(Layer.provideMerge(Cloudflare.Hyperdrive.ConnectBinding))),
+  ),
 ) {}

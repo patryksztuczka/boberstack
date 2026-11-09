@@ -1,7 +1,8 @@
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import Api from "@boberstack/api/worker";
 import * as Alchemy from "alchemy";
 import { Effect, Layer } from "effect";
+
+import Api from "./src/worker.ts";
 
 const StateLayer = Layer.unwrap(
   Effect.gen(function* () {
