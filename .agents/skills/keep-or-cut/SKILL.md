@@ -235,7 +235,7 @@ Do what the owner chose in step 1. The template ships two hosts; the project kee
 
 Container (not decided, only locally, a server of their own, a cloud that runs containers):
 
-- [ ] Delete `apps/infra/cloudflare.run.ts`, `apps/infra/src/`, the `*:cloudflare` scripts and `@alchemy.run/cloudflare` in `apps/infra/package.json`, `@alchemy.run/cloudflare` in the `pnpm-workspace.yaml` catalog and `workerd` in its `allowBuilds`, `cloudflare.run.ts` and `src` in `apps/infra/tsconfig.json`, `cloudflare.run.ts` in `knip.json`, and `apps/infra/cloudflare.run.ts` and `apps/infra/src/worker.ts` in the allow lists of `tools/oxlint/lint.config.ts` and the rule defaults in `tools/oxlint/boberstack/effect/rules/`.
+- [ ] Delete `apps/infra/cloudflare.run.ts`, `apps/infra/src/`, the `*:cloudflare` scripts and `@alchemy.run/cloudflare` in `apps/infra/package.json`, `@alchemy.run/cloudflare` in the `pnpm-workspace.yaml` catalog and `workerd` in its `allowBuilds`, `cloudflare.run.ts` and `src` in `apps/infra/tsconfig.json`, `cloudflare.run.ts` in `knip.json`, and `apps/infra/src/worker.ts` in the `layer-config-only-in-roots` allow list of `tools/oxlint/lint.config.ts` and its rule defaults in `tools/oxlint/boberstack/effect/rules/`.
 - [ ] Delete the Cloudflare section of `docs/operations/deploy.md`, and the line about workerd in root ADR 0013's consequences.
 - [ ] A server of their own: walk the owner through `docs/operations/deploy.md`. The first `pnpm run deploy` waits for the owner's yes (`AGENTS.md`).
 - [ ] A cloud: build it after step 9 as its own change, with the `playbook-feature` skill, before or after the owner's first request as they prefer. The new resource replaces `Docker.Container` in the same change, so the project always has a deploy that works.
@@ -245,7 +245,7 @@ Cloudflare:
 - [ ] `git mv apps/infra/cloudflare.run.ts apps/infra/alchemy.run.ts`. In `apps/infra/package.json`, make `dev`, `deploy` and `destroy` the Cloudflare commands without the file argument, delete the `*:cloudflare` scripts, and remove `@alchemy.run/docker` here and in the catalog.
 - [ ] Delete `apps/api/src/server.ts`, `apps/infra/api.Dockerfile`, `.dockerignore`, the `dev` and `start` scripts and `@effect/platform-node` and `@effect/sql-pg` in `apps/api/package.json`, and `Auth.layerConfig` in `packages/auth/src/better-auth.ts`.
 - [ ] Remove `PORT`, `WEB_ROOT`, `AUTH_SECRET`, `DEPLOY_DOCKER_HOST` and `API_PORT` from `.env.schema`, and `PORT` and `AUTH_SECRET` from `scripts/dev-ports.mjs`.
-- [ ] Replace `apps/api/src/server.ts` with `apps/infra/src/worker.ts` in the allow lists of `tools/oxlint/lint.config.ts` and the rule defaults, and `alchemy.run.ts` keeps its place there.
+- [ ] Remove `apps/api/src/server.ts` from the allow lists of `tools/oxlint/lint.config.ts` and the rule defaults; `apps/infra/src/worker.ts` stays in `layer-config-only-in-roots`.
 - [ ] Delete the container section of `docs/operations/deploy.md`, and write an ADR that supersedes root ADR 0013 with the Worker as the only host.
 - [ ] Walk the owner through the Cloudflare section of `docs/operations/deploy.md`: connect the account, set `DATABASE_URL`, add a mail transport. The first `pnpm run deploy` waits for the owner's yes (`AGENTS.md`).
 

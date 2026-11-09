@@ -77,8 +77,6 @@ const effectRules = {
         "apps/api/src/server.ts",
         "apps/cli/src/main.ts",
         "apps/desktop/src/main.ts",
-        "apps/infra/alchemy.run.ts",
-        "apps/infra/cloudflare.run.ts",
         "**/vitest.global-setup.ts",
       ],
     },

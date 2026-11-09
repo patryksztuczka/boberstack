@@ -15,7 +15,7 @@ An entry point is a file that starts the Effect runtime for a host: a server pro
 
 ### runtime.allowlist: only entry points start runtimes
 
-`Effect.runPromise`, `runSync`, `runFork`, `runCallback`, `NodeRuntime.runMain` and `ManagedRuntime.make` appear only in the files above (`@boberstack/effect/run-only-in-entry-points`). Adding an entry point is a change to the rule's `allow` list in `tools/oxlint/lint.config.ts`, which needs owner sign-off. The web and mobile apps start no runtime of their own: atoms run their fibers on `clientRuntime` ([`runtime.web`](#runtimeweb-atoms-for-react)).
+`Effect.runPromise`, `runSync`, `runFork`, `runCallback`, `NodeRuntime.runMain` and `ManagedRuntime.make` appear only in `server.ts`, `apps/cli/src/main.ts`, `apps/desktop/src/main.ts` and Vitest global setup files (`@boberstack/effect/run-only-in-entry-points`). The Worker and the Alchemy stacks start none: Alchemy runs them. Adding an entry point is a change to the rule's `allow` list in `tools/oxlint/lint.config.ts`, which needs owner sign-off. The web and mobile apps start no runtime of their own: atoms run their fibers on `clientRuntime` ([`runtime.web`](#runtimeweb-atoms-for-react)).
 
 Route and handler modules never run effects. They export layers, and the entry point merges them.
 

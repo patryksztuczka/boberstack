@@ -99,13 +99,13 @@ No rule checks bounded concurrency or the reason for a detached fork ([09](09-co
 
 ## Configured paths
 
-| Option                             | Value                                                                                                                                                                  |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `run-only-in-entry-points` `allow` | `apps/api/src/server.ts`, `apps/cli/src/main.ts`, `apps/desktop/src/main.ts`, `apps/infra/alchemy.run.ts`, `apps/infra/cloudflare.run.ts`, `**/vitest.global-setup.ts` |
-| `layer-config-only-in-roots` roots | `apps/api/src/server.ts`, `apps/api/src/app.layer.ts`, `apps/infra/src/worker.ts`, `apps/cli/src/main.ts`, `apps/cli/src/commands/*.ts`, `apps/desktop/src/main.ts`    |
-| `module-boundaries`                | `sourceRoot: packages/core/src`, `indexOnly: packages/*/src/**`, `rootFiles: apps/*/src/*`                                                                             |
-| `service-id-matches-path`          | prefix `boberstack/core`, `sourceRoot: packages/core/src`, extra root `packages/*/src` → `boberstack/*` (the folder name fills `*`), `idSource: class`                 |
-| `effectRules` override `files`     | `apps/api`, `apps/cli`, `apps/desktop`, `apps/infra`, `packages/**`                                                                                                    |
-| `tagged-error-naming`              | `filePattern: \.errors\.ts$`                                                                                                                                           |
+| Option                             | Value                                                                                                                                                               |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `run-only-in-entry-points` `allow` | `apps/api/src/server.ts`, `apps/cli/src/main.ts`, `apps/desktop/src/main.ts`, `**/vitest.global-setup.ts`                                                           |
+| `layer-config-only-in-roots` roots | `apps/api/src/server.ts`, `apps/api/src/app.layer.ts`, `apps/infra/src/worker.ts`, `apps/cli/src/main.ts`, `apps/cli/src/commands/*.ts`, `apps/desktop/src/main.ts` |
+| `module-boundaries`                | `sourceRoot: packages/core/src`, `indexOnly: packages/*/src/**`, `rootFiles: apps/*/src/*`                                                                          |
+| `service-id-matches-path`          | prefix `boberstack/core`, `sourceRoot: packages/core/src`, extra root `packages/*/src` → `boberstack/*` (the folder name fills `*`), `idSource: class`              |
+| `effectRules` override `files`     | `apps/api`, `apps/cli`, `apps/desktop`, `apps/infra`, `packages/**`                                                                                                 |
+| `tagged-error-naming`              | `filePattern: \.errors\.ts$`                                                                                                                                        |
 
 Changing any of these, or turning a rule off, needs owner sign-off ([AGENTS.md](../../../../AGENTS.md)). A targeted `// oxlint-disable-next-line <rule> -- <reason>` is the escape hatch for one real boundary.

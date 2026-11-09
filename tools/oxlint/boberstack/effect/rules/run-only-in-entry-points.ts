@@ -34,8 +34,6 @@ const defaultAllow = [
   "apps/cli/src/main.ts",
   "apps/desktop/src/main.ts",
   "apps/web/src/runtime.ts",
-  "apps/infra/alchemy.run.ts",
-  "apps/infra/cloudflare.run.ts",
   "**/vitest.global-setup.ts",
 ];
 
