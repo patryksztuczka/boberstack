@@ -28,7 +28,7 @@ export const enabledProviders = (settings: SocialSignInApi): ReadonlyArray<Socia
 ];
 
 export class SocialSignIn extends Context.Service<SocialSignIn, SocialSignInApi>()(
-  "boberstack/platform/auth/SocialSignIn",
+  "boberstack/auth/SocialSignIn",
 ) {
   static readonly layer = (settings: SocialSignInApi) => Layer.succeed(this, settings);
 

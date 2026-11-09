@@ -3,7 +3,7 @@ import type { OxlintConfig } from "vite-plus/lint";
 const skill = ".agents/skills/effect-best-practices/references";
 
 const clientStateMessage =
-  "Client state lives in Effect atoms from @boberstack/client-runtime (root ADR 0012), not React Query.";
+  "Client state lives in Effect atoms from @boberstack/client-runtime (root ADR 0010), not React Query.";
 
 const antiSlopRules = {
   "anti-slop/no-array-filter-map": "error",
@@ -87,11 +87,10 @@ const effectRules = {
   "@boberstack/effect/service-id-matches-path": [
     "error",
     {
-      prefix: "boberstack",
+      prefix: "boberstack/core",
       sourceRoot: "packages/core/src",
       extraRoots: {
-        "packages/domain/src": "boberstack/domain",
-        "packages/*/src": "boberstack/platform/*",
+        "packages/*/src": "boberstack/*",
       },
       idSource: "class",
     },

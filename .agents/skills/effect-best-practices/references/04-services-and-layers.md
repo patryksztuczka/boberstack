@@ -21,7 +21,7 @@ export interface TodosServiceApi {
 }
 
 export class TodosService extends Context.Service<TodosService, TodosServiceApi>()(
-  "boberstack/todos/TodosService",
+  "boberstack/core/todos/TodosService",
   {
     make: Effect.gen(function* () {
       const store = yield* TodoStore;
@@ -83,7 +83,7 @@ Why: `.layer` never reads the environment, so an integration test can use it wit
 
 ### services.platform: the machine is infrastructure too
 
-Code outside `tools/oxlint` never imports `node:fs`, `node:path`, `node:child_process` or `node:timers`, not even for types (the Effect diagnostic `nodeBuiltinImport`). A domain module never imports a vendor SDK, `fetch` or anything in `platform/` (`@boberstack/effect/no-domain-adapters`). Code in `apps/api` must also run on workerd while the Cloudflare host exists, so only `server.ts` imports a `node:` module (root ADR 0016). On Node (`apps/cli`), a service captures Effect's `FileSystem`, `Path` or `ChildProcessSpawner` in `make`, and `main.ts` provides `NodeServices.layer` from `@effect/platform-node` once.
+Code outside `tools/oxlint` never imports `node:fs`, `node:path`, `node:child_process` or `node:timers`, not even for types (the Effect diagnostic `nodeBuiltinImport`). A domain module never imports a vendor SDK, `fetch` or an adapter package (`@boberstack/effect/no-domain-adapters`). Code in `apps/api` must also run on workerd while the Cloudflare host exists, so only `server.ts` imports a `node:` module (root ADR 0013). On Node (`apps/cli`), a service captures Effect's `FileSystem`, `Path` or `ChildProcessSpawner` in `make`, and `main.ts` provides `NodeServices.layer` from `@effect/platform-node` once.
 
 ### Resources inside layers
 

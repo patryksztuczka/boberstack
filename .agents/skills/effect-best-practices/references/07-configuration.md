@@ -19,7 +19,7 @@ export interface AuthSettingsApi {
 }
 
 export class AuthSettings extends Context.Service<AuthSettings, AuthSettingsApi>()(
-  "boberstack/platform/auth/AuthSettings",
+  "boberstack/auth/AuthSettings",
 ) {
   static readonly layer = (settings: AuthSettingsApi) => Layer.succeed(AuthSettings, settings);
 

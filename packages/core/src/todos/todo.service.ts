@@ -17,7 +17,7 @@ export interface TodosServiceApi {
 }
 
 export class TodosService extends Context.Service<TodosService, TodosServiceApi>()(
-  "boberstack/todos/TodosService",
+  "boberstack/core/todos/TodosService",
   {
     make: Effect.gen(function* () {
       const store = yield* TodoStore;

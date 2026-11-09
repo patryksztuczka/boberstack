@@ -54,7 +54,7 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 | `structure.imports`   | modules talk through `index.ts`; no SQL, adapters or root files in modules          | 05  |
 | `structure.adapters`  | the port in core, the adapter in its own package, the root chooses                  | 05  |
 | `structure.stores`    | `XStore` port, `XRepository` SQL, no in-memory fake                                 | 05  |
-| `structure.ids`       | service id `boberstack/<path>/<Class>`                                              | 05  |
+| `structure.ids`       | service id `boberstack/<package>/<path>/<Class>`                                    | 05  |
 | `structure.web`       | `features/<name>/{api,components,forms}`, contract from `@boberstack/domain`        | 05  |
 | `schema.records`      | domain records are branded `Schema.Class`                                           | 06  |
 | `schema.construction` | decode at the boundary; `make` only where failure is a defect                       | 06  |
@@ -111,8 +111,8 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 
 - **Taken:** the `Context.Service(id, { make })` + `static layer = Layer.effect(this, this.make)` shape, dependencies captured in `make`; branded error classes; the error model (name the failure, keep the source, say how to fix it, fall back only to a valid domain answer); `message` and `Runtime.errorExitCode` on errors a person reads; the hook that blocks `--no-verify`.
 - **Config:** rat-stack's config service has `layer` read Config and `configLayer` take values. We keep `layer(options)` and `layerConfig`, because `@boberstack/effect/layer-config-only-in-roots` keys on `layerConfig`.
-- **Surfaces:** rat-stack projects one capability onto CLI, HTTP, MCP and RPC through its own `defineContract`. We use Effect's `HttpApi` and `RpcGroup` directly, both in `packages/domain` (root ADR 0007). Less machinery, two contracts per operation.
+- **Surfaces:** rat-stack projects one capability onto CLI, HTTP, MCP and RPC through its own `defineContract`. We use Effect's `HttpApi` and `RpcGroup` directly, both in `packages/domain` (root ADR 0005). Less machinery, two contracts per operation.
 - **Lifecycles:** rat-stack puts finite lifecycles in XState machines. The starter has none; add XState when a real lifecycle appears.
-- **Tests:** rat-stack prefers property and model tests. We do too for pure functions, but a store's contract runs on real Postgres with no in-memory fake (root ADR 0004), which rat-stack does not require.
-- **Comments:** both ban prose comments. We keep `VENDOR:` notes and refuse an autofix that deletes them (root ADR 0005).
-- **Structure:** taken from rat-stack: services and ports in `packages/core`, each adapter in its own package, apps as composition roots (root ADR 0009). Kept our own: the contract in a separate `packages/domain` instead of inside core, a folder per bounded context in core, and role-suffixed files (`x.store.ts`, `x.repository.ts`).
+- **Tests:** rat-stack prefers property and model tests. We do too for pure functions, but a store's contract runs on real Postgres with no in-memory fake (root ADR 0003), which rat-stack does not require.
+- **Comments:** both ban prose comments. We keep `VENDOR:` notes and refuse an autofix that deletes them (root ADR 0004).
+- **Structure:** taken from rat-stack: services and ports in `packages/core`, each adapter in its own package, apps as composition roots (root ADR 0007). Kept our own: the contract in a separate `packages/domain` instead of inside core, a folder per bounded context in core, and role-suffixed files (`x.store.ts`, `x.repository.ts`).

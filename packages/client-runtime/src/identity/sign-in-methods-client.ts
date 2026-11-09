@@ -14,7 +14,7 @@ export interface SignInMethodsClientApi {
 export class SignInMethodsClient extends Context.Service<
   SignInMethodsClient,
   SignInMethodsClientApi
->()("boberstack/platform/client-runtime/identity/SignInMethodsClient") {}
+>()("boberstack/client-runtime/identity/SignInMethodsClient") {}
 
 const unavailable = (error: { readonly message: string }) =>
   Effect.fail(new SignInMethodsUnavailableError({ reason: error.message }));

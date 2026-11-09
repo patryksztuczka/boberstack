@@ -1,6 +1,6 @@
 # 05 · Project structure
 
-A bounded context is a folder. A file's name says what role it plays: a record, an error, a port, the logic or the SQL. SQL lives in one place, `packages/database/`, and a domain module in `packages/core` reaches it only through a store port. Why: root ADRs 0004 and 0009. The contexts themselves are in [`CONTEXT-MAP.md`](../../../../CONTEXT-MAP.md).
+A bounded context is a folder. A file's name says what role it plays: a record, an error, a port, the logic or the SQL. SQL lives in one place, `packages/database/`, and a domain module in `packages/core` reaches it only through a store port. Why: root ADRs 0003 and 0007. The contexts themselves are in [`CONTEXT-MAP.md`](../../../../CONTEXT-MAP.md).
 
 ## Rules
 
@@ -20,7 +20,7 @@ packages/domain/src/                 # the contract every side imports (06, sche
     authentication.ts                # HttpApi and RPC middleware tags
     authentication.errors.ts
 
-packages/core/src/                   # bounded contexts: services, ports, pure functions (root ADR 0009)
+packages/core/src/                   # bounded contexts: services, ports, pure functions (root ADR 0007)
   todos/
     index.ts                         # the context's public surface, imported as @boberstack/core/todos
     todo.store.ts                    # port TodoStore
@@ -32,13 +32,13 @@ packages/core/src/                   # bounded contexts: services, ports, pure f
     mailer.ts                        # port Mailer
     templates/                       # pure functions from data to subject, HTML and text
 
-packages/database/                   # adapter: the only SQL (root ADR 0004)
+packages/database/                   # adapter: the only SQL (root ADR 0003)
   src/
     index.ts                         # TodoRepositoryLayer, sqlFileMigrations
     todo.repository.ts               # provides TodoStore
     todo.repository.integration.test.ts
     testing/pg-test.ts               # Testcontainers Postgres layer (12)
-  migrations/                        # NNNN_name.sql, app and better-auth tables (root ADR 0014)
+  migrations/                        # NNNN_name.sql, app and better-auth tables (root ADR 0011)
 packages/mail/src/                   # adapter: Mailpit provides Mailer
 packages/auth/src/                   # adapter: better-auth, the authentication middleware layers
 packages/client-runtime/src/         # what the apps share: api clients per context, their atoms (x.atoms.ts), clientRuntime, ApiOrigin, SessionExpiry
@@ -51,7 +51,7 @@ apps/api/src/                        # a composition root
   rpc/                               # RPC handlers, rpc.layer.ts
     todos.rpc.ts
 apps/cli/src/                        # another composition root
-apps/infra/                          # the Alchemy stacks (root ADR 0016)
+apps/infra/                          # the Alchemy stacks (root ADR 0013)
   alchemy.run.ts, api.Dockerfile     # default host: the api in a container
   cloudflare.run.ts, src/worker.ts   # alternative host: the api as a Worker, Postgres through Hyperdrive
 ```
@@ -120,11 +120,13 @@ A module owns the port: the service tag, its API and its typed errors. Code that
 
 A value a module needs from the deployment is a port too, named after what the module does with it (`TrustedOrigins`, not `Env`). Its `layerConfig` lives in the adapter package, and only composition roots use it ([07](07-configuration.md)).
 
-A new adapter package needs no lint config change: the Effect rules cover every `packages/*`, its service ids take `boberstack/platform/<package>` from the folder name, and core may import no `@boberstack/*` package but `@boberstack/domain`.
+A new adapter package needs no lint config change: the Effect rules cover every `packages/*`, its service ids take `boberstack/<package>` from the folder name, and core may import no `@boberstack/*` package but `@boberstack/domain`.
 
 ### structure.stores: a store port in the module, its SQL in a repository
 
 A module that keeps state asks for it through `XStore` in `x.store.ts`. The adapter is `XRepository` in `packages/database/src/x.repository.ts`: `{ layer: Layer.effect(XStore, …) }`. It takes `SqlClient`, runs the queries, decodes each row with Schema and maps a `SqlError` or `SchemaError` to the module's storage error.
+
+A table is named in the plural (`todos`, `users`), and so are the `modelName`s better-auth gets for its tables. `packages/database/src/migrations.integration.test.ts` fails on a singular table name.
 
 ```ts
 // packages/core/src/todos/todo.store.ts
@@ -134,7 +136,7 @@ export interface TodoStoreApi {
 }
 
 export class TodoStore extends Context.Service<TodoStore, TodoStoreApi>()(
-  "boberstack/todos/TodoStore",
+  "boberstack/core/todos/TodoStore",
 ) {}
 
 // packages/database/src/todo.repository.ts
@@ -160,7 +162,7 @@ export const TodoRepository = {
 };
 ```
 
-- **A store has one implementation.** No `layerTest` or `inMemory` on a `*Store` (`@boberstack/effect/no-store-fakes`). Its repository runs the store's contract on Postgres. Why: root ADR 0004.
+- **A store has one implementation.** No `layerTest` or `inMemory` on a `*Store` (`@boberstack/effect/no-store-fakes`). Its repository runs the store's contract on Postgres. Why: root ADR 0003.
 - **Test each behaviour where it can be observed.** Rows, ordering, constraints and races: the repository's integration suite. A pure decision: a unit test of the pure function. A failure Postgres cannot produce on demand: `Layer.mock(XStore, { oneOp: … })` for that one operation in a service test.
 - **An operation is named after its job** (`listByOwner`, `markDone`), not after tables or queries.
 - **What lands together is one operation.** A service never splits one transaction across two store calls.
@@ -171,13 +173,13 @@ export const TodoRepository = {
 
 ### structure.ids: the service id mirrors the path
 
-The id is `boberstack/<path under the source root>/<Class>` (`@boberstack/effect/service-id-matches-path`, which can autofix it):
+The id is the package's import path without the `@`, then the path below `src`, then the class: `@boberstack/core/todos` holds `boberstack/core/todos/TodosService` (`@boberstack/effect/service-id-matches-path`, which can autofix it):
 
-| Source root              | Id prefix                        | Example                                  |
-| ------------------------ | -------------------------------- | ---------------------------------------- |
-| `packages/core/src`      | `boberstack/`                    | `boberstack/todos/TodosService`          |
-| `packages/<adapter>/src` | `boberstack/platform/<adapter>/` | `boberstack/platform/auth/Auth`          |
-| `packages/domain/src`    | `boberstack/domain/`             | `boberstack/domain/identity/CurrentUser` |
+| Source root              | Id prefix               | Example                                  |
+| ------------------------ | ----------------------- | ---------------------------------------- |
+| `packages/core/src`      | `boberstack/core/`      | `boberstack/core/todos/TodosService`     |
+| `packages/<adapter>/src` | `boberstack/<adapter>/` | `boberstack/auth/Auth`                   |
+| `packages/domain/src`    | `boberstack/domain/`    | `boberstack/domain/identity/CurrentUser` |
 
 `scripts/init.mjs` renames the `boberstack` prefix with the project.
 
@@ -195,6 +197,6 @@ apps/web/src/
   shared/
 ```
 
-A feature imports the contract from `@boberstack/domain`, the atoms from `@boberstack/client-runtime/<context>` and UI from `@boberstack/ui`, never from `@boberstack/core`, an adapter package or `apps/api`. `runtime.ts` builds the client layer from `FetchHttpClient.layer` and `ApiOrigin.layer(globalThis.location.origin)` and seeds `clientLayer` with it. Components never build requests or run Effects; they read atoms with `useAtomValue`, `useAtom` and `useAtomRefresh` and match on the `AsyncResult` (root ADR 0012).
+A feature imports the contract from `@boberstack/domain`, the atoms from `@boberstack/client-runtime/<context>` and UI from `@boberstack/ui`, never from `@boberstack/core`, an adapter package or `apps/api`. `runtime.ts` builds the client layer from `FetchHttpClient.layer` and `ApiOrigin.layer(globalThis.location.origin)` and seeds `clientLayer` with it. Components never build requests or run Effects; they read atoms with `useAtomValue`, `useAtom` and `useAtomRefresh` and match on the `AsyncResult` (root ADR 0010).
 
 Source for the id convention: `effect/AGENTS.md` (Context.Service: "include the package name and the subdirectory path"). The rest is house convention.

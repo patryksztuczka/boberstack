@@ -6,21 +6,21 @@ const service = (name: string, id: string): string =>
 
 const moduleFile = "packages/core/src/todos/todo.service.ts";
 
-const fileLayout = { sourceRoot: "packages/*/src", idSource: "file" };
+const fileLayout = { prefix: "boberstack", sourceRoot: "packages/*/src", idSource: "file" };
 
 tester.run("@boberstack/effect/service-id-matches-path", serviceIdMatchesPathRule, {
   valid: [
-    { code: service("TodosService", "boberstack/todos/TodosService"), filename: moduleFile },
+    { code: service("TodosService", "boberstack/core/todos/TodosService"), filename: moduleFile },
     {
-      code: service("TodoStore", "boberstack/todos/TodoStore"),
+      code: service("TodoStore", "boberstack/core/todos/TodoStore"),
       filename: "packages/core/src/todos/todo.store.ts",
     },
     {
-      code: service("TodoRepository", "boberstack/platform/database/TodoRepository"),
+      code: service("TodoRepository", "boberstack/database/TodoRepository"),
       filename: "packages/database/src/todo.repository.ts",
     },
     {
-      code: service("Auth", "boberstack/platform/auth/Auth"),
+      code: service("Auth", "boberstack/auth/Auth"),
       filename: "packages/auth/src/better-auth.ts",
     },
     {
@@ -28,7 +28,7 @@ tester.run("@boberstack/effect/service-id-matches-path", serviceIdMatchesPathRul
       filename: "packages/domain/src/auth/current-user.ts",
     },
     {
-      code: service("S3Storage", "boberstack/platform/storage/S3Storage"),
+      code: service("S3Storage", "boberstack/storage/S3Storage"),
       filename: "packages/storage/src/s3-storage.ts",
     },
     { code: service("Anything", "whatever"), filename: "scripts/tool.ts" },
@@ -48,19 +48,19 @@ tester.run("@boberstack/effect/service-id-matches-path", serviceIdMatchesPathRul
       code: service("TodosService", "TodosService"),
       filename: moduleFile,
       errors: [{ messageId: "id" }],
-      output: service("TodosService", "boberstack/todos/TodosService"),
+      output: service("TodosService", "boberstack/core/todos/TodosService"),
     },
     {
-      code: service("TodoRepository", "boberstack/database/TodoRepository"),
+      code: service("TodoRepository", "boberstack/core/database/TodoRepository"),
       filename: "packages/database/src/todo.repository.ts",
       errors: [{ messageId: "id" }],
-      output: service("TodoRepository", "boberstack/platform/database/TodoRepository"),
+      output: service("TodoRepository", "boberstack/database/TodoRepository"),
     },
     {
-      code: service("S3Storage", "boberstack/storage/S3Storage"),
+      code: service("S3Storage", "boberstack/s3/S3Storage"),
       filename: "packages/storage/src/s3-storage.ts",
       errors: [{ messageId: "id" }],
-      output: service("S3Storage", "boberstack/platform/storage/S3Storage"),
+      output: service("S3Storage", "boberstack/storage/S3Storage"),
     },
     {
       code: service("CurrentUser", "boberstack/auth/CurrentUser"),

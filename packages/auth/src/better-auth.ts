@@ -209,7 +209,7 @@ const makeAuth = Effect.fnUntraced(function* (secretOption: AuthSecretOption) {
 });
 
 export class Auth extends Context.Service<Auth, Effect.Success<ReturnType<typeof makeAuth>>>()(
-  "boberstack/platform/auth/Auth",
+  "boberstack/auth/Auth",
 ) {
   static readonly layer = Layer.effect(this, makeAuth({}));
 

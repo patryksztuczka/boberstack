@@ -36,7 +36,7 @@ export interface McpClientDirectoryApi {
 export class McpClientDirectory extends Context.Service<
   McpClientDirectory,
   McpClientDirectoryApi
->()("boberstack/platform/client-runtime/identity/McpClientDirectory") {}
+>()("boberstack/client-runtime/identity/McpClientDirectory") {}
 
 const PublicClient = Schema.Struct({
   client_id: McpClientId,
