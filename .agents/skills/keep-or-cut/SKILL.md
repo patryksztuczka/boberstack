@@ -111,7 +111,7 @@ pnpm check
 
 `--name` replaces the template's name and the prefix of every service id; `--scope` replaces the package scope. It leaves GitHub URLs alone, so the upstream URL in this skill survives.
 
-The mobile app has names `init:project` does not touch. If it stays, rename the bundle ids (`com.<name>.app…`) and the `<name>-dev` and `<name>-preview` schemes in `apps/mobile/app.config.ts`, and the same schemes in the trusted origins in `packages/auth/src/better-auth.ts`. `init:project` renames only the plain name and scheme.
+It also renames the names built on the project name: the mobile app's `<name>-dev` and `<name>-preview` schemes, the api image, the pull request evidence bucket and the local mail domain. The mobile bundle ids become `com.<name without hyphens>.app…`, because an Android package name cannot hold a hyphen. It leaves the beaver's alt text in `apps/web/src/assets/` and examples inside ADRs to you.
 
 ## 4. GitHub settings
 
