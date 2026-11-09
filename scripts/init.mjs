@@ -39,6 +39,7 @@ const TEXT_EXTENSIONS = new Set([
   ".html",
   ".css",
   ".sql",
+  ".Dockerfile",
 ]);
 
 const SKIPPED_DIRECTORIES = new Set([
@@ -59,6 +60,8 @@ const USAGE =
   "Usage: node scripts/init.mjs [--name <name>] [--scope <@scope>] [--dry-run]\n" +
   "  --name   lower-case kebab-case project name, also the service-id prefix (e.g. acme-shop)\n" +
   "  --scope  package scope replacing @starter (e.g. @acme)\n";
+
+const appIdPart = (name) => name.replaceAll("-", "");
 
 const escapeRegExp = (text) => text.replaceAll(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -203,9 +206,22 @@ function buildReplacements(current, options) {
     replacements.push({
       label: "project name",
       pattern: new RegExp(
-        `(?<![\\w@.-])(?<!github\\.com/[\\w.-]+/)${escapeRegExp(current.name)}(?![\\w-])${pluginFolderGuard(current)}`,
+        `(?<![\\w@.-])(?<!github\\.com/[\\w.-]+/)${escapeRegExp(current.name)}(?!\\w)${pluginFolderGuard(current)}`,
         "g",
       ),
+      replacement: options.name,
+    });
+    replacements.push({
+      label: "app id",
+      pattern: new RegExp(
+        `(?<=\\bcom\\.)${escapeRegExp(appIdPart(current.name))}(?=\\.app\\b)`,
+        "g",
+      ),
+      replacement: appIdPart(options.name),
+    });
+    replacements.push({
+      label: "mail domain",
+      pattern: new RegExp(`(?<=\\w@)${escapeRegExp(current.name)}(?=\\.\\w)`, "g"),
       replacement: options.name,
     });
     replacements.push({
