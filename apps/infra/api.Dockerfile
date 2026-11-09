@@ -5,8 +5,8 @@ WORKDIR /repo
 
 FROM base AS web
 COPY . .
-RUN pnpm install --frozen-lockfile --filter "@boberstack/web..."
-RUN pnpm --filter @boberstack/web run build
+RUN pnpm install --frozen-lockfile --ignore-scripts --filter "@boberstack/web..."
+RUN pnpm --filter @boberstack/web run prepare && pnpm --filter @boberstack/web run build
 
 FROM base AS api
 COPY . .
