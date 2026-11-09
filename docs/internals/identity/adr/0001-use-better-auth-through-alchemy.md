@@ -2,7 +2,7 @@
 
 **Status:** accepted, 2026-10-30.
 
-Sign-in, sign-up and Sessions run on better-auth inside the api Worker, wired through `@alchemy.run/better-auth` so the Worker gets the auth instance, its secret and its database connection from the same Alchemy stack as everything else. Writing our own password hashing, session rotation and cookie handling is a security liability with no product value, and a hosted identity provider would add a second vendor, a second dashboard and a network hop on every request.
+Sign-in, sign-up and Sessions run on better-auth inside the api, wired through `@alchemy.run/better-auth` so the api gets the auth instance, its secret and its database connection from the same Alchemy stack as everything else. Writing our own password hashing, session rotation and cookie handling is a security liability with no product value, and a hosted identity provider would add a second vendor, a second dashboard and a network hop on every request.
 
 Identity's contract in `packages/domain` exposes only what other contexts need: the `CurrentUser` service, the HttpApi and RPC authentication middleware tags, and `UnauthorizedError` and `AuthenticationUnavailableError`. better-auth's own routes are served under `/api/auth/*`; no better-auth type crosses into `packages/domain` or a module.
 

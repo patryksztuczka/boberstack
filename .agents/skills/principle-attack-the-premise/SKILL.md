@@ -10,8 +10,8 @@ Each failed fix is evidence against the belief it assumed. A third fix on the sa
 
 ## How
 
-1. **Write the premise down.** One sentence that every failed fix assumed: "the session cookie reaches the Worker", "the migration ran before the test", "the store returns rows in insert order".
-2. **Test the premise, not the next fix.** Find an observation that would come out differently if the premise were false, and make it: log the header the Worker received, read the migrations table, run the query twice and compare. Make the check a script or test you can rerun.
+1. **Write the premise down.** One sentence that every failed fix assumed: "the session cookie reaches the api", "the migration ran before the test", "the store returns rows in insert order".
+2. **Test the premise, not the next fix.** Find an observation that would come out differently if the premise were false, and make it: log the header the api received, read the migrations table, run the query twice and compare. Make the check a script or test you can rerun.
 3. **Follow the evidence.**
    - It contradicts the premise: the cause is elsewhere. Look at what the failures have in common that the premise did not predict.
    - It confirms the premise: go one "why" deeper with the `principle-fix-root-causes` skill. The earlier fixes treated a consequence.

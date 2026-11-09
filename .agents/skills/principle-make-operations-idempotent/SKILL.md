@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Make operations idempotent
 
-Requests get retried, Workers get evicted, a deploy stops halfway, a person runs the command twice. If what a half-finished run left behind changes what the next run does, every restart is a debugging session.
+Requests get retried, containers get restarted, a deploy stops halfway, a person runs the command twice. If what a half-finished run left behind changes what the next run does, every restart is a debugging session.
 
 ## The idea
 

@@ -6,7 +6,7 @@ You need Node 26.13.0 (`.node-version`), pnpm 11.28.9 and Docker.
 
 ```sh
 pnpm install     # also installs the Git hooks
-pnpm dev         # Postgres and Mailpit in Docker, migrations, the api Worker via alchemy dev, the web app via vp dev
+pnpm dev         # Postgres and Mailpit in Docker, migrations, the api via node --watch, the web app via vp dev
 pnpm dev:doctor  # in a second terminal: checks the stack and creates and verifies demo@example.com / demo12345
 ```
 
@@ -37,7 +37,7 @@ pnpm dev:desktop -- --remote-debugging-port=9333      # the same, with DevTools 
 
 The window opens the web URL `pnpm dev` printed, so Vite's hot reload works as in a browser. A change to `apps/desktop/src` needs a restart: quit the window and run the command again. Each checkout keeps its cookies, cache and single-instance lock in `.dev/desktop`, so a second worktree opens its own window and its own session.
 
-Bundle mode is what a packaged app will do. It serves `apps/web/dist` from disk and sends `/api` to the app named by `DESKTOP_APP_URL`. To try it against the local api Worker:
+Bundle mode is what a packaged app will do. It serves `apps/web/dist` from disk and sends `/api` to the app named by `DESKTOP_APP_URL`. To try it against the local api:
 
 ```sh
 pnpm --filter @boberstack/web build

@@ -1,6 +1,6 @@
 # Cloudflare Workers and any Postgres, declared with Alchemy
 
-**Status:** accepted, 2026-11-08.
+**Status:** superseded by root ADR 0016, 2026-11-09.
 
 Root ADR 0003 put the data in a Neon project that the Alchemy stack created. boberstack is a template that nobody deploys as is, so every project started from it had to open a Neon account before its first deploy, and the stack carried a Neon provider, an API key and a second migration path for that one database.
 

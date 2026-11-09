@@ -44,14 +44,16 @@ packages/auth/src/                   # adapter: better-auth, the authentication 
 packages/client-runtime/src/         # what the apps share: api clients per context, their atoms (x.atoms.ts), clientRuntime, ApiOrigin, SessionExpiry
 
 apps/api/src/                        # a composition root
-  worker.ts                          # entry point (10)
-  app.layer.ts                       # routes + core + adapters
-  database.ts                        # the Hyperdrive resource in Alchemy, origin from DATABASE_URL
+  server.ts                          # entry point on Node (10)
+  app.layer.ts                       # routes + core + adapters, no host
   http/                              # one handler file per HttpApi group, http.layer.ts
     todos.http.ts
   rpc/                               # RPC handlers, rpc.layer.ts
     todos.rpc.ts
 apps/cli/src/                        # another composition root
+apps/infra/                          # the Alchemy stacks (root ADR 0016)
+  alchemy.run.ts, api.Dockerfile     # default host: the api in a container
+  cloudflare.run.ts, src/worker.ts   # alternative host: the api as a Worker, Postgres through Hyperdrive
 ```
 
 A small context is one module, with its files directly in the context folder. When it grows, split it into module folders (`packages/core/src/todos/sharing/`), each with its own `index.ts`. What the whole context shares sits directly in the context folder, named by what it is.
@@ -84,13 +86,13 @@ A port that is not storage is named after its job: `PasswordHasher`, `MailSender
 
 | Import                                                                                                                                            | Allowed | Rule                                                                                                               |
 | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------ |
-| a root file (`worker.ts`, `app.layer.ts`, `apps/cli/src/main.ts`) → anything its `package.json` lists                                             | yes     |                                                                                                                    |
+| a root file (`server.ts`, `app.layer.ts`, `apps/infra/src/worker.ts`, `apps/cli/src/main.ts`) → anything its `package.json` lists                 | yes     |                                                                                                                    |
 | `http/`, `rpc/` → `@boberstack/core/<context>`, an adapter package's index, `@boberstack/domain`                                                  | yes     |                                                                                                                    |
 | an adapter package → `@boberstack/core/<context>`, `@boberstack/domain`, a vendor SDK, `effect/sql`                                               | yes     |                                                                                                                    |
 | any package → a file past a core context's `index.ts`                                                                                             | no      | `exports` in `packages/core/package.json`; `@boberstack/effect/module-boundaries` (`indexOnly`) for relative paths |
 | a core module → its own files, another module's or context's `index.ts`, `@boberstack/domain`                                                     | yes     |                                                                                                                    |
 | a core module → a file inside another module or context                                                                                           | no      | `@boberstack/effect/module-boundaries`                                                                             |
-| a core module → a root file (`app.layer.ts`, `worker.ts`), tests included                                                                         | no      | `@boberstack/effect/module-boundaries` (`rootFiles`)                                                               |
+| a core module → a root file (`app.layer.ts`, `server.ts`), tests included                                                                         | no      | `@boberstack/effect/module-boundaries` (`rootFiles`)                                                               |
 | a core module → `@boberstack/auth`, `@boberstack/mail`, `better-auth`, `alchemy`, `pg`, `fetch`, `node:http`                                      | no      | `@boberstack/effect/no-domain-adapters`                                                                            |
 | a core module, tests included → `effect/sql`, `@effect/sql-pg`, `@boberstack/database`, `packages/database/`; a core file named `*.repository.ts` | no      | `@boberstack/effect/no-domain-sql`                                                                                 |
 | `apps/web` → `@boberstack/core` or an adapter package                                                                                             | no      | not in `apps/web/package.json`, so pnpm cannot resolve it                                                          |

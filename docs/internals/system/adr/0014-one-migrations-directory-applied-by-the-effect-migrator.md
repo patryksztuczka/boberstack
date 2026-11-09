@@ -9,7 +9,7 @@ Every table, ours and better-auth's, is created by plain SQL files in `packages/
 ## Consequences
 
 - A migration is append-only. Never edit or renumber one that has been applied anywhere; write the next one.
-- Migrations run before the new Worker is uploaded, so a migration must keep the running Worker working: add first, drop in a later deploy.
+- Migrations run before the new api is deployed, so a migration must keep the running api working: add first, drop in a later deploy.
 - Upgrading better-auth means comparing its schema with ours and writing the migration by hand.
 - A destructive migration needs owner sign-off (AGENTS.md).
 

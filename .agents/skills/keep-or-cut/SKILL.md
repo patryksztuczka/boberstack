@@ -5,7 +5,7 @@ description: Set up a fresh copy of the template before any other work. If this 
 
 # Keep or cut
 
-This repository is a copy of a template that ships a working product: an api Worker, a web app, a desktop app, a mobile app, a CLI, a todos example behind sign-in, and the checks that hold them together. This skill turns that copy into the owner's project. When it finishes, it deletes itself, so the next agent that opens the repository goes straight to work.
+This repository is a copy of a template that ships a working product: an api, a web app, a desktop app, a mobile app, a CLI, a todos example behind sign-in, and the checks that hold them together. This skill turns that copy into the owner's project. When it finishes, it deletes itself, so the next agent that opens the repository goes straight to work.
 
 The template lives at https://github.com/patryksztuczka/boberstack. Every step that needs the upstream uses that URL.
 
@@ -27,16 +27,16 @@ Then offer two ways in, and say that both are fine:
 - Decide now: go through the rounds below and cut what the project will not use.
 - Not sure yet: cut nothing. Rename the project, keep every part, run locally, and start building. Everything left in place still works and passes `pnpm verify`, so it costs only the code you are not using. Any part can be cut later with its checklist, which the README's "Origin" section links to. Recommend this when the owner hesitates over what they need, or when the request is an idea they want to try.
 
-On "not sure yet", skip to "The repository", then run steps 2 to 5, skip step 6, take "only locally" in step 7, and finish with steps 8 and 9.
+On "not sure yet", skip to "The repository", then run steps 2 to 5, skip step 6, keep the container in step 7, and finish with steps 8 and 9.
 
 ### Which clients
 
-| Part            | What it is                                                | Depends on                            |
-| --------------- | --------------------------------------------------------- | ------------------------------------- |
-| The web app     | a React SPA that the api Worker serves on the same origin |                                       |
-| The desktop app | an Electron window around the web app                     | the web app                           |
-| The mobile app  | an Expo app for iOS and Android                           | `packages/ui` for the beaver only     |
-| The CLI         | Node commands: `db migrate`, `openapi`, `health`          | the deploy applies migrations with it |
+| Part            | What it is                                         | Depends on                            |
+| --------------- | -------------------------------------------------- | ------------------------------------- |
+| The web app     | a React SPA that the api serves on the same origin |                                       |
+| The desktop app | an Electron window around the web app              | the web app                           |
+| The mobile app  | an Expo app for iOS and Android                    | `packages/ui` for the beaver only     |
+| The CLI         | Node commands: `db migrate`, `openapi`, `health`   | the deploy applies migrations with it |
 
 A request for a mobile app means cutting the web and desktop apps. An api that other systems call means cutting every client.
 
@@ -60,11 +60,14 @@ Recommend HttpApi alone when anyone besides the project's own TypeScript clients
 
 ### Where it will run
 
-The template deploys to Cloudflare, but the owner may not know yet, or may want another provider. Ask, and lay out the options:
+The api is a Node server in a container image, and Alchemy deploys that image (root ADR 0016). Ask first whether the owner already knows where the project will run. When they do not, recommend keeping the container and deciding later: nothing outside `apps/infra/` depends on the host, so moving is one change there. Then lay out the options:
 
-- Only locally for now. Nothing to set up: `pnpm dev` runs everything on this machine and the Cloudflare stack waits unused. Recommend this when the owner does not know yet. Nothing done now makes moving later harder: `packages/core` and the transports in `apps/api/src/app.layer.ts` do not depend on Cloudflare; only `apps/api/src/worker.ts` and `apps/infra/` do.
-- Cloudflare, ready to deploy. One Worker serves the api and the web build on one origin, and reaches any Postgres on the internet (Neon, Supabase, RDS) through Hyperdrive. The owner needs a Cloudflare account, a Postgres URL and a mail transport: only Mailpit exists, and a deployed Worker without a real transport refuses to start (root ADR 0008). Name the Worker limits: no long-lived process, no filesystem, no Node-only libraries in the api, recurring work through Cron Triggers (root ADR 0013).
-- AWS, GCP, Azure, Fly.io or a server of their own. There is no ready path. Say what it takes: a composition root that runs `AppLayer` on a Node HTTP server and serves the web build, a container image, Postgres connected directly instead of through Hyperdrive, that provider's infrastructure in place of `apps/infra/alchemy.run.ts`, and an ADR that supersedes root ADR 0013. It is a feature of its own (step 7).
+- Not decided, or only locally for now. Keep the container. `pnpm dev` runs everything on this machine, and the stack waits unused until the first deploy.
+- A server of their own: a VPS, a home server, any machine with Docker. Keep the container. `pnpm run deploy` builds the image on that machine over SSH (`DEPLOY_DOCKER_HOST`) and runs it there. The owner needs Docker on the server, a Postgres it can reach, a domain with TLS in front of the container (Caddy or Traefik) and a mail transport.
+- A cloud that runs containers: AWS (ECS, App Runner), Google Cloud Run, Fly.io, Hetzner, Kubernetes, Azure Container Apps. Keep the container. Alchemy has a resource for each except Azure, and swapping `Docker.Container` in `apps/infra/alchemy.run.ts` for it, with the same image, is a feature of its own (step 7). Azure runs the same image without Alchemy, or on AKS through `@alchemy.run/kubernetes`.
+- Cloudflare. Switch to the Worker host: one Worker serves the api and the web build on one origin and reaches any Postgres on the internet (Neon, Supabase, RDS) through Hyperdrive. The owner needs a Cloudflare account, a Postgres URL and a mail transport. Name the Worker limits: no long-lived process, no filesystem, no Node-only libraries in the api, recurring work through Cron Triggers.
+
+Every deployed option needs a mail transport: only Mailpit exists, and an api without a real one refuses to start (root ADR 0008).
 
 ### The repository
 
@@ -193,7 +196,7 @@ Keep the folders: the next context goes in the same places. Model it with the `d
 
 - [ ] Delete `packages/auth/`, `packages/domain/src/identity/`, and `packages/client-runtime/src/identity/` and `session/`.
 - [ ] Remove `.middleware(…)` from every `HttpApiGroup` and `RpcGroup`, and stop reading `CurrentUser` in handlers; Todos would then need a new ownership rule (Todos ADR 0001).
-- [ ] Remove `@boberstack/auth` and `@alchemy.run/better-auth` from `apps/api/package.json`, `packages/auth` from `apps/api/tsconfig.json`, and the better-auth bindings from `apps/api/src/worker.ts`.
+- [ ] Remove `@boberstack/auth` and `@alchemy.run/better-auth` from `apps/api/package.json`, `packages/auth` from `apps/api/tsconfig.json`, and the better-auth wiring from `apps/api/src/app.layer.ts`, `apps/api/src/server.ts` and `apps/infra/src/worker.ts`.
 - [ ] Add a migration that drops the better-auth tables.
 - [ ] Delete the sign-in features and route guards of `apps/web` and `apps/mobile`, `docs/internals/identity/`, `docs/user/sign-in.md` and `.agents/skills/verify-web/features/auth.md`.
 
@@ -202,7 +205,7 @@ Keep the folders: the next context goes in the same places. Model it with the `d
 The desktop app serves the web app's build (root ADR 0010), so cutting the web app cuts the desktop app too.
 
 - [ ] Delete `apps/web/`, its reference in the root `tsconfig.json`, its entry in `knip.json`, and the `apps/web` overrides in `tools/oxlint/lint.config.ts` (the `react` plugin scope and `feature-boundaries`), `vite.config.ts`, `scripts/suppressions.mjs` and `.gitignore`.
-- [ ] Remove `assets` from the Worker in `apps/api/src/worker.ts`. The Worker then answers `/api/*` and `/.well-known/*` only.
+- [ ] Drop `WEB_ROOT` and the web stage of `apps/infra/api.Dockerfile`, and `assets` from the Worker in `apps/infra/src/worker.ts`. The api then answers `/api/*` and `/.well-known/*` only.
 - [ ] In `scripts/dev.mjs`, drop the `web` child and its health check and point the mobile app's `EXPO_PUBLIC_API_URL` at the api URL. In `scripts/dev-ports.mjs`, drop the `web` port and point `AUTH_BASE_URL` at the api. Remove `DEV_WEB_PORT` from `.env.schema`.
 - [ ] Delete `scripts/web-boot.mjs`, the `check:web-boot` script and its step in `.github/workflows/ci.yml`, the `browser` script and the `agent-browser` devDependency.
 - [ ] Delete the `verify-web` skill (`.agents/skills/verify-web/` and its link in `.claude/skills/`). Move its launch step into `verify-mobile`, which borrows it, and replace its mentions in `AGENTS.md`, the playbook and principle skills and `.github/pull_request_template.md` with `verify-mobile`, or with a request against the api when no client is left.
@@ -226,11 +229,23 @@ The desktop app serves the web app's build (root ADR 0010), so cutting the web a
 
 ## 7. Hosting
 
-Do what the owner chose in step 1.
+Do what the owner chose in step 1. The template ships two hosts; the project keeps one.
 
-- Only locally: nothing to do. Keep `apps/infra/` and `docs/operations/deploy.md`, and have the README say the project is not deployed yet.
-- Cloudflare: walk the owner through `docs/operations/deploy.md`: connect the account, set `DATABASE_URL`, add a mail transport. The first `pnpm run deploy` waits for the owner's yes (`AGENTS.md`).
-- Another provider: build it after step 9 as its own change, with the `playbook-feature` skill, before or after the owner's first request as they prefer. Leave the Cloudflare stack in place until then: the new deploy replaces it in the same change, so the project always has one that works.
+Container (not decided, only locally, a server of their own, a cloud that runs containers):
+
+- [ ] Delete `apps/infra/cloudflare.run.ts`, `apps/infra/src/`, the `*:cloudflare` scripts and `@alchemy.run/cloudflare` in `apps/infra/package.json`, `@alchemy.run/cloudflare` in the `pnpm-workspace.yaml` catalog and `workerd` in its `allowBuilds`, `cloudflare.run.ts` and `src` in `apps/infra/tsconfig.json`, `cloudflare.run.ts` in `knip.json`, and `apps/infra/cloudflare.run.ts` and `apps/infra/src/worker.ts` in the allow lists of `tools/oxlint/lint.config.ts` and the rule defaults in `tools/oxlint/boberstack/effect/rules/`.
+- [ ] Delete the Cloudflare section of `docs/operations/deploy.md`, and the line about workerd in root ADR 0016's consequences.
+- [ ] A server of their own: walk the owner through `docs/operations/deploy.md`. The first `pnpm run deploy` waits for the owner's yes (`AGENTS.md`).
+- [ ] A cloud: build it after step 9 as its own change, with the `playbook-feature` skill, before or after the owner's first request as they prefer. The new resource replaces `Docker.Container` in the same change, so the project always has a deploy that works.
+
+Cloudflare:
+
+- [ ] `git mv apps/infra/cloudflare.run.ts apps/infra/alchemy.run.ts`. In `apps/infra/package.json`, make `dev`, `deploy` and `destroy` the Cloudflare commands without the file argument, delete the `*:cloudflare` scripts, and remove `@alchemy.run/docker` here and in the catalog.
+- [ ] Delete `apps/api/src/server.ts`, `apps/infra/api.Dockerfile`, `.dockerignore`, the `dev` and `start` scripts and `@effect/platform-node` and `@effect/sql-pg` in `apps/api/package.json`, and `Auth.layerConfig` in `packages/auth/src/better-auth.ts`.
+- [ ] Remove `PORT`, `WEB_ROOT`, `AUTH_SECRET`, `DEPLOY_DOCKER_HOST` and `API_PORT` from `.env.schema`, and `PORT` and `AUTH_SECRET` from `scripts/dev-ports.mjs`.
+- [ ] Replace `apps/api/src/server.ts` with `apps/infra/src/worker.ts` in the allow lists of `tools/oxlint/lint.config.ts` and the rule defaults, and `alchemy.run.ts` keeps its place there.
+- [ ] Delete the container section of `docs/operations/deploy.md`, and write an ADR that supersedes root ADR 0016 with the Worker as the only host.
+- [ ] Walk the owner through the Cloudflare section of `docs/operations/deploy.md`: connect the account, set `DATABASE_URL`, add a mail transport. The first `pnpm run deploy` waits for the owner's yes (`AGENTS.md`).
 
 ## 8. Write the project's own words
 

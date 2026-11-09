@@ -2,11 +2,11 @@
 
 ## What exists
 
-Email and password through better-auth, mounted at `/api/auth` in the api Worker, with verified email required: sign-up sends a Verification link, and sign-in refuses an unverified User and sends a new one. Password reset by mail. GitHub and Google sign-in when their client id and secret are set; `GET /api/sign-in-methods` tells the web which buttons to show. Pages `/sign-up`, `/sign-in`, `/check-email`, `/email-verified`, `/forgot-password`, `/reset-password`, and a "Sign out" button in the header. The api reads the session in its HttpApi and RPC middleware and answers `401` without one.
+Email and password through better-auth, mounted at `/api/auth` in the api, with verified email required: sign-up sends a Verification link, and sign-in refuses an unverified User and sends a new one. Password reset by mail. GitHub and Google sign-in when their client id and secret are set; `GET /api/sign-in-methods` tells the web which buttons to show. Pages `/sign-up`, `/sign-in`, `/check-email`, `/email-verified`, `/forgot-password`, `/reset-password`, and a "Sign out" button in the header. The api reads the session in its HttpApi and RPC middleware and answers `401` without one.
 
 Mail goes through the `Mailer` port; locally it lands in Mailpit, at `urls.mailpit` in `.dev/state.json` (root ADR 0008).
 
-Code: `apps/web/src/features/auth/`, `packages/auth/`, `packages/core/src/mail/` (templates), `packages/mail/`, tables created in `packages/database/migrations/0001_auth.sql` and renamed to the plural in `0003_plural_table_names.sql`.
+Code: `apps/web/src/features/auth/`, `packages/auth/`, `packages/core/src/mail/` (templates), `packages/mail/`, tables created in `packages/database/migrations/0001_init.sql`.
 
 ## How to reach it
 

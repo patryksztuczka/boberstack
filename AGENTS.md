@@ -4,7 +4,7 @@ This file is the repo law for agents and contributors: what the project is for, 
 
 ## Project thesis
 
-`boberstack` is a starting point for a TypeScript product built on Effect v4 end to end: an api on Cloudflare Workers, a React SPA served by the same Worker, a Node CLI, and Postgres from any provider, deployed as one Alchemy stack. The todos and sign-in examples are there to be replaced.
+`boberstack` is a starting point for a TypeScript product built on Effect v4 end to end: an api that runs as a Node server in a container, a React SPA served by the same server, a Node CLI, and Postgres from any provider, deployed as one Alchemy stack. A Cloudflare Workers host ships as the alternative. The todos and sign-in examples are there to be replaced.
 
 It optimises for a codebase an agent can extend without making it worse. Every rule that can be a lint rule, a type or a hook is one, so a mistake fails `pnpm verify` instead of waiting for a reviewer. Rules that cannot be checked live in one place each and are short.
 
@@ -30,7 +30,7 @@ When a project starts from this template, the `keep-or-cut` skill rewrites this 
 | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `pnpm install`                                        | installs; `prepare` runs `vp config`, which installs the Git hooks                                                                                                                 |
 | `pnpm db:up`                                          | starts local Postgres in Docker                                                                                                                                                    |
-| `pnpm dev`                                            | local Postgres, `alchemy dev` for the api Worker, and `vp dev` for the web app with `/api` proxied to the Worker. Ports are per checkout (below)                                   |
+| `pnpm dev`                                            | local Postgres, the api server under `node --watch`, and `vp dev` for the web app with `/api` proxied to the api. Ports are per checkout (below)                                   |
 | `pnpm check`                                          | `vp check`: oxfmt and oxlint, type-aware                                                                                                                                           |
 | `pnpm typecheck`                                      | TypeScript 7 with Effect diagnostics                                                                                                                                               |
 | `pnpm test`                                           | unit tests in every package                                                                                                                                                        |
@@ -40,7 +40,8 @@ When a project starts from this template, the `keep-or-cut` skill rewrites this 
 | `pnpm check:deps`                                     | fails on a dependency that is not an exact version                                                                                                                                 |
 | `pnpm check:doc-pins`                                 | fails when a document names a version the workspace does not install                                                                                                               |
 | `pnpm check:knip`                                     | fails on unused files, exports and dependencies                                                                                                                                    |
-| `pnpm check:web-boot`                                 | opens the built `apps/web/dist`, served like the Worker, in Chrome through agent-browser; fails when a page does not mount or logs an error                                        |
+| `pnpm check:web-boot`                                 | opens the built `apps/web/dist`, served like the api serves it, in Chrome through agent-browser; fails when a page does not mount or logs an error                                 |
+| `pnpm check:api-image`                                | builds `apps/infra/api.Dockerfile`, runs it against a throwaway Postgres and checks that it serves the api and the web app; needs Docker                                           |
 | `pnpm env:check`                                      | `varlock load`: validates the environment, `.env.local` included, against `.env.schema`                                                                                            |
 | `pnpm check:suppressions`                             | counts lint and type-check suppressions against `suppressions.baseline.json`; reports growth, never fails                                                                          |
 | `pnpm check:changed`                                  | format, lint, typecheck and unit tests for the files changed since `master`                                                                                                        |
@@ -52,7 +53,7 @@ When a project starts from this template, the `keep-or-cut` skill rewrites this 
 | `pnpm -s device <command>`                            | runs agent-device, which drives the iOS simulator and the Android emulator for the `verify-mobile` skill ([mobile](docs/operations/mobile.md#drive-it-with-agent-device))          |
 | `pnpm pr-evidence <files>`                            | uploads screenshots and recordings to the R2 bucket and prints the Markdown for a pull request ([pr-evidence](docs/operations/pr-evidence.md))                                     |
 | `pnpm sources:fetch`                                  | clones the pinned sources of Effect, Alchemy and better-auth into `.repos/`                                                                                                        |
-| `pnpm run deploy`                                     | `alchemy deploy` of `apps/infra/alchemy.run.ts`. Plain `pnpm deploy` is pnpm's own command                                                                                         |
+| `pnpm run deploy`                                     | builds, migrates, then `alchemy deploy` of the container stack `apps/infra/alchemy.run.ts`. Plain `pnpm deploy` is pnpm's own command                                              |
 | `pnpm init:project -- --name <name> --scope <@scope>` | renames the project, the package scope and the service-id prefix                                                                                                                   |
 
 `pnpm dev` derives its ports from a hash of the checkout path, so worktrees run side by side; each also gets its own Compose project, database and Mailpit inbox (local mail, root ADR 0008). `node scripts/dev.mjs ports` prints them, `.dev/state.json` holds the running URLs and pids, `.dev/logs/` the logs, and `DEV_WEB_PORT`, `DEV_API_PORT`, `DEV_POSTGRES_PORT`, `DEV_MAILPIT_PORT` and `DEV_METRO_PORT` (the mobile app's Metro) override them.

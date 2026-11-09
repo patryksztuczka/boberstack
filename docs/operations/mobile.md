@@ -17,7 +17,7 @@ pnpm dev:mobile                                # builds the development variant 
 pnpm dev:mobile -- --device "iPhone 17"        # pick the simulator; arguments after -- go to expo run:ios
 ```
 
-The command needs the dev stack of this checkout to be ready. It sets `APP_VARIANT=development` and points `EXPO_PUBLIC_API_URL` at the web URL `pnpm dev` printed, where Vite forwards `/api` to the Worker, the same way the web app reaches it. Metro runs on a port derived from the checkout path like the other dev ports; `DEV_METRO_PORT` overrides it.
+The command needs the dev stack of this checkout to be ready. It sets `APP_VARIANT=development` and points `EXPO_PUBLIC_API_URL` at the web URL `pnpm dev` printed, where Vite forwards `/api` to the api, the same way the web app reaches it. Metro runs on a port derived from the checkout path like the other dev ports; `DEV_METRO_PORT` overrides it.
 
 The first run generates `apps/mobile/ios` (Git ignores it), installs the pods and compiles the app, which takes several minutes. Later runs reuse the build and only start Metro. A change under `apps/mobile/src` or in a workspace package reloads in the simulator. A new native dependency or a change to `app.config.ts` needs a new native build: run `pnpm --filter @boberstack/mobile exec expo prebuild --clean` and then `pnpm dev:mobile` again.
 

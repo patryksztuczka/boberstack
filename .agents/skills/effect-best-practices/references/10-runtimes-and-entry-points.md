@@ -1,14 +1,15 @@
 # 10 · Runtimes and entry points
 
-An entry point is a file that starts the Effect runtime for a host: a Worker, a process, a browser tab, a deploy. It is where the layer graph meets the outside world, and nothing imports it. Everything else is library code that exports Effects and Layers.
+An entry point is a file that starts the Effect runtime for a host: a server process, a Worker, a browser tab, a deploy. It is where the layer graph meets the outside world, and nothing imports it. Everything else is library code that exports Effects and Layers.
 
-| Host              | Entry point                                             | Runs                                                                            |
-| ----------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| Cloudflare Worker | `apps/api/src/worker.ts`                                | the api: HttpApi + RPC + better-auth, and the built SPA as static assets        |
-| Node process      | `apps/cli/src/main.ts`                                  | `cli db migrate`, `cli openapi`, `cli health` via `NodeRuntime.runMain`         |
-| Electron main     | `apps/desktop/src/main.ts`                              | the desktop window around the web app via `NodeRuntime.runMain` (root ADR 0010) |
-| Browser, phone    | `apps/web/src/runtime.ts`, `apps/mobile/src/runtime.ts` | the client layer the shared atoms run on, seeded into the app's `AtomRegistry`  |
-| Deploy            | `apps/infra/alchemy.run.ts`                             | the Alchemy stack: Hyperdrive, the api Worker                                   |
+| Host              | Entry point                                                 | Runs                                                                                                     |
+| ----------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Node server       | `apps/api/src/server.ts`                                    | the api: HttpApi + RPC + MCP + better-auth, and the built SPA from `WEB_ROOT`, via `NodeRuntime.runMain` |
+| Cloudflare Worker | `apps/infra/src/worker.ts`                                  | the same api on the alternative host, and the built SPA as static assets                                 |
+| Node process      | `apps/cli/src/main.ts`                                      | `cli db migrate`, `cli openapi`, `cli health` via `NodeRuntime.runMain`                                  |
+| Electron main     | `apps/desktop/src/main.ts`                                  | the desktop window around the web app via `NodeRuntime.runMain` (root ADR 0010)                          |
+| Browser, phone    | `apps/web/src/runtime.ts`, `apps/mobile/src/runtime.ts`     | the client layer the shared atoms run on, seeded into the app's `AtomRegistry`                           |
+| Deploy            | `apps/infra/alchemy.run.ts`, `apps/infra/cloudflare.run.ts` | the Alchemy stacks: the api image and container, or Hyperdrive and the api Worker                        |
 
 ## Rules
 
@@ -18,11 +19,13 @@ An entry point is a file that starts the Effect runtime for a host: a Worker, a 
 
 Route and handler modules never run effects. They export layers, and the entry point merges them.
 
-### runtime.worker: one Worker, one composition root
+### runtime.api: one program, a composition root per host
 
-`worker.ts` declares the api Worker with Alchemy's `Cloudflare.Worker` and is its composition root: it provides `AppLayer` (routes, modules, platform) and the configured infrastructure, and turns the HttpApi and RPC layers into the Worker's fetch handler. The same Worker serves `apps/web/dist` as static assets with SPA fallback; requests to `/api/*` reach the Worker first. Browser and api share one origin, so there is no CORS setup.
+`apps/api/src/app.layer.ts` knows no host. It exports `AppLayer` (routes and modules), `ApiHandler(sql)`, which turns `AppLayer` and better-auth into one fetch handler over the SQL client layer it is given, and `AuthLayer(auth, database)`. A host file supplies the rest. Browser and api share one origin on both hosts, so there is no CORS setup.
 
-A Worker has no long-lived process: no `Layer.launch`, no background loop ([03](03-retry-and-scheduling.md)), and per-request resources are released when the request's scope closes.
+`apps/api/src/server.ts` is the composition root on Node. It gives `ApiHandler` a `PgClient.layerConfig` over `DATABASE_URL`, gives better-auth `Auth.layerConfig` (`AUTH_SECRET`) and the same database through `@alchemy.run/better-auth/Postgres`, and serves the handler with `NodeHttpServer` on `PORT`. When `WEB_ROOT` is set, it serves that directory with SPA fallback and sends `/api/*` and `/.well-known/*` to the api. It runs as one long-lived process through `Layer.launch` and `NodeRuntime.runMain`: a layer may hold a pool or run a background loop ([03](03-retry-and-scheduling.md)), and SIGTERM runs every finalizer.
+
+`apps/infra/src/worker.ts` is the composition root on the Cloudflare host. It declares the Worker with Alchemy's `Cloudflare.Worker`, reaches Postgres through Hyperdrive, uses `Auth.layer` with a secret Alchemy generates, and serves `apps/web/dist` as static assets; requests to `/api/*` and `/.well-known/*` reach the Worker first. A Worker has no long-lived process: no `Layer.launch`, no background loop, and per-request resources are released when the request's scope closes. A project keeps one of the two hosts (root ADR 0016).
 
 ### runtime.cli: `runMain` on Node
 

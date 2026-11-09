@@ -24,7 +24,7 @@ For a quick ballpark the user asked for, one run is enough. Still answer questio
 4. **Did it error?** Count failures and non-2xx responses, and check that the outputs are right, not just present. Rejections are often fast; timeouts and retries are slow. If the script does not count errors, add the count.
 5. **Does it reproduce?** Run each side at least five times, alternating A, B, A, B, so warm-up and drift favour neither. Report the median and the range. A gap smaller than the run-to-run spread is no measurable difference.
 6. **Does it matter?** Next to a micro result, measure the path a user waits on, with realistic data and concurrency, and report the micro result as a share of it.
-7. **Did the work happen?** Confirm the work ran inside the timed part: the request reached the Worker, the rows were written, the result was used. An Effect nobody ran, a promise nobody awaited and a request that timed out all produce fast numbers.
+7. **Did the work happen?** Confirm the work ran inside the timed part: the request reached the api, the rows were written, the result was used. An Effect nobody ran, a promise nobody awaited and a request that timed out all produce fast numbers.
 
 ## Report
 

@@ -13,16 +13,16 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 
 ## Which reference to read
 
-| You are…                                         | Read                                                                                                                                        |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| adding a service, a store, a module or a context | [04](references/04-services-and-layers.md), [05](references/05-project-structure.md)                                                        |
-| adding an endpoint or an RPC                     | [06](references/06-schema.md) `schema.sharing`, [02](references/02-typed-errors.md) `errors.http`, [05](references/05-project-structure.md) |
-| writing SQL or a migration                       | [05](references/05-project-structure.md) `structure.stores`, [12](references/12-test-layers-and-infrastructure.md)                          |
-| reading an env var or a secret                   | [07](references/07-configuration.md)                                                                                                        |
-| touching `worker.ts`, `main.ts`, `runtime.ts`    | [10](references/10-runtimes-and-entry-points.md)                                                                                            |
-| writing a test                                   | [11](references/11-testing.md), [12](references/12-test-layers-and-infrastructure.md)                                                       |
-| writing a form or reading data in an app         | [06](references/06-schema.md) `schema.forms`, [10](references/10-runtimes-and-entry-points.md) `runtime.web`                                |
-| fixing a lint error                              | the reference the message links to; [13](references/13-lint-rules.md) for the full list                                                     |
+| You are…                                                   | Read                                                                                                                                        |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| adding a service, a store, a module or a context           | [04](references/04-services-and-layers.md), [05](references/05-project-structure.md)                                                        |
+| adding an endpoint or an RPC                               | [06](references/06-schema.md) `schema.sharing`, [02](references/02-typed-errors.md) `errors.http`, [05](references/05-project-structure.md) |
+| writing SQL or a migration                                 | [05](references/05-project-structure.md) `structure.stores`, [12](references/12-test-layers-and-infrastructure.md)                          |
+| reading an env var or a secret                             | [07](references/07-configuration.md)                                                                                                        |
+| touching `server.ts`, `worker.ts`, `main.ts`, `runtime.ts` | [10](references/10-runtimes-and-entry-points.md)                                                                                            |
+| writing a test                                             | [11](references/11-testing.md), [12](references/12-test-layers-and-infrastructure.md)                                                       |
+| writing a form or reading data in an app                   | [06](references/06-schema.md) `schema.forms`, [10](references/10-runtimes-and-entry-points.md) `runtime.web`                                |
+| fixing a lint error                                        | the reference the message links to; [13](references/13-lint-rules.md) for the full list                                                     |
 
 ## Rule index
 
@@ -42,7 +42,7 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 | `errors.values`       | a pure function that can refuse returns a `Result`                                  | 02  |
 | `retry.while`         | retry inline, only the errors you name as transient                                 | 03  |
 | `retry.timeout`       | every external call has a timeout                                                   | 03  |
-| `jobs.where`          | recurring work on Workers is a Cron Trigger, not a loop                             | 03  |
+| `jobs.where`          | recurring work is a scoped loop on the server, a Cron Trigger on a Worker           | 03  |
 | `jobs.idempotency`    | a job claims `<job>/<period>` before working                                        | 03  |
 | `services.define`     | `Context.Service<Self, Api>()(id, { make })` + `static layer`                       | 04  |
 | `services.placement`  | features are service methods; handlers decode, call one method, map errors          | 04  |
@@ -75,7 +75,7 @@ How Effect code is written here. Each rule has an id (`errors.naming`); cite it 
 | `conc.resources`      | `acquireRelease` inside a layer                                                     | 09  |
 | `conc.callbacks`      | `Effect.callback`, never `new Promise`                                              | 09  |
 | `runtime.allowlist`   | only the listed entry points start runtimes                                         | 10  |
-| `runtime.worker`      | one Worker, one composition root, SPA assets on the same origin                     | 10  |
+| `runtime.api`         | `app.layer.ts` knows no host; `server.ts` or the Worker composes it with the SPA    | 10  |
 | `runtime.cli`         | `NodeRuntime.runMain`                                                               | 10  |
 | `runtime.web`         | React reads atoms from `packages/client-runtime`; it never runs an Effect           | 10  |
 | `runtime.bridge`      | `run*With` + `BRIDGE:` for Promise callbacks                                        | 10  |

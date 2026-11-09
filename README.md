@@ -25,8 +25,8 @@ It ships a working product, not a hello world: a todo list behind sign-in, serve
 ## Stack
 
 - **Effect 4.0.7** on every server surface: `HttpApi`, RPC, CLI, SQL, Schema, Config. Pinned below 4.1.0 because Alchemy 2.0.0-beta.84 needs `effect/Crypto`.
-- **Cloudflare Workers** for the api and the static SPA, one Worker on one origin.
-- **Any Postgres** through Hyperdrive in production, Postgres in Docker locally, Testcontainers in tests.
+- **A Node server in a container** for the api and the static SPA, one process on one origin. Cloudflare Workers is the alternative host.
+- **Any Postgres**: yours in production, Docker locally, Testcontainers in tests.
 - **Alchemy 2** (beta): the infrastructure is an Effect program in `apps/infra/alchemy.run.ts`.
 - **better-auth** for sign-in, wired through `@alchemy.run/better-auth`.
 - **React 19** with React Router, Effect atoms for data (shared with the mobile app), React Hook Form (validated by the same Effect Schemas the api decodes), Tailwind 4, shadcn components and Paraglide for UI strings (English; add a locale in `apps/web/project.inlang`).
@@ -39,7 +39,7 @@ You need Node 26.13.0 (`.node-version`), pnpm 11.28.9 and Docker.
 
 ```sh
 pnpm install     # also installs the Git hooks
-pnpm dev         # Postgres and Mailpit in Docker, migrations, the api Worker and the web app
+pnpm dev         # Postgres and Mailpit in Docker, migrations, the api and the web app
 pnpm dev:doctor  # in a second terminal: checks the stack and creates demo@example.com / demo12345
 ```
 
@@ -52,7 +52,7 @@ pnpm build
 pnpm run deploy      # alchemy deploy; plain `pnpm deploy` is a pnpm built-in
 ```
 
-One Alchemy stack deploys to your own Cloudflare account, against a Postgres you bring. Connect the account, point `DATABASE_URL` at the database and add a mail transport first: [Deploy](docs/operations/deploy.md).
+One Alchemy stack builds the api image and runs it on a Docker host, this machine or a server over SSH, against a Postgres you bring. Point `DATABASE_URL` at the database and add a mail transport first. [Deploy](docs/operations/deploy.md) covers that and the Cloudflare host.
 
 ## Make it yours
 
