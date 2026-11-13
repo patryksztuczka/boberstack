@@ -54,7 +54,7 @@ Recommend HttpApi alone when anyone besides the project's own TypeScript clients
 
 - The todos example. Cut it almost always: the project's first own context takes its place.
 - Sign-in with better-auth: email and password with a confirmation mail, social sign-in when configured. Keep it when the product has users.
-- MCP: an AI assistant signs in with OAuth and acts on a user's data. Needs sign-in.
+- MCP: an AI assistant signs in with OAuth and acts on a user's data, one tool per operation or a short program over all of them (code mode, root ADR 0015). Needs sign-in.
 - i18n with Paraglide, English only, in the web app.
 - The welcome page and the beaver.
 
@@ -180,6 +180,7 @@ Keep the folders: the next context goes in the same places. Model it with the `d
 
 - [ ] Delete the `Toolkit` projections (`TodosToolkit`) from `packages/domain/src/*/*.contracts.ts`, `apps/api/src/mcp/` and the MCP layer in `app.layer.ts`.
 - [ ] Delete `packages/capability/src/toolkit.ts`, `toolkit.test.ts` and their exports in `packages/capability/src/index.ts`.
+- [ ] Delete code mode: `packages/capability/src/code-mode/`, the `./code-mode` export and the `@effect/platform-node` dev dependency in `packages/capability/package.json`, the subprocess sandbox in `apps/api/src/server.ts`, the `CODE_SANDBOX` Worker Loader and `layerWorkerLoader` in `apps/infra/src/worker.ts`, and supersede root ADR 0015.
 - [ ] Delete `packages/auth/src/mcp-authentication.ts`, `access-token.errors.ts`, and `jwt()`, `mcp()` and `mcpResourceServer` in `packages/auth/src/better-auth.ts`; remove `@better-auth/mcp` and `@better-auth/oauth-provider`.
 - [ ] Delete `packages/client-runtime/src/identity/mcp-client-directory*`, the consent page and `mcp-client-request.ts` in `apps/web/src/features/auth/`, the `oauthProviderClient()` plugin, the `/oauth/consent` route, and the `/.well-known` routes in `apps/api/src/worker.ts` and `apps/web/vite.config.ts`.
 - [ ] Add a migration that drops the OAuth provider tables (root ADR 0011), delete `docs/user/ai-assistants.md`, and supersede root ADR 0012 and Identity ADR 0002.
