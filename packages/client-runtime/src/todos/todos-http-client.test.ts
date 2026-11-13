@@ -58,7 +58,7 @@ describe("TodosHttpClientLayer", () => {
 
       const todos = yield* TodosClient.use((client) => client.list).pipe(
         Effect.provide(
-          todosClient(apiAnswering(urls, () => json(200, JSON.stringify([storedTodo])))),
+          todosClient(apiAnswering(urls, () => json(200, JSON.stringify({ todos: [storedTodo] })))),
         ),
       );
 

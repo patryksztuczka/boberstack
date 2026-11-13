@@ -11,6 +11,9 @@
       "path": "../../packages/auth"
     },
     {
+      "path": "../../packages/capability"
+    },
+    {
       "path": "../../packages/core"
     },
     {

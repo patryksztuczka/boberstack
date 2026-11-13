@@ -1,9 +1,11 @@
 import { McpAuthenticationLayer } from "@boberstack/auth";
-import { TodosToolkit } from "@boberstack/domain/todos/todos.mcp";
+import { toToolkitHandlers } from "@boberstack/capability";
+import { CurrentUser } from "@boberstack/domain/identity/current-user";
+import { TodosToolkit } from "@boberstack/domain/todos/todos.contracts";
 import { Layer } from "effect";
 import { McpProtocol, McpServer } from "effect/ai";
 
-import { TodosMcpLayer } from "./todos.mcp.ts";
+import { TodosCapabilities } from "../capabilities/todos.capabilities.ts";
 
 const McpTransportLayer = McpServer.layerHttpRequestScoped({
   name: "boberstack",
@@ -13,6 +15,6 @@ const McpTransportLayer = McpServer.layerHttpRequestScoped({
 }).pipe(Layer.orDie, Layer.provide(McpAuthenticationLayer));
 
 export const McpLayer = McpServer.toolkit(TodosToolkit).pipe(
-  Layer.provide(TodosMcpLayer),
+  Layer.provide(toToolkitHandlers(TodosToolkit, TodosCapabilities, [CurrentUser])),
   Layer.provide(McpTransportLayer),
 );

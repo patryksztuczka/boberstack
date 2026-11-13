@@ -67,14 +67,16 @@ describe("session expiry", () => {
   it("shows the todos the API answers with", async () => {
     renderTodosAnswering(
       200,
-      JSON.stringify([
-        {
-          id: "3f0c5c1e-8a4b-4c3e-9a51-6f1f2d1b7c10",
-          title: "Write the starter",
-          completed: false,
-          createdAt: "2026-10-30T09:00:00.000Z",
-        },
-      ]),
+      JSON.stringify({
+        todos: [
+          {
+            id: "3f0c5c1e-8a4b-4c3e-9a51-6f1f2d1b7c10",
+            title: "Write the starter",
+            completed: false,
+            createdAt: "2026-10-30T09:00:00.000Z",
+          },
+        ],
+      }),
     );
 
     expect(await screen.findByText("Write the starter")).toBeInTheDocument();

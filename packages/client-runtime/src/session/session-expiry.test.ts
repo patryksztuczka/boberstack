@@ -71,7 +71,7 @@ describe("sessionExpiries", () => {
 
   it.effect("stays put when the api answers", () =>
     Effect.gen(function* () {
-      const registry = yield* registryAnswering(200, "[]");
+      const registry = yield* registryAnswering(200, `{"todos":[]}`);
 
       yield* AtomRegistry.getResult(registry, todos);
 

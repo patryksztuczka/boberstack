@@ -197,7 +197,7 @@ describe("McpLayer with access tokens", () => {
 
       assert.deepStrictEqual(
         result.tools.map((tool) => tool.name),
-        ["ListTodos", "CreateTodo", "UpdateTodo", "RemoveTodo"],
+        ["listTodos", "createTodo", "updateTodo", "removeTodo"],
       );
     }),
   );
@@ -208,7 +208,7 @@ describe("McpLayer with access tokens", () => {
 
       const { result } = yield* read(
         ToolResult(TodoList),
-        yield* send(handler, callTool("ListTodos", {})),
+        yield* send(handler, callTool("listTodos", {})),
       );
 
       assert.isFalse(result.isError ?? false);
@@ -225,7 +225,7 @@ describe("McpLayer with access tokens", () => {
 
       const { result } = yield* read(
         ToolError,
-        yield* send(handler, callTool("UpdateTodo", { id: missingId, patch: { completed: true } })),
+        yield* send(handler, callTool("updateTodo", { id: missingId, completed: true })),
       );
 
       const error = yield* Schema.decodeEffect(Schema.fromJsonString(TodoNotFoundError))(
