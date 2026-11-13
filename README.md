@@ -61,7 +61,7 @@ A part you cut can come back later: the skill at that template commit lists ever
 
 boberstack is my own starter, grown one need at a time, and it borrows from people who got there first:
 
-- [rat-stack](https://github.com/joelhooks/rat-stack) by Joel Hooks: the biggest inspiration for boberstack. See [`packages/capability/UPSTREAM.md`](packages/capability/UPSTREAM.md).
+- [rat-stack](https://github.com/joelhooks/rat-stack) by Joel Hooks: the biggest inspiration for boberstack. See [`UPSTREAM.md`](UPSTREAM.md).
 - [pstack](https://github.com/cursor/plugins/tree/main/pstack) by Lauren Tan: the principle, playbook and review skills in `.agents/skills/` started there. See [`.agents/skills/UPSTREAM.md`](.agents/skills/UPSTREAM.md).
 - [anti-slop](https://github.com/dmmulroy/anti-slop) by Dillon Mulroy: the `anti-slop` lint rules. See [`tools/oxlint/anti-slop/UPSTREAM.md`](tools/oxlint/anti-slop/UPSTREAM.md).
 
