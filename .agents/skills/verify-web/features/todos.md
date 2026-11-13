@@ -4,7 +4,7 @@
 
 A signed-in user's own list at `/todos`: add, mark done, remove, and a "N todos left" counter. The page talks to the api over HttpApi by default and over RPC when the web app runs with `VITE_TODOS_TRANSPORT=rpc`. The card's subtitle says which one ("Talking to the API over HttpApi.").
 
-Code: `apps/web/src/features/todos/`, contract in `packages/domain/src/todos/`, handlers in `apps/api/src/http/todos.http.ts` and `apps/api/src/rpc/todos.rpc.ts`, logic in `packages/core/src/todos/`, SQL in `packages/database/src/todo.repository.ts`.
+Code: `apps/web/src/features/todos/`, contracts in `packages/domain/src/todos/todos.contracts.ts`, one handler per contract for both transports in `apps/api/src/capabilities/todos.capabilities.ts`, logic in `packages/core/src/todos/`, SQL in `packages/database/src/todo.repository.ts`.
 
 ## How to reach it
 
@@ -20,7 +20,7 @@ For the RPC transport, stop dev and start it again with `VITE_TODOS_TRANSPORT=rp
 4. Tick the first todo. The title gets struck through and the counter goes down by one.
 5. Reload the page. The tick and both todos are still there, so they reached Postgres and did not only live in the query cache.
 6. Remove one todo with the bin icon. It disappears and stays gone after a reload.
-7. When the change touches the api or the contract, repeat 1 to 4 with `VITE_TODOS_TRANSPORT=rpc`.
+7. When the change touches a contract, `packages/capability` or the RPC client, repeat 1 to 4 with `VITE_TODOS_TRANSPORT=rpc`. A change to the service or to `todos.capabilities.ts` runs the same code on both transports.
 
 Each run adds todos to the demo user. Use a unique suffix in titles (a timestamp) so you match your own rows, and remove them at the end if the list grows past a screen.
 

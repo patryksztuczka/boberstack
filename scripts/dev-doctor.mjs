@@ -259,7 +259,7 @@ async function main() {
 
     if (todos.status !== 200) fail(`GET /api/todos answered ${String(todos.status)} ${todos.body}`);
 
-    return `GET /api/todos as demo → 200, ${String(JSON.parse(todos.body).length)} todo(s)`;
+    return `GET /api/todos as demo → 200, ${String(JSON.parse(todos.body).todos.length)} todo(s)`;
   });
 
   for (const result of results) {

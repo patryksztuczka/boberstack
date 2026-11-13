@@ -1,6 +1,6 @@
 # MCP is a third transport, served per request
 
-**Status:** accepted, 2026-11-08.
+**Status:** accepted, 2026-11-08. Where tools and their handlers live is superseded by root ADR 0014, 2026-11-13.
 
 AI assistants such as Claude and Cursor call products through the Model Context Protocol. We wanted them to reach the same service methods as the web app, on the Worker we already deploy. Effect 4 ships an MCP server in `effect/ai`, so no second SDK and no second schema language were needed. The choice was which of its HTTP transports to use. `McpServer.layerHttp` keeps one long-lived server fiber that every request shares; a Cloudflare Worker gives no guarantee that the next request reaches the same isolate, so sessions and open streams would be lost between requests.
 

@@ -20,7 +20,7 @@
 
 A beaver does not ask the river to behave; it builds a dam that holds. This starter works the same way. Every rule that a tool can check is a lint rule, a type, an Effect diagnostic, a hook or a CI step, so a mistake fails `pnpm verify` on your machine instead of waiting for a reviewer. Whatever no tool can check is written down once, short, in [AGENTS.md](AGENTS.md).
 
-It ships a working product, not a hello world: a todo list behind sign-in, served over HttpApi and Effect RPC, stored in Postgres, tested against a real database, and a welcome page with the beaver. Each piece shows how that layer is meant to be written, and each one can be cut (see [Keep or cut](.agents/skills/keep-or-cut/SKILL.md#6-keep-or-cut)).
+It ships a working product, not a hello world: a todo list behind sign-in, where each operation is one contract served over HttpApi, Effect RPC and MCP, stored in Postgres, tested against a real database, and a welcome page with the beaver. Each piece shows how that layer is meant to be written, and each one can be cut (see [Keep or cut](.agents/skills/keep-or-cut/SKILL.md#6-keep-or-cut)).
 
 ## Stack
 
@@ -56,6 +56,16 @@ One Alchemy stack builds the api image and runs it on a Docker host, this machin
 Create a repository from the template and ask your agent for the first thing you want built. `AGENTS.md` sends it to the [`keep-or-cut` skill](.agents/skills/keep-or-cut/SKILL.md) first. The agent asks what you are building, explains each part, whether the api should speak HttpApi, RPC or both, and where it will run. It renames the project, cuts the parts you will not use (the web, desktop or mobile app, todos, auth, RPC, MCP, the CLI, i18n), and applies the GitHub settings. Not sure yet what you need? Then it only renames the project and cuts nothing. Then it adds an "Origin" section to the README naming the template commit you started from, deletes the skill, and goes on with your request.
 
 A part you cut can come back later: the skill at that template commit lists every file and line the part touches. Without an agent, follow the skill by hand.
+
+## Thanks
+
+boberstack is my own starter, grown one need at a time, and it borrows from people who got there first:
+
+- [rat-stack](https://github.com/joelhooks/rat-stack) by Joel Hooks: the biggest inspiration for boberstack. See [`UPSTREAM.md`](UPSTREAM.md).
+- [pstack](https://github.com/cursor/plugins/tree/main/pstack) by Lauren Tan: the principle, playbook and review skills in `.agents/skills/` started there. See [`.agents/skills/UPSTREAM.md`](.agents/skills/UPSTREAM.md).
+- [anti-slop](https://github.com/dmmulroy/anti-slop) by Dillon Mulroy: the `anti-slop` lint rules. See [`tools/oxlint/anti-slop/UPSTREAM.md`](tools/oxlint/anti-slop/UPSTREAM.md).
+
+Thank you for publishing them.
 
 ## License
 

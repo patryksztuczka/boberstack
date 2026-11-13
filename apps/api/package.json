@@ -13,6 +13,7 @@
   "dependencies": {
     "@alchemy.run/better-auth": "catalog:",
     "@boberstack/auth": "workspace:*",
+    "@boberstack/capability": "workspace:*",
     "@boberstack/core": "workspace:*",
     "@boberstack/database": "workspace:*",
     "@boberstack/domain": "workspace:*",

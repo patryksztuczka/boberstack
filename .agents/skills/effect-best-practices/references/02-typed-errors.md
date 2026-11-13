@@ -23,7 +23,7 @@ return yield * new TodoNotFoundError({ id });
 
 ### errors.home: an error lives in a `*.errors.ts` file
 
-An error that crosses the wire (an HttpApi endpoint's or an Rpc's `error`) lives in `packages/domain/src/<context>/<x>.errors.ts`, beside the contract that names it. An error only the server sees, such as a store's storage failure, lives in the module's `x.errors.ts` under `packages/core/src/<context>/`. `@boberstack/effect/tagged-error-naming` refuses an error class anywhere else.
+An error that crosses the wire (a contract's `failure`, or an HttpApi endpoint's `error`) lives in `packages/domain/src/<context>/<x>.errors.ts`, beside the contract that names it. An error only the server sees, such as a store's storage failure, lives in the module's `x.errors.ts` under `packages/core/src/<context>/`. `@boberstack/effect/tagged-error-naming` refuses an error class anywhere else.
 
 ### errors.naming: the name ends in `Error` and equals the tag
 
@@ -79,7 +79,7 @@ export class MigrationFailedError extends Schema.TaggedError<
 
 ### errors.http: the status code lives in the contract
 
-An error that an HttpApi endpoint returns declares its status as the third argument, `{ httpApiStatus: 404 }`. The handler fails with the error; it never builds a response by hand. An undeclared failure reaching the HTTP layer is a 500 and a bug.
+An error that an HttpApi endpoint returns declares its status as the third argument, `{ httpApiStatus: 404 }`. The handler fails with the error; it never builds a response by hand. A contract's `failure` without a status answers 422 (root ADR 0014). An undeclared failure reaching the HTTP layer is a 500 and a bug.
 
 ### errors.defects: failures versus defects
 

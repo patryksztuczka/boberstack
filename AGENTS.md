@@ -14,7 +14,7 @@ When a project starts from this template, the `keep-or-cut` skill rewrites this 
 
 - If `.agents/skills/keep-or-cut/` exists, nobody has set this project up from the template yet. Run the `keep-or-cut` skill before any other task.
 - Read [CONTEXT-MAP.md](CONTEXT-MAP.md) and the context's `GLOSSARY.md` before naming anything. Code uses the glossary's words.
-- Features are service methods in `packages/core/src/<context>/`; apps compose them and transports stay thin (root ADR 0007). An HttpApi or RPC handler decodes input, calls one service method and maps its errors, if they are not already wire errors. Pure work (a slug, a label, a calculation) can be a plain function next to the service.
+- Features are service methods in `packages/core/src/<context>/`; apps compose them and transports stay thin (root ADR 0007). An operation is one contract, implemented once and projected onto HttpApi, RPC and MCP (root ADR 0014). Its capability reads the Current User, calls one service method and maps its errors, if they are not already wire errors. Pure work (a slug, a label, a calculation) can be a plain function next to the service.
 - Before writing or reviewing Effect code, load the `effect-best-practices` skill. Before using an Effect, Alchemy or better-auth API you have not seen in this repo, read it at the pinned version: `pnpm sources:fetch` clones the tagged sources into `.repos/` (gitignored). Do not invent APIs.
 - SQL lives only in `packages/database/`, and a store is tested on real Postgres, never with an in-memory fake (root ADR 0003).
 - No prose comments in code. A workaround for someone else's bug keeps a `VENDOR:` comment (root ADR 0004).
@@ -64,27 +64,26 @@ Git hooks come from Vite+: `pre-commit` runs `vp staged`, `commit-msg` checks th
 
 ## Where things go
 
-| You are adding                         | It goes in                                                                                                                                                            |
-| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| a record, id or error the client sees  | `packages/domain/src/<context>/`                                                                                                                                      |
-| an endpoint or an RPC                  | the contract in `packages/domain/src/<context>/*.http-api.ts` / `*.rpc.ts`, the handler in `apps/api/src/http/` / `rpc/`                                              |
-| an MCP tool                            | a toolkit in `packages/domain/src/<context>/*.mcp.ts`, its handlers in `apps/api/src/mcp/` (root ADR 0012)                                                            |
-| business logic                         | `packages/core/src/<context>/x.service.ts`                                                                                                                            |
-| a query or a table                     | a store port in the core module, SQL in `packages/database/src/x.repository.ts`, a new file in `packages/database/migrations/`                                        |
-| a typed api client the apps share      | a port and its HttpApi or RPC layer in `packages/client-runtime/src/<context>/`; the app provides `HttpClient` and `ApiOrigin`                                        |
-| data a screen reads or changes         | an atom in `packages/client-runtime/src/<context>/x.atoms.ts` on `clientRuntime`; the app reads it with `@effect/atom-react` (root ADR 0010)                          |
-| a call to another system               | a port in the core module, the adapter in its own package, `packages/<capability>/` (root ADR 0007)                                                                   |
-| an email                               | a template in `packages/core/src/mail/templates/`, sent through the `Mailer` port (root ADR 0006)                                                                     |
-| an entry point that runs services      | a composition root in `apps/<name>/` that provides core with adapter packages, and its own source of identity (root ADR 0007)                                         |
-| an env var or secret                   | a line in `.env.schema` (`@sensitive` for a secret), read with `Config` in a `layerConfig` in an adapter package; the local value in `.env.local`                     |
-| a screen                               | `apps/web/src/features/<name>/`; what other features may use is exported from its `index.ts`                                                                          |
-| a mobile screen                        | `apps/mobile/src/features/<name>/`, by the same rules as a web screen; every control gets a `testID` ([mobile](docs/operations/mobile.md#accessibility-and-test-ids)) |
-| a UI primitive                         | `packages/ui`                                                                                                                                                         |
-| desktop shell behaviour                | `apps/desktop/src/`: decisions as plain functions with tests, Electron calls only in `main.ts` (root ADR 0008)                                                        |
-| a bounded context                      | `CONTEXT-MAP.md`, `docs/internals/<context>/GLOSSARY.md`, then code (the `domain-modeling` skill)                                                                     |
-| a decision worth remembering           | an ADR (the `domain-modeling` skill)                                                                                                                                  |
-| how a user does something              | a section in `docs/user/<feature>.md`, in the product's voice ([docs/README.md](docs/README.md#writing-user-docs))                                                    |
-| a setup, deploy or debugging procedure | `docs/operations/`                                                                                                                                                    |
+| You are adding                         | It goes in                                                                                                                                                                                                   |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| a record, id or error the client sees  | `packages/domain/src/<context>/`                                                                                                                                                                             |
+| an operation (endpoint, RPC, MCP tool) | a `defineContract` in `packages/domain/src/<context>/<context>.contracts.ts`, added to the context's contract list; its `implement` in `apps/api/src/capabilities/<context>.capabilities.ts` (root ADR 0014) |
+| business logic                         | `packages/core/src/<context>/x.service.ts`                                                                                                                                                                   |
+| a query or a table                     | a store port in the core module, SQL in `packages/database/src/x.repository.ts`, a new file in `packages/database/migrations/`                                                                               |
+| a typed api client the apps share      | a port and its HttpApi or RPC layer in `packages/client-runtime/src/<context>/`; the app provides `HttpClient` and `ApiOrigin`                                                                               |
+| data a screen reads or changes         | an atom in `packages/client-runtime/src/<context>/x.atoms.ts` on `clientRuntime`; the app reads it with `@effect/atom-react` (root ADR 0010)                                                                 |
+| a call to another system               | a port in the core module, the adapter in its own package, `packages/<system>/` (root ADR 0007)                                                                                                              |
+| an email                               | a template in `packages/core/src/mail/templates/`, sent through the `Mailer` port (root ADR 0006)                                                                                                            |
+| an entry point that runs services      | a composition root in `apps/<name>/` that provides core with adapter packages, and its own source of identity (root ADR 0007)                                                                                |
+| an env var or secret                   | a line in `.env.schema` (`@sensitive` for a secret), read with `Config` in a `layerConfig` in an adapter package; the local value in `.env.local`                                                            |
+| a screen                               | `apps/web/src/features/<name>/`; what other features may use is exported from its `index.ts`                                                                                                                 |
+| a mobile screen                        | `apps/mobile/src/features/<name>/`, by the same rules as a web screen; every control gets a `testID` ([mobile](docs/operations/mobile.md#accessibility-and-test-ids))                                        |
+| a UI primitive                         | `packages/ui`                                                                                                                                                                                                |
+| desktop shell behaviour                | `apps/desktop/src/`: decisions as plain functions with tests, Electron calls only in `main.ts` (root ADR 0008)                                                                                               |
+| a bounded context                      | `CONTEXT-MAP.md`, `docs/internals/<context>/GLOSSARY.md`, then code (the `domain-modeling` skill)                                                                                                            |
+| a decision worth remembering           | an ADR (the `domain-modeling` skill)                                                                                                                                                                         |
+| how a user does something              | a section in `docs/user/<feature>.md`, in the product's voice ([docs/README.md](docs/README.md#writing-user-docs))                                                                                           |
+| a setup, deploy or debugging procedure | `docs/operations/`                                                                                                                                                                                           |
 
 ## Autonomy
 

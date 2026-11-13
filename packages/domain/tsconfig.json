@@ -4,5 +4,10 @@
     "rootDir": "src",
     "outDir": "node_modules/.cache/tsc"
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [
+    {
+      "path": "../capability"
+    }
+  ]
 }

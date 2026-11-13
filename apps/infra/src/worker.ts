@@ -3,9 +3,13 @@ import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as SQL from "@alchemy.run/sql/Postgres";
 import { ApiHandler, AuthLayer } from "@boberstack/api/app";
 import { Auth } from "@boberstack/auth";
+import { layerWorkerLoader } from "@boberstack/capability/code-mode";
+import type { WorkerLoaderBinding } from "@boberstack/capability/code-mode";
 import * as Alchemy from "alchemy";
 import * as Http from "alchemy/Http";
 import { Config, Effect, Layer, Redacted } from "effect";
+
+const CODE_SANDBOX = "CODE_SANDBOX";
 
 const LOCAL_DATABASE_URL = "postgres://postgres:postgres@localhost:5432/app";
 
@@ -62,8 +66,17 @@ export default class Api extends Cloudflare.Worker<Api>()(
   Effect.gen(function* () {
     const hyperdrive = yield* Cloudflare.Hyperdrive.Connect(Database);
 
+    yield* Cloudflare.WorkerLoader(CODE_SANDBOX);
+
+    const environment = yield* Cloudflare.WorkerEnvironment;
+
+    // SAFETY: `Cloudflare.WorkerLoader(CODE_SANDBOX)` above declares this binding; Alchemy types the Worker environment as a dictionary it fills in at runtime.
+    const { [CODE_SANDBOX]: loader } = environment as Readonly<
+      Record<typeof CODE_SANDBOX, WorkerLoaderBinding>
+    >;
+
     return yield* ApiHandler(SQL.PostgresLayer({ url: hyperdrive.connectionString })).pipe(
-      Effect.provide(Http.Platform),
+      Effect.provide(Layer.mergeAll(layerWorkerLoader(loader), Http.Platform)),
     );
   }).pipe(
     Effect.provide(WorkerAuthLayer.pipe(Layer.provideMerge(Cloudflare.Hyperdrive.ConnectBinding))),

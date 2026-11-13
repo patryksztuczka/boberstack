@@ -1,4 +1,4 @@
-import { TodosRpcs } from "@boberstack/domain/todos/todos.rpc";
+import { TodosRpcs } from "@boberstack/domain/todos/todos.contracts";
 import { Effect, Layer } from "effect";
 import { RpcClient, RpcSerialization } from "effect/rpc";
 
@@ -23,28 +23,29 @@ export const TodosRpcClientLayer = Layer.effect(
     const client = yield* RpcClient.make(TodosRpcs);
 
     return yield* reportingSessionExpiry({
-      list: client.ListTodos().pipe(
+      list: client.listTodos({}).pipe(
+        Effect.map(({ todos }) => todos),
         Effect.catchTags({
           RpcClientError: unavailable,
           AuthenticationUnavailableError: unavailable,
         }),
       ),
       create: (input) =>
-        client.CreateTodo(input).pipe(
+        client.createTodo(input).pipe(
           Effect.catchTags({
             RpcClientError: unavailable,
             AuthenticationUnavailableError: unavailable,
           }),
         ),
       update: (id, patch) =>
-        client.UpdateTodo({ id, patch }).pipe(
+        client.updateTodo({ id, ...patch }).pipe(
           Effect.catchTags({
             RpcClientError: unavailable,
             AuthenticationUnavailableError: unavailable,
           }),
         ),
       remove: (id) =>
-        client.RemoveTodo({ id }).pipe(
+        client.removeTodo({ id }).pipe(
           Effect.catchTags({
             RpcClientError: unavailable,
             AuthenticationUnavailableError: unavailable,

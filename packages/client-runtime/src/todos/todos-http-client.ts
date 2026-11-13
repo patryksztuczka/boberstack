@@ -16,7 +16,8 @@ export const TodosHttpClientLayer = Layer.effect(
     const client = yield* HttpApiClient.make(Api, { baseUrl: origin });
 
     return yield* reportingSessionExpiry({
-      list: client.todos.list().pipe(
+      list: client.todos.listTodos().pipe(
+        Effect.map(({ todos }) => todos),
         Effect.catchTags({
           HttpClientError: unavailable,
           SchemaError: unavailable,
@@ -24,7 +25,7 @@ export const TodosHttpClientLayer = Layer.effect(
         }),
       ),
       create: (payload) =>
-        client.todos.create({ payload }).pipe(
+        client.todos.createTodo({ payload }).pipe(
           Effect.catchTags({
             HttpClientError: unavailable,
             SchemaError: unavailable,
@@ -32,7 +33,7 @@ export const TodosHttpClientLayer = Layer.effect(
           }),
         ),
       update: (id, payload) =>
-        client.todos.update({ params: { id }, payload }).pipe(
+        client.todos.updateTodo({ params: { id }, payload }).pipe(
           Effect.catchTags({
             HttpClientError: unavailable,
             SchemaError: unavailable,
@@ -40,8 +41,7 @@ export const TodosHttpClientLayer = Layer.effect(
           }),
         ),
       remove: (id) =>
-        client.todos.remove({ params: { id } }).pipe(
-          Effect.asVoid,
+        client.todos.removeTodo({ params: { id } }).pipe(
           Effect.catchTags({
             HttpClientError: unavailable,
             SchemaError: unavailable,

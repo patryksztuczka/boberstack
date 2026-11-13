@@ -36,14 +36,14 @@ Running an Effect with `Effect.runPromise` inside a test is refused (`@boberstac
 
 ### test.seams: test the seams first
 
-| Seam           | What to test                                                                                                      |
-| -------------- | ----------------------------------------------------------------------------------------------------------------- |
-| Services       | the public API, through `layer` + `Layer.mock` for single failures                                                |
-| Stores         | the contract on real Postgres, in the repository's integration suite ([12](12-test-layers-and-infrastructure.md)) |
-| Errors         | every tag in a method's signature has a test                                                                      |
-| HTTP and RPC   | one integration test per endpoint through the real `AppLayer` on Postgres                                         |
-| Layers         | the application layer graph builds with test infrastructure                                                       |
-| Pure functions | property tests with `it.prop` over Schemas                                                                        |
+| Seam           | What to test                                                                                                           |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Services       | the public API, through `layer` + `Layer.mock` for single failures                                                     |
+| Stores         | the contract on real Postgres, in the repository's integration suite ([12](12-test-layers-and-infrastructure.md))      |
+| Errors         | every tag in a method's signature has a test                                                                           |
+| Capabilities   | one integration test per contract through the real `AppLayer` on Postgres; `packages/capability` tests the projections |
+| Layers         | the application layer graph builds with test infrastructure                                                            |
+| Pure functions | property tests with `it.prop` over Schemas                                                                             |
 
 ```ts
 it.prop(

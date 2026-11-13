@@ -10,6 +10,8 @@ You can let an AI assistant that supports MCP, such as Claude or Cursor, read an
 
 Your browser then goes back to the assistant, and it can list, add, change and remove your todos. It acts as you and sees only your todos.
 
+For a task that takes several steps, such as "mark every todo about the trip as done", the assistant can write a short program and run it with the `execute` tool instead of calling each tool in turn. The program runs in a sandbox with no access to anything but your todos, and stops after 10 seconds.
+
 ## Say no
 
 Choose **Deny** on the same screen. The assistant gets nothing and goes back to where it started.

@@ -6,6 +6,7 @@
     "./*": "./src/*.ts"
   },
   "dependencies": {
+    "@boberstack/capability": "workspace:*",
     "effect": "catalog:"
   }
 }

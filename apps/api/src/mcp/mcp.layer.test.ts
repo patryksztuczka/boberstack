@@ -1,8 +1,10 @@
 import { AccessTokenUserNotFoundError, Auth } from "@boberstack/auth";
+import { layerSubprocess } from "@boberstack/capability/code-mode";
 import { TodosService } from "@boberstack/core/todos";
 import { User, UserId } from "@boberstack/domain/identity/user";
 import { Todo, TodoId, TodoTitle } from "@boberstack/domain/todos/todo";
 import { TodoNotFoundError } from "@boberstack/domain/todos/todo.errors";
+import { NodeServices } from "@effect/platform-node";
 import { assert, describe, it } from "@effect/vitest";
 import { DateTime, Effect, Layer, Option, Schema } from "effect";
 import { HttpRouter } from "effect/http";
@@ -49,7 +51,11 @@ const AuthWithoutBaseUrl = Layer.mock(Auth)({ mcpResourceServer: Option.none() }
 const serve = (auth: Layer.Layer<Auth>) =>
   Effect.gen(function* () {
     const { handler, dispose } = HttpRouter.toWebHandler(
-      McpLayer.pipe(Layer.provide(TodosServiceFake), Layer.provide(auth)),
+      McpLayer.pipe(
+        Layer.provide(TodosServiceFake),
+        Layer.provide(auth),
+        Layer.provide(layerSubprocess().pipe(Layer.provide(NodeServices.layer))),
+      ),
       { disableLogger: true },
     );
 
@@ -130,6 +136,11 @@ const ToolError = Schema.Struct({
 
 const TodoList = Schema.Struct({ todos: Schema.Array(Todo) });
 
+const ProgramResult = Schema.Struct({
+  result: Schema.Array(Schema.String),
+  toolCalls: Schema.Array(Schema.String),
+});
+
 const lastMessage = (body: string, contentType: string | null) =>
   contentType?.startsWith("text/event-stream") === true
     ? (body
@@ -197,7 +208,7 @@ describe("McpLayer with access tokens", () => {
 
       assert.deepStrictEqual(
         result.tools.map((tool) => tool.name),
-        ["ListTodos", "CreateTodo", "UpdateTodo", "RemoveTodo"],
+        ["listTodos", "createTodo", "updateTodo", "removeTodo", "search", "execute"],
       );
     }),
   );
@@ -208,7 +219,7 @@ describe("McpLayer with access tokens", () => {
 
       const { result } = yield* read(
         ToolResult(TodoList),
-        yield* send(handler, callTool("ListTodos", {})),
+        yield* send(handler, callTool("listTodos", {})),
       );
 
       assert.isFalse(result.isError ?? false);
@@ -219,13 +230,33 @@ describe("McpLayer with access tokens", () => {
     }),
   );
 
+  it.effect("runs a program over the todos as the Current User the access token names", () =>
+    Effect.gen(function* () {
+      const handler = yield* serve(AuthWithAccessTokens);
+
+      const { result } = yield* read(
+        ToolResult(ProgramResult),
+        yield* send(
+          handler,
+          callTool("execute", {
+            code: "const { todos } = await tools.listTodos({}); return todos.map((todo) => todo.title);",
+          }),
+        ),
+      );
+
+      assert.isFalse(result.isError ?? false);
+      assert.deepStrictEqual(result.structuredContent.result, ["owned by user-alice"]);
+      assert.deepStrictEqual(result.structuredContent.toolCalls, ["listTodos"]);
+    }),
+  );
+
   it.effect("returns TodoNotFoundError as a tool error result", () =>
     Effect.gen(function* () {
       const handler = yield* serve(AuthWithAccessTokens);
 
       const { result } = yield* read(
         ToolError,
-        yield* send(handler, callTool("UpdateTodo", { id: missingId, patch: { completed: true } })),
+        yield* send(handler, callTool("updateTodo", { id: missingId, completed: true })),
       );
 
       const error = yield* Schema.decodeEffect(Schema.fromJsonString(TodoNotFoundError))(

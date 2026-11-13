@@ -109,6 +109,9 @@ importers:
       '@boberstack/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@boberstack/capability':
+        specifier: workspace:*
+        version: link:../../packages/capability
       '@boberstack/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -198,6 +201,9 @@ importers:
       '@boberstack/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@boberstack/capability':
+        specifier: workspace:*
+        version: link:../../packages/capability
       alchemy:
         specifier: 'catalog:'
         version: 2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.1))(@effect/vitest@4.0.7(effect@4.0.7)(vitest@5.0.5))(@types/node@26.6.6)(@types/react@19.3.0)(effect@4.0.7)(jiti@2.7.0)(react-devtools-core@6.1.5)(terser@5.51.2)(typescript@7.0.2)(ws@8.22.0)
@@ -432,6 +438,22 @@ importers:
         specifier: 'catalog:'
         version: 4.0.7
 
+  packages/capability:
+    dependencies:
+      effect:
+        specifier: 'catalog:'
+        version: 4.0.7
+    devDependencies:
+      '@effect/platform-node':
+        specifier: 'catalog:'
+        version: 4.0.7(effect@4.0.7)(redis@6.3.1)
+      '@effect/vitest':
+        specifier: 'catalog:'
+        version: 4.0.7(effect@4.0.7)(vitest@5.0.5)
+      vite-plus:
+        specifier: 'catalog:'
+        version: 1.4.0(@types/node@26.6.6)(@vitest/ui@5.0.5)(jiti@2.7.0)(jsdom@30.1.3(@noble/hashes@2.4.0))(terser@5.51.2)(typescript@7.0.2)(yaml@2.9.1)
+
   packages/client-runtime:
     dependencies:
       '@boberstack/domain':
@@ -494,6 +516,9 @@ importers:
 
   packages/domain:
     dependencies:
+      '@boberstack/capability':
+        specifier: workspace:*
+        version: link:../capability
       effect:
         specifier: 'catalog:'
         version: 4.0.7
