@@ -1,5 +1,6 @@
 import { McpAuthenticationLayer } from "@boberstack/auth";
 import { toToolkitHandlers } from "@boberstack/capability";
+import { toCodeMode, toCodeModeHandlers } from "@boberstack/capability/code-mode";
 import { CurrentUser } from "@boberstack/domain/identity/current-user";
 import { TodosToolkit } from "@boberstack/domain/todos/todos.contracts";
 import { Layer } from "effect";
@@ -14,7 +15,13 @@ const McpTransportLayer = McpServer.layerHttpRequestScoped({
   protocols: [McpProtocol.v2026_07_28],
 }).pipe(Layer.orDie, Layer.provide(McpAuthenticationLayer));
 
-export const McpLayer = McpServer.toolkit(TodosToolkit).pipe(
-  Layer.provide(toToolkitHandlers(TodosToolkit, TodosCapabilities, [CurrentUser])),
-  Layer.provide(McpTransportLayer),
-);
+const TodosCodeMode = toCodeMode(TodosCapabilities);
+
+export const McpLayer = Layer.mergeAll(
+  McpServer.toolkit(TodosToolkit).pipe(
+    Layer.provide(toToolkitHandlers(TodosToolkit, TodosCapabilities, [CurrentUser])),
+  ),
+  McpServer.toolkit(TodosCodeMode.toolkit).pipe(
+    Layer.provide(toCodeModeHandlers(TodosCodeMode, [CurrentUser])),
+  ),
+).pipe(Layer.provide(McpTransportLayer));

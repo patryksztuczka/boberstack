@@ -17,6 +17,7 @@
     "@alchemy.run/sql": "catalog:",
     "@boberstack/api": "workspace:*",
     "@boberstack/auth": "workspace:*",
+    "@boberstack/capability": "workspace:*",
     "alchemy": "catalog:",
     "effect": "catalog:"
   }

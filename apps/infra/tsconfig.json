@@ -12,6 +12,9 @@
     },
     {
       "path": "../../packages/auth"
+    },
+    {
+      "path": "../../packages/capability"
     }
   ]
 }
