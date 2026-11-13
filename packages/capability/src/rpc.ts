@@ -4,6 +4,7 @@ import type { Layer } from "effect";
 import { Rpc, RpcGroup } from "effect/rpc";
 
 import type { AnyContract, FailureOf, InputOf, NameOf, OutputOf } from "./contract.ts";
+import { withLayerServices } from "./implement.ts";
 import type { AnyCapability, RequirementsOf } from "./implement.ts";
 
 export type RpcOf<C> = Rpc.Rpc<NameOf<C>, InputOf<C>, OutputOf<C>, FailureOf<C>>;
@@ -57,7 +58,7 @@ export const toRpcHandlers = <Rpcs extends Rpc.Any, const Caps extends readonly 
         capabilities.map(({ contract, handler }) => {
           return [
             contract.name,
-            (payload: never) => handler(payload).pipe(Effect.provideContext(context)),
+            (payload: never) => handler(payload).pipe(withLayerServices(context)),
           ];
         }),
       );

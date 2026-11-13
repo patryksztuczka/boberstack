@@ -38,6 +38,25 @@ describe("toToolkit", () => {
   });
 });
 
+describe("toToolkitHandlers over a layer that holds a request service", () => {
+  it.layer(TestLayer.pipe(Layer.provide(Layer.succeed(Reader, Reader.of({ name: "Layer" })))))(
+    (it) => {
+      it.effect("runs the capability with the request's service, not the layer's", () =>
+        Effect.gen(function* () {
+          const result = yield* borrow(BookId.make("dune")).pipe(
+            Effect.provideService(Reader, Reader.of({ name: "Ada" })),
+          );
+
+          assert.deepStrictEqual(
+            Option.map(result, ({ result }) => result),
+            Option.some({ borrower: "Ada" }),
+          );
+        }),
+      );
+    },
+  );
+});
+
 describe("toToolkitHandlers", () => {
   it.layer(TestLayer)((it) => {
     it.effect("runs a capability with the per-request services of the caller", () =>

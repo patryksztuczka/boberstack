@@ -12,6 +12,7 @@ import type {
   OutputOf,
   PlainSchema,
 } from "./contract.ts";
+import { withLayerServices } from "./implement.ts";
 import type { AnyCapability, RequirementsOf } from "./implement.ts";
 
 const toolWithParameters = <
@@ -112,7 +113,7 @@ export const toToolkitHandlers = <
             (parameters: never) =>
               requirePerRequest.pipe(
                 Effect.andThen(handler(parameters)),
-                Effect.provideContext(context),
+                withLayerServices(context),
               ),
           ];
         }),

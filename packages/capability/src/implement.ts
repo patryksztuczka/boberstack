@@ -1,4 +1,4 @@
-import { Effect } from "effect";
+import { Context, Effect } from "effect";
 
 import type { AnyContract, FailureOf, InputOf, OutputOf } from "./contract.ts";
 
@@ -40,3 +40,13 @@ export const implement = <C extends AnyContract, Requirements = never>(
       }),
     ),
 });
+
+export const withLayerServices =
+  <Services>(layerServices: Context.Context<Services>) =>
+  <A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<A, E, Exclude<R, Services>> =>
+    Effect.updateContext(
+      effect,
+      (request: Context.Context<Exclude<R, Services>>) =>
+        // SAFETY: the merge holds every service of `R`: `Services` from the layer and the rest from the request, which wins where both hold one.
+        Context.merge(layerServices, request) as Context.Context<R>,
+    );
