@@ -1,6 +1,6 @@
 # HttpApi and RPC from one domain contract
 
-**Status:** accepted, 2026-10-30.
+**Status:** superseded by root ADR 0014, 2026-11-13.
 
 Everything that crosses the boundary between apps, records, branded ids, wire errors with their HTTP status, the `HttpApi` with its groups, the `RpcGroup`s and the authentication middleware tags, is defined once in `packages/domain`. The api implements it, and the web app and the CLI call it with clients derived from the same definitions. The api serves both transports from one handler: `HttpApi` for REST and the OpenAPI document, Effect RPC for typed calls with typed errors.
 

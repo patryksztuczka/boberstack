@@ -13,8 +13,7 @@ packages/domain/src/                 # the contract every side imports (06, sche
   todos/
     todo.ts                          # Todo, TodoId, TodoTitle, NewTodo, TodoPatch
     todo.errors.ts                   # errors that cross the wire, with httpApiStatus
-    todos.http-api.ts                # HttpApiGroup
-    todos.rpc.ts                     # RpcGroup
+    todos.contracts.ts               # a defineContract per operation; TodosHttpApi, TodosRpcs, TodosToolkit
   identity/
     user.ts, current-user.ts         # User, UserId, the CurrentUser service tag
     authentication.ts                # HttpApi and RPC middleware tags
@@ -41,15 +40,17 @@ packages/database/                   # adapter: the only SQL (root ADR 0003)
   migrations/                        # NNNN_name.sql, app and better-auth tables (root ADR 0011)
 packages/mail/src/                   # adapter: Mailpit provides Mailer
 packages/auth/src/                   # adapter: better-auth, the authentication middleware layers
+packages/capability/src/             # defineContract, implement, the projections onto each transport (root ADR 0014)
 packages/client-runtime/src/         # what the apps share: api clients per context, their atoms (x.atoms.ts), clientRuntime, ApiOrigin, SessionExpiry
 
 apps/api/src/                        # a composition root
   server.ts                          # entry point on Node (10)
   app.layer.ts                       # routes + core + adapters, no host
-  http/                              # one handler file per HttpApi group, http.layer.ts
-    todos.http.ts
-  rpc/                               # RPC handlers, rpc.layer.ts
-    todos.rpc.ts
+  capabilities/                      # one implement(...) per contract, served on every transport
+    todos.capabilities.ts
+  http/                              # http.layer.ts, handlers of HttpApi-only groups (health.http.ts)
+  rpc/                               # rpc.layer.ts
+  mcp/                               # mcp.layer.ts
 apps/cli/src/                        # another composition root
 apps/infra/                          # the Alchemy stacks (root ADR 0013)
   alchemy.run.ts, api.Dockerfile     # default host: the api in a container
@@ -64,19 +65,20 @@ Organise by domain, not by kind. No `services/`, `helpers/`, `layers/` or `error
 
 File names are kebab-case. A plainly named file holds data or pure functions; every other file carries a role suffix with one meaning everywhere:
 
-| File                                             | Holds                                                                                                 |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
-| `x.ts`                                           | data (Schemas, branded ids, records, [06](06-schema.md)) or pure functions. Never SQL or a dependency |
-| `x.errors.ts`                                    | tagged `*Error` classes ([02](02-typed-errors.md))                                                    |
-| `x.store.ts`                                     | a storage port `XStore` (`structure.stores`)                                                          |
-| `x.service.ts`                                   | business logic, `XService`                                                                            |
-| `x.repository.ts`                                | the SQL behind one store. Only in `packages/database/src/`                                            |
-| `<system>-x.ts`                                  | another adapter in `packages/<capability>/src/`, named after the system it talks to                   |
-| `x.layer.ts`                                     | a layer that composes others (`app.layer.ts`, `http.layer.ts`)                                        |
-| `x.http.ts`, `x.rpc.ts`                          | HttpApi group handlers, RPC handlers                                                                  |
-| `x.http-api.ts`, `x.rpc.ts` in `packages/domain` | the contract: `HttpApiGroup`, `RpcGroup`                                                              |
-| `index.ts`                                       | a module's or context's public surface                                                                |
-| `testing/index.ts`                               | what other modules' tests may use; production code never imports it                                   |
+| File                                              | Holds                                                                                                 |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `x.ts`                                            | data (Schemas, branded ids, records, [06](06-schema.md)) or pure functions. Never SQL or a dependency |
+| `x.errors.ts`                                     | tagged `*Error` classes ([02](02-typed-errors.md))                                                    |
+| `x.store.ts`                                      | a storage port `XStore` (`structure.stores`)                                                          |
+| `x.service.ts`                                    | business logic, `XService`                                                                            |
+| `x.repository.ts`                                 | the SQL behind one store. Only in `packages/database/src/`                                            |
+| `<system>-x.ts`                                   | another adapter in `packages/<system>/src/`, named after the system it talks to                       |
+| `x.layer.ts`                                      | a layer that composes others (`app.layer.ts`, `http.layer.ts`)                                        |
+| `x.contracts.ts` in `packages/domain`             | a `defineContract` per operation and their projections: `HttpApiGroup`, `RpcGroup`, `Toolkit`         |
+| `x.capabilities.ts` in `apps/api`                 | one `implement(contract, handler)` per contract                                                       |
+| `x.http-api.ts` in `packages/domain`, `x.http.ts` | an `HttpApiGroup` with no contracts behind it (health, sign-in methods) and its handlers              |
+| `index.ts`                                        | a module's or context's public surface                                                                |
+| `testing/index.ts`                                | what other modules' tests may use; production code never imports it                                   |
 
 Tests sit next to what they test. `*.test.ts` is a unit test; `*.integration.test.ts` needs Docker and runs under `pnpm test:integration`. The suffix alone decides which run picks a file up. Avoid other fixed file names (`errors.ts`, `schema.ts`): editor tabs become unreadable.
 
@@ -84,22 +86,22 @@ A port that is not storage is named after its job: `PasswordHasher`, `MailSender
 
 ### structure.imports: who may import what
 
-| Import                                                                                                                                            | Allowed | Rule                                                                                                               |
-| ------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------ |
-| a root file (`server.ts`, `app.layer.ts`, `apps/infra/src/worker.ts`, `apps/cli/src/main.ts`) → anything its `package.json` lists                 | yes     |                                                                                                                    |
-| `http/`, `rpc/` → `@boberstack/core/<context>`, an adapter package's index, `@boberstack/domain`                                                  | yes     |                                                                                                                    |
-| an adapter package → `@boberstack/core/<context>`, `@boberstack/domain`, a vendor SDK, `effect/sql`                                               | yes     |                                                                                                                    |
-| any package → a file past a core context's `index.ts`                                                                                             | no      | `exports` in `packages/core/package.json`; `@boberstack/effect/module-boundaries` (`indexOnly`) for relative paths |
-| a core module → its own files, another module's or context's `index.ts`, `@boberstack/domain`                                                     | yes     |                                                                                                                    |
-| a core module → a file inside another module or context                                                                                           | no      | `@boberstack/effect/module-boundaries`                                                                             |
-| a core module → a root file (`app.layer.ts`, `server.ts`), tests included                                                                         | no      | `@boberstack/effect/module-boundaries` (`rootFiles`)                                                               |
-| a core module → `@boberstack/auth`, `@boberstack/mail`, `better-auth`, `alchemy`, `pg`, `fetch`, `node:http`                                      | no      | `@boberstack/effect/no-domain-adapters`                                                                            |
-| a core module, tests included → `effect/sql`, `@effect/sql-pg`, `@boberstack/database`, `packages/database/`; a core file named `*.repository.ts` | no      | `@boberstack/effect/no-domain-sql`                                                                                 |
-| `apps/web` → `@boberstack/core` or an adapter package                                                                                             | no      | not in `apps/web/package.json`, so pnpm cannot resolve it                                                          |
-| any file outside `tools/oxlint` → `node:fs`, `node:path`, `node:child_process`, `node:timers`                                                     | no      | Effect diagnostic `nodeBuiltinImport`                                                                              |
-| `packages/*` → an app                                                                                                                             | no      | review                                                                                                             |
-| an app → another app's `src/`; share through a package                                                                                            | no      | review                                                                                                             |
-| any file → a module that imports it back                                                                                                          | no      | `import/no-cycle`                                                                                                  |
+| Import                                                                                                                                              | Allowed | Rule                                                                                                               |
+| --------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------ |
+| a root file (`server.ts`, `app.layer.ts`, `apps/infra/src/worker.ts`, `apps/cli/src/main.ts`) → anything its `package.json` lists                   | yes     |                                                                                                                    |
+| `capabilities/`, `http/`, `rpc/`, `mcp/` → `@boberstack/core/<context>`, an adapter package's index, `@boberstack/domain`, `@boberstack/capability` | yes     |                                                                                                                    |
+| an adapter package → `@boberstack/core/<context>`, `@boberstack/domain`, a vendor SDK, `effect/sql`                                                 | yes     |                                                                                                                    |
+| any package → a file past a core context's `index.ts`                                                                                               | no      | `exports` in `packages/core/package.json`; `@boberstack/effect/module-boundaries` (`indexOnly`) for relative paths |
+| a core module → its own files, another module's or context's `index.ts`, `@boberstack/domain`                                                       | yes     |                                                                                                                    |
+| a core module → a file inside another module or context                                                                                             | no      | `@boberstack/effect/module-boundaries`                                                                             |
+| a core module → a root file (`app.layer.ts`, `server.ts`), tests included                                                                           | no      | `@boberstack/effect/module-boundaries` (`rootFiles`)                                                               |
+| a core module → `@boberstack/auth`, `@boberstack/mail`, `better-auth`, `alchemy`, `pg`, `fetch`, `node:http`                                        | no      | `@boberstack/effect/no-domain-adapters`                                                                            |
+| a core module, tests included → `effect/sql`, `@effect/sql-pg`, `@boberstack/database`, `packages/database/`; a core file named `*.repository.ts`   | no      | `@boberstack/effect/no-domain-sql`                                                                                 |
+| `apps/web` → `@boberstack/core` or an adapter package                                                                                               | no      | not in `apps/web/package.json`, so pnpm cannot resolve it                                                          |
+| any file outside `tools/oxlint` → `node:fs`, `node:path`, `node:child_process`, `node:timers`                                                       | no      | Effect diagnostic `nodeBuiltinImport`                                                                              |
+| `packages/*` → an app                                                                                                                               | no      | review                                                                                                             |
+| an app → another app's `src/`; share through a package                                                                                              | no      | review                                                                                                             |
+| any file → a module that imports it back                                                                                                            | no      | `import/no-cycle`                                                                                                  |
 
 Test code in an adapter package composes its own layers as a root does. A core unit test never touches the database or an adapter; a store's contract runs on Postgres from `packages/database/src/x.repository.integration.test.ts`.
 
@@ -116,7 +118,7 @@ Test helpers never go in a module's `index.ts`. Production code loads that index
 
 ### structure.adapters: ports in core, each adapter in its own package, the root chooses
 
-A module owns the port: the service tag, its API and its typed errors. Code that talks to an external system implements that port in its own package, `packages/<capability>/`, which depends on `@boberstack/core` and never the other way round. An adapter exports a layer for the module's tag and defines no tag of its own. It performs the I/O, decodes the response at the boundary and maps a transport failure into the module's typed error. The rules stay in the module.
+A module owns the port: the service tag, its API and its typed errors. Code that talks to an external system implements that port in its own package, `packages/<system>/`, which depends on `@boberstack/core` and never the other way round. An adapter exports a layer for the module's tag and defines no tag of its own. It performs the I/O, decodes the response at the boundary and maps a transport failure into the module's typed error. The rules stay in the module.
 
 A value a module needs from the deployment is a port too, named after what the module does with it (`TrustedOrigins`, not `Env`). Its `layerConfig` lives in the adapter package, and only composition roots use it ([07](07-configuration.md)).
 

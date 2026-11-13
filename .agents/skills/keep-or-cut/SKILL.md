@@ -42,13 +42,13 @@ A request for a mobile app means cutting the web and desktop apps. An api that o
 
 ### How the clients talk to the api
 
-The api serves one contract from `packages/domain` over two transports (root ADR 0005). Explain the difference before you ask:
+Each operation is one contract in `packages/domain`, and the api serves it over two transports (root ADR 0014). Explain the difference before you ask:
 
 - HttpApi is REST. Each operation is a URL and an HTTP method, and the api publishes an OpenAPI document generated from the contract. Anything can call it: curl, an app in another language, a partner, a webhook. The mobile app, the health check, sign-in methods and the MCP client directory use it, and so does the web app by default.
 - Effect RPC is typed calls over one endpoint. The client gets each operation's result and error types straight from the contract, with no URLs or status codes to map. Only an Effect client can call it, and there is no OpenAPI document. The web app uses it for todos when started with `VITE_TODOS_TRANSPORT=rpc`.
-- Both ship today. Each operation is then declared twice, once per transport, over the same schemas, and one service method handles both.
+- Both ship today. `packages/capability` projects each contract onto both, and one handler in `apps/api/src/capabilities/` serves both.
 
-Recommend HttpApi alone when anyone besides the project's own TypeScript clients will call the api, and when the owner is unsure: everything in the template already uses it, so cutting RPC is the small cut. Recommend RPC alone only when every caller is the project's own Effect client and the owner wants typed errors end to end. Cutting HttpApi first moves the health check, sign-in methods, the MCP client directory and the mobile app to RPC. Keeping both costs two declarations per operation. Sign-in works on any choice: better-auth serves `/api/auth/*` itself.
+Recommend HttpApi alone when anyone besides the project's own TypeScript clients will call the api, and when the owner is unsure: everything in the template already uses it, so cutting RPC is the small cut. Recommend RPC alone only when every caller is the project's own Effect client and the owner wants typed errors end to end. Cutting HttpApi first moves the health check, sign-in methods, the MCP client directory and the mobile app to RPC. Keeping both costs a second client per context and the RPC projection in `packages/capability`. Sign-in works on any choice: better-auth serves `/api/auth/*` itself.
 
 ### Which features
 
@@ -155,10 +155,10 @@ Cuts touch paths that need the owner's sign-off: dependencies, the lint config, 
 ### The todos example
 
 - [ ] Delete `packages/domain/src/todos/` and its group in `packages/domain/src/api.ts`.
-- [ ] Delete `packages/core/src/todos/`, `apps/api/src/http/todos.http.ts`, `apps/api/src/rpc/todos.rpc.ts`, and their entries in `http.layer.ts`, `rpc.layer.ts` and `app.layer.ts`.
+- [ ] Delete `packages/core/src/todos/`, `apps/api/src/capabilities/todos.capabilities.ts`, and their entries in `http.layer.ts`, `rpc.layer.ts`, `mcp.layer.ts` and `app.layer.ts`.
 - [ ] Delete `packages/database/src/todo.repository.ts`, its integration test and its export in `packages/database/src/index.ts`.
 - [ ] Add a migration that drops the todos table. Do not delete the old migration if it has ever been applied (root ADR 0011).
-- [ ] Delete `apps/api/src/mcp/todos.mcp.ts` and point the toolkit in `apps/api/src/mcp/mcp.layer.ts` and `mcp.layer.test.ts` at the new context's, or cut MCP.
+- [ ] `rpc.layer.ts` and `mcp.layer.ts` serve only Todos. Point them and `mcp.layer.test.ts` at the new context's projections and capabilities, or cut RPC and MCP.
 - [ ] Delete `packages/client-runtime/src/todos/`, `TodosClient` in `ClientServices` (`packages/client-runtime/src/atom-runtime/atom-runtime.ts`) and the todos client layer in `apps/web/src/runtime.ts` and `apps/mobile/src/runtime.ts`.
 - [ ] Delete `apps/web/src/features/todos/` and its routes in `router.tsx`, and `apps/mobile/src/features/todos/` and its screen in `apps/mobile/src/app/navigation.tsx`.
 - [ ] Point the pages that send a user to `/todos` at the new landing page: `AFTER_SIGN_IN` in `apps/web/src/features/auth/redirect-to.ts` and the link in `apps/web/src/features/welcome/components/welcome-page.tsx`. Delete the `todos_*` messages and reword `welcome_open_example` and `auth_email_verified_continue` in `apps/web/messages/en.json` and `apps/mobile/messages/en.json`.
@@ -170,15 +170,16 @@ Keep the folders: the next context goes in the same places. Model it with the `d
 
 ### RPC
 
-- [ ] Delete `packages/domain/src/*/*.rpc.ts` and `apps/api/src/rpc/`.
+- [ ] Delete the `RpcGroup` projections (`TodosRpcs`) from `packages/domain/src/*/*.contracts.ts`, and `apps/api/src/rpc/`.
+- [ ] Delete `packages/capability/src/rpc.ts`, `rpc.test.ts` and their exports in `packages/capability/src/index.ts`, so knip stays green.
 - [ ] Remove the RPC layer from `app.layer.ts` and the RPC auth middleware from `packages/domain/src/identity/authentication.ts` and `packages/auth/src/authentication.layer.ts`.
 - [ ] Delete the RPC clients (`packages/client-runtime/src/*/*-rpc-client.ts`) and their exports, and the `VITE_TODOS_TRANSPORT` switch in `apps/web/src/runtime.ts`, the transport line on the todos page and the RPC steps in `.agents/skills/verify-web/features/todos.md`, and the note about `TODOS_TRANSPORT` in `tools/oxlint/boberstack/frontend/README.md`.
-- [ ] Reword what still names RPC: the transport in root ADR 0010, the "HttpApi and RPC middleware" in `.agents/skills/verify-web/features/auth.md`, and in `AGENTS.md` "An HttpApi or RPC handler" and the "Where things go" rows for an endpoint and a typed api client.
-- [ ] Supersede root ADR 0005 with a new ADR.
+- [ ] Reword what still names RPC: the transport in root ADR 0010, the "HttpApi and RPC middleware" in `.agents/skills/verify-web/features/auth.md`, and in `AGENTS.md` "projected onto HttpApi, RPC and MCP" and the "Where things go" rows for an operation and a typed api client.
 
 ### MCP
 
-- [ ] Delete `packages/domain/src/*/*.mcp.ts`, `apps/api/src/mcp/` and the MCP layer in `app.layer.ts`.
+- [ ] Delete the `Toolkit` projections (`TodosToolkit`) from `packages/domain/src/*/*.contracts.ts`, `apps/api/src/mcp/` and the MCP layer in `app.layer.ts`.
+- [ ] Delete `packages/capability/src/toolkit.ts`, `toolkit.test.ts` and their exports in `packages/capability/src/index.ts`.
 - [ ] Delete `packages/auth/src/mcp-authentication.ts`, `access-token.errors.ts`, and `jwt()`, `mcp()` and `mcpResourceServer` in `packages/auth/src/better-auth.ts`; remove `@better-auth/mcp` and `@better-auth/oauth-provider`.
 - [ ] Delete `packages/client-runtime/src/identity/mcp-client-directory*`, the consent page and `mcp-client-request.ts` in `apps/web/src/features/auth/`, the `oauthProviderClient()` plugin, the `/oauth/consent` route, and the `/.well-known` routes in `apps/api/src/worker.ts` and `apps/web/vite.config.ts`.
 - [ ] Add a migration that drops the OAuth provider tables (root ADR 0011), delete `docs/user/ai-assistants.md`, and supersede root ADR 0012 and Identity ADR 0002.
@@ -186,10 +187,10 @@ Keep the folders: the next context goes in the same places. Model it with the `d
 ### HttpApi and OpenAPI
 
 - [ ] Declare the health check, sign-in methods and the MCP client directory as RPCs first, with their RPC clients in `packages/client-runtime/src/`.
-- [ ] Delete `packages/domain/src/*/*.http-api.ts`, `packages/domain/src/api.ts`, `apps/api/src/http/` and the HTTP auth middleware.
+- [ ] Delete the `HttpApiGroup` projections (`TodosHttpApi`) and the `http` route of each contract in `packages/domain/src/*/*.contracts.ts`, then `packages/domain/src/*/*.http-api.ts`, `packages/domain/src/api.ts`, `apps/api/src/http/` and the HTTP auth middleware.
+- [ ] Delete `packages/capability/src/http-api.ts`, `http-api-handlers.ts`, `http-api.test.ts` and their exports in `packages/capability/src/index.ts`.
 - [ ] Delete the `HttpApi` clients (`packages/client-runtime/src/*/*-http-client.ts` and the other `*Http*Layer`s), and provide the RPC ones in `apps/web/src/runtime.ts` and `apps/mobile/src/runtime.ts`. Drop the `VITE_TODOS_TRANSPORT` switch.
 - [ ] Drop `openapi` from the CLI and point `health` at the RPC.
-- [ ] Supersede root ADR 0005 with a new ADR.
 
 ### The CLI
 
@@ -203,7 +204,7 @@ Keep the folders: the next context goes in the same places. Model it with the `d
 ### Authentication
 
 - [ ] Delete `packages/auth/`, `packages/domain/src/identity/`, and `packages/client-runtime/src/identity/` and `session/`.
-- [ ] Remove `.middleware(…)` from every `HttpApiGroup` and `RpcGroup`, and stop reading `CurrentUser` in handlers; Todos would then need a new ownership rule (Todos ADR 0001).
+- [ ] Remove `.middleware(…)` from every `HttpApiGroup` and `RpcGroup`, the projections in `*.contracts.ts` included, and stop reading `CurrentUser` in `apps/api/src/capabilities/`; Todos would then need a new ownership rule (Todos ADR 0001).
 - [ ] Remove `@boberstack/auth` and `@alchemy.run/better-auth` from `apps/api/package.json`, `packages/auth` from `apps/api/tsconfig.json`, and the better-auth wiring from `apps/api/src/app.layer.ts`, `apps/api/src/server.ts` and `apps/infra/src/worker.ts`.
 - [ ] Add a migration that drops the better-auth tables.
 - [ ] Delete the sign-in features and route guards of `apps/web` and `apps/mobile`, `docs/internals/identity/`, `docs/user/sign-in.md` and `.agents/skills/verify-web/features/auth.md`.
